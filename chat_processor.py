@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
 
-import nltk
+import os
 import regex as re
 from categoria_dic import categoria
+
+import nltk
+nltk_dir = os.path.dirname(os.path.abspath(__file__)) + '/nltk_data'
+nltk.data.path.append(nltk_dir)
+
+def download_recursos():
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt', download_dir=nltk_dir)
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        nltk.download('stopwords', download_dir=nltk_dir)
 
 # como corrigir erros ortográficos -> usar ngramas?
 
@@ -39,8 +53,7 @@ def calcula_confianca(noccur):
 
 
 ################################################ TESTING ##################################################################
-nltk.download('punkt')
-nltk.download('stopwords')
+download_recursos()
 inp = "Olá. Eu gostava de comprar um bilhete para o cinema na aplicação."
 print(inp)
 palavras = limpa_texto(inp)
