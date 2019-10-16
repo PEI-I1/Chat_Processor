@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import nltk
 import regex as re
 from categoria_dic import categoria
@@ -37,6 +39,8 @@ def calcula_confianca(noccur):
 
 
 ################################################ TESTING ##################################################################
+nltk.download('punkt')
+nltk.download('stopwords')
 inp = "Olá. Eu gostava de comprar um bilhete para o cinema na aplicação."
 print(inp)
 palavras = limpa_texto(inp)
