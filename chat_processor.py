@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from spell_checker import spell_check
 import regex as re
 from categoria_dic import categoria
 
@@ -51,13 +52,14 @@ def calcula_confianca(noccur):
     confianca = valor_cat / total
     return cat_maior,confianca
 
+def get_categoria_frase(inp):
+    inp = spell_check(inp)
+    palavras = limpa_texto(inp)
+    noccur = criar_noccur_dic(palavras)
+    return calcula_confianca(noccur)
 
 ################################################ TESTING ##################################################################
 download_recursos()
 inp = "Olá. Eu gostava de comprar um bilhete para o cinema na aplicação."
 print(inp)
-palavras = limpa_texto(inp)
-noccur = criar_noccur_dic(palavras)
-cat_maior,confianca = calcula_confianca(noccur)
-print(cat_maior,confianca)
-
+print(get_categoria_frase(inp))
