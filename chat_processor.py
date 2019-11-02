@@ -4,6 +4,7 @@ import os
 from spell_checker import spell_check_google, spell_check_psc
 import regex as re
 from categoria_dic import categoria
+import requests
 
 import nltk
 nltk_dir = os.path.dirname(os.path.abspath(__file__)) + '/nltk_data'
@@ -54,14 +55,18 @@ def calcula_confianca(noccur):
 
 def get_categoria_frase(inp):
     inp = spell_check_google(inp)
-    palavras = limpa_texto(inp)
-    noccur = criar_noccur_dic(palavras)
-    return calcula_confianca(noccur)
+    #palavras = limpa_texto(inp)
+    #noccur = criar_noccur_dic(palavras)
+    #return calcula_confianca(noccur)
+    return str(inp)
+
+def get_response(idChat, idUser, msg, name):
+    return get_categoria_frase(msg)
 
 ################################################ TESTING ##################################################################
-download_recursos()
-inp = "Olá. Eu gostava de comprar um bilhete para o cinema na aplicação."
-print(inp)
-print(get_categoria_frase(inp))
+#download_recursos()
+#inp = "Olá. Eu gostava de comprar um bilhete para o cinema na aplicação."
+#print(inp)
+#print(get_categoria_frase(inp))
 # test pyspellchecker
-print(spell_check_psc(['como', 'fazer', 'arros']))
+#print(spell_check_psc(['como', 'fazer', 'arros']))
