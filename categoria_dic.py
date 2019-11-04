@@ -1,5 +1,5 @@
 cat = {
-    'linhas_apoio' : ['linhas', 'apoio'],
+    'linhas_apoio' : ['linhas', 'apoio','assunto'],
     'phone_model' : ['modelos', 'telemóveis','pontos'],
     'brand_phones' : ['comprar','telemóvel','preço'],
     'top_phones' : ['top','telemóveis','melhores'],

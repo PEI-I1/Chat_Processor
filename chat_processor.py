@@ -63,6 +63,12 @@ def get_categoria_frase(inp):
 def get_response(idChat, idUser, msg, name):
     return get_categoria_frase(msg)
 
+def get_content(pedido):
+    '''recebe um pedido e retorna a informação '''
+    URL = 'http://127.0.0.1:5000/'
+    res = requests.get(URL + pedido).json().get('response')
+    return res
+
 ################################################ TESTING ##################################################################
 #download_recursos()
 #inp = "Olá. Eu gostava de comprar um bilhete para o cinema na aplicação."
@@ -70,3 +76,5 @@ def get_response(idChat, idUser, msg, name):
 #print(get_categoria_frase(inp))
 # test pyspellchecker
 #print(spell_check_psc(['como', 'fazer', 'arros']))
+res = get_content('top_phones')
+print(res)
