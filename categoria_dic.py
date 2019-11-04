@@ -1,3 +1,19 @@
+cat = {
+    'linhas_apoio' : ['linhas', 'apoio'],
+    'phone_model' : ['modelos', 'telemóveis','pontos'],
+    'brand_phones' : ['comprar','telemóvel','preço'],
+    'top_phones' : ['top','telemóveis','melhores'],
+    'promo_phones' : ['promoções','telemóveis'],
+    'new_phones' : ['novidades','novos','telemóveis'],
+    'ofer_phones' : ['oferta','telemóveis'],
+    'prest_phones' : ['prestações','prestação','telemóveis'],
+    'points_phones' : ['pontos','telemóveis'],
+    'phones_by_price' : ['preço','telemóveis'],
+    'wtf_name' : '',
+    'stores_by_zone' : ['lojas'],
+    'store_address' : '',
+}
+
 categoria = {
     'bilhete' : 'cinema',
     'cinema' : 'cinema',
