@@ -2,6 +2,5 @@ nltk
 requests
 cacheout
 regex
-os
 bs4
-spellchecker
+pyspellchecker
