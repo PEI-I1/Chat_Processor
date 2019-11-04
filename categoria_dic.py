@@ -1,5 +1,5 @@
 cat = {
-    'linhas_apoio' : ['linhas','linha','apoio','assunto','número','contacto','contactos','empresa','empresas','aderir','informações','adicionais','informação','adicional','serviços','chamada','chamadas','ligar'],
+    'linhas_apoio' : ['linhas','linha','apoio','assunto','número','contacto','contactos','empresa','empresas','aderir','informações','adicionais','informação','adicional','serviços','chamada','chamadas','ligar','falar',"assistente"],
     'phone_model' : ['modelos','modelo','telemóvel','telemóveis'],
     'brand_phones' : ['marca','marcas','comprar','telemóvel','telemóveis','preço'],
     'top_phones' : ['top','telemóvel','telemóveis','melhores','link'],
@@ -9,10 +9,10 @@ cat = {
     'prest_phones' : ['prestações','prestação','telemóvel','telemóveis'],
     'points_phones' : ['ponto','pontos','telemóvel','telemóveis'],
     'phones_by_price' : ['ordenar','preço','telemóvel','telemóveis'],
-    'all_wtf' : ['tarifários','telemóvel','wtf']
+    'all_wtf' : ['tarifários','telemóvel','wtf'],
     'wtf_name' : ['tarifário','wtf'],
     'stores_by_zone' : ['loja','lojas','zona'],
-    'store_address' : ['morada','loja','lojas'],
+    'store_address' : ['morada','loja','lojas']
 }
 
 categoria = {

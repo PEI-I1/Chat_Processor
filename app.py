@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 import json
-from chat_processor import get_response
+from chat_processor import get_response, init
 
 app = Flask(__name__)
+init()
 
 @app.route('/getResponse', methods=['POST'])
 def index():
