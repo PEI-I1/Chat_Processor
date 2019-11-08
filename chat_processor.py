@@ -103,14 +103,28 @@ def get_response(idChat, idUser, msg, name):
         msg_send = process_all_list(content)
     else:
         cat, confianca = get_categoria_frase(msg)
-        params = ""
+
         if confianca > 0.65:
-            content = get_content(cat) #+ "/" + params)
-            if isinstance(content, list):
-                msg_send = process_list(content)
-                cache.set("vermais" + idChat, content)
+            if cat == "resolucao_problemas":
+                #criar um fluxo diferente para a resolução de problemas
+                #por exemplo ir perguntando parametros que são necessários inserir no modelo e que ainda não temos, seja pelo contexto da conversa seja pelo utilizador
+                #tb deve ser necessário fazer aqui a autenticação
             else:
-                msg_send = content
+
+                if has_params(cat):
+                    #TODO: obter parametros da frase
+                    content = get_content(cat) #adicionar parametros)
+                    #perceber se o pedido deu ou não erro
+                    #se der erro devolver uma mensagem de erro
+                else:
+                    content = get_content(cat)
+
+                #se for uma lista devolve de forma diferente
+                if isinstance(content, list):
+                    msg_send = process_list(content)
+                    cache.set("vermais" + idChat, content)
+                else:
+                    msg_send = content
         else:
             msg_send = "Desculpe mas não foi possível identificar o que pretende. Tente de novo!"
     return str(msg_send)
@@ -118,7 +132,11 @@ def get_response(idChat, idUser, msg, name):
 def get_content(pedido):
     '''recebe um pedido e retorna a informação '''
     URL = 'http://127.0.0.1:5000/'
-    res = requests.get(URL + pedido).json().get('response')
+    try:
+        res = requests.get(URL + pedido).json().get('response')
+        res.raise_for_status()
+    except e:
+        res = None
     return res
 
 ##################################### TESTING ####################################
