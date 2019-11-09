@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import os
-from spell_checker import spell_check_google, spell_check_psc
+from spell_checker import spell_check_google, spell_check_ss
 import regex as re
 from categoria_dic import cat as dicionario
 import requests
 from cacheout import Cache
+from config import urls 
 
 import nltk
 nltk_dir = os.path.dirname(os.path.abspath(__file__)) + '/nltk_data'
@@ -40,10 +41,9 @@ def criar_noccur_dic(palavras):
     noccur = {}
     for pal in palavras:
         for cat in dicionario: 
-            assoc_words = dicionario[cat]
-            for word in dicionario[cat]:
+            for word in cat['words']:
                 if word == pal:
-                    noccur[cat] = noccur.get(cat, 0) + 1
+                    noccur[cat['request']] = noccur.get(cat['request'], 0) + 1
     return noccur
 
 # com base na dic do noccur calcular qual é a categoria mais provável e a sua confiança
@@ -66,7 +66,7 @@ def calcula_confianca(noccur):
     
 
 def get_categoria_frase(inp):
-    inp = spell_check_google(inp)
+    inp = spell_check_ss(inp)
     palavras = limpa_texto(inp)
     noccur = criar_noccur_dic(palavras)
     return calcula_confianca(noccur)
@@ -96,6 +96,21 @@ def process_all_list(content):
 
     return msg_send
 
+def get_service(cat):
+    size = len(dicionario)
+    i = 0
+    foundCat = None
+
+    while i < size and foundCat == None:
+        if dicionario[i]['request'] == cat:
+            foundCat = dicionario[i]['service']
+
+    return urls[foundCat]
+
+def has_params(cat):
+    #TODO
+    return False
+
 def get_response(idChat, idUser, msg, name):
     if msg.lower() == "ver mais":
         content = cache.get("vermais" + idChat)
@@ -109,15 +124,17 @@ def get_response(idChat, idUser, msg, name):
                 #criar um fluxo diferente para a resolução de problemas
                 #por exemplo ir perguntando parametros que são necessários inserir no modelo e que ainda não temos, seja pelo contexto da conversa seja pelo utilizador
                 #tb deve ser necessário fazer aqui a autenticação
+                print("TODO")
             else:
-
+                #obtém o url de acordo a categoria
+                URL = get_service(cat)
                 if has_params(cat):
                     #TODO: obter parametros da frase
-                    content = get_content(cat) #adicionar parametros)
+                    content = get_content(URL, cat) #adicionar parametros)
                     #perceber se o pedido deu ou não erro
                     #se der erro devolver uma mensagem de erro
                 else:
-                    content = get_content(cat)
+                    content = get_content(URL, cat)
 
                 #se for uma lista devolve de forma diferente
                 if isinstance(content, list):
@@ -129,16 +146,12 @@ def get_response(idChat, idUser, msg, name):
             msg_send = "Desculpe mas não foi possível identificar o que pretende. Tente de novo!"
     return str(msg_send)
 
-def get_content(pedido):
+def get_content(URL, pedido):
     '''recebe um pedido e retorna a informação '''
-    URL = 'http://127.0.0.1:5000/'
     try:
-        res = requests.get(URL + pedido).json().get('response')
+        res = requests.get(URL + pedido)
         res.raise_for_status()
-    except e:
+        res = res.json().get('response')
+    except:
         res = None
     return res
-
-##################################### TESTING ####################################
-# test pyspellchecker
-#print(spell_check_psc(['como', 'fazer', 'arros']))
