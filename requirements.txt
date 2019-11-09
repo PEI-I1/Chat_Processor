@@ -3,4 +3,4 @@ requests
 cacheout
 regex
 bs4
-pyspellchecker
+symspellpy

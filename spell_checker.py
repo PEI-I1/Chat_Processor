@@ -44,25 +44,30 @@ def spell_check_google(string):
     page = get_page(string)
     return get_spell(page, string)
 
-# =====  pyspellchecker ======
-from spellchecker import SpellChecker
+# =====  symspellpy ======
+import os
+from symspellpy.symspellpy import SymSpell
+sym_spell = None
+
+def init():
+    global sym_spell
+    max_edit_distance_dictionary = 2
+    prefix_length = 7
+
+    sym_spell = SymSpell(max_edit_distance_dictionary, prefix_length)
+    #sym_spell.load_dictionary(os.path.dirname(os.path.abspath(__file__)) + "/frequency_words_models/pt_frequency_50k.txt", term_index=0, count_index=1)
+    sym_spell.load_dictionary(os.path.dirname(os.path.abspath(__file__)) + "/frequency_words_models/fw_pt.txt", term_index=0, count_index=1)
+    sym_spell.load_bigram_dictionary(os.path.dirname(os.path.abspath(__file__)) + "/frequency_words_models/fw_bi_pt.txt", term_index=0, count_index=2)
 
 """
-Corrige (spell check) uma lista de palavras.
-Devolve uma lista de palavras já corrigidas.
+Devolve a string corrigida.
 
 Argumentos:
-word_list -- lista de palavras a corrigir
+string -- texto a corrigir
 """
-def spell_check_psc(words_list):
-    spell = SpellChecker(language='pt')
-    ret = []
+def spell_check_ss(string):
+    global sym_spell
+    max_edit_distance_lookup = 2
 
-    for word in words_list:
-        misspelled = spell.unknown([word])
-        if len(misspelled) == 0:
-            ret.append(word)
-        else:
-            ret.append(spell.correction(word))
-
-    return ret
+    suggestions = sym_spell.lookup_compound(string, max_edit_distance_lookup)
+    return suggestions[0].term

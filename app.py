@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 import json
-from chat_processor import get_response, init
+from chat_processor import get_response, init as initCP
+from spell_checker import init as initSC
 
 app = Flask(__name__)
-init()
+initCP()
+initSC()
 
 @app.route('/getResponse', methods=['POST'])
 def index():
