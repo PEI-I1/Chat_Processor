@@ -9,9 +9,27 @@ from spacy.util import minibatch, compounding
 
 # training data
 TRAIN_DATA = [
-    ("Quando dá o filme Joker?", {"entities": [(18, 23, "FILME")]}),
-    ("Quero ver o filme Guerra dos Mundos amanhã.", {"entities": [(18, 24, "FILME"), (25, 28, "FILME"), (29, 35, "FILME"), (36, 42, "DATA")]})
+    # MOVIE nomes de filmes
+    ("Quando dá o filme Joker?", {"entities": [(18, 23, "MOVIE")]}),
+    ("Quero ver o filme Guerra dos Mundos amanhã.", {"entities": [(18, 24, "MOVIE"), (25, 28, "MOVIE"), (29, 35, "MOVIE"), (36, 42, "DATE")]}),
+    ("Quero ver o filme Guerra dos Mundos amanhã.", {"entities": [(18, 35, "MOVIE"), (36, 42, "DATE")]}),
+    ("Quando começa o filme A Herdade?", {"entities": [(22, 31, "MOVIE")]}),
+    ("Qual a duração do filme Doutor Sono?", {"entities": [(24, 35, "MOVIE")]}),
+    # DURATION duração de algo
+    ("Filmes com menos de 1h", {"entities": [(20, 22, "DURATION")]}),
+    ("Filmes com menos de uma hora", {"entities": [(20, 28, "DURATION")]}),
+    ("Filmes com menos de 1 hora", {"entities": [(20, 26, "DURATION")]}),
+    ("Filmes com menos de 1h30min", {"entities": [(20, 27, "DURATION")]}),
+    ("Filmes com menos de 1 hora e 30 minutos", {"entities": [(20, 39, "DURATION")]}),
+    # GENRE genero do filme
+    ("Quero ver filmes de terror", {"entities": [(20, 26, "GENRE")]}),
+    ("Quero ver filmes de comédia", {"entities": [(20, 27, "GENRE")]}),
+    ("Que filmes há de ação?", {"entities": [(17, 21, "GENRE")]}),
+    ("Que filmes há de animação?", {"entities": [(17, 25, "GENRE")]}),
+    # PER nomes, pessoas (atores, realizadores)
+    # AGE idades
 ]
+
 
 @plac.annotations(
     model=("Model name. Defaults to blank 'en' model.", "option", "m", str),
