@@ -18,8 +18,13 @@ TRAIN_DATA = [
     # DURATION duração de algo
     ("Filmes com menos de 1h", {"entities": [(20, 22, "DURATION")]}),
     ("Filmes com menos de uma hora", {"entities": [(20, 28, "DURATION")]}),
+    ("Filmes com mais de 1h", {"entities": [(19, 21, "DURATION")]}),
+    ("Filmes com mais de uma hora", {"entities": [(19, 27, "DURATION")]}),
+    ("Filmes com duração entre 1h e 2h", {"entities": [(25, 27, "DURATION"), (30, 32, "DURATION")]}),
+    ("Filmes com duração entre uma hora e duas horas", {"entities": [(25, 33, "DURATION"), (36, 46, "DURATION")]}),
     ("Filmes com menos de 1 hora", {"entities": [(20, 26, "DURATION")]}),
     ("Filmes com menos de 1h30min", {"entities": [(20, 27, "DURATION")]}),
+    ("Filmes com menos de 1:30min", {"entities": [(20, 27, "DURATION")]}),
     ("Filmes com menos de 1 hora e 30 minutos", {"entities": [(20, 39, "DURATION")]}),
     # GENRE genero do filme
     ("Quero ver filmes de terror", {"entities": [(20, 26, "GENRE")]}),
@@ -27,8 +32,60 @@ TRAIN_DATA = [
     ("Que filmes há de ação?", {"entities": [(17, 21, "GENRE")]}),
     ("Que filmes há de animação?", {"entities": [(17, 25, "GENRE")]}),
     # PER nomes, pessoas (atores, realizadores)
-    # AGE idades
+    ("Que filmes há com o Will Smith?", {"entities": [(20, 30, "PER")]}),
+    ("Filmes com o Will Smith", {"entities": [(13, 23, "PER")]}),
+    # MONEY       Valores monetários
+    ("Algum filme abaixo dos 10euros?", {"entities": [(23, 30, "MONEY")]}),
+    ("Algum filme abaixo dos 7euros?", {"entities": [(23, 29, "MONEY")]}),
+    ("Algum filme abaixo dos 7euros e 50 centimos?", {"entities": [(23, 43, "MONEY")]}),
+    ("Algum filme abaixo dos 7€?", {"entities": [(23, 25, "MONEY")]}),
+    ("Algum filme abaixo dos 7,50€?", {"entities": [(23, 28, "MONEY")]}),
+    ("Tens algum filme abaixo dos 7€?", {"entities": [(28, 30, "MONEY")]}),
+    # AGE idade ???
+    # MODEL modelo de telemovel
+    ("Quero informações sobre o iPhone 8", {"entities": [(26, 34, "MODEL")]}),
+    ("Quero informações sobre o iPhone 11", {"entities": [(26, 35, "MODEL")]}),
+    ("Quero informações sobre o Asus Zenfone", {"entities": [(26, 38, "MODEL")]}),
+    # BRAND marcas de telemovel
+    ("Quero telemoveis da Apple", {"entities": [(20, 25, "BRAND")]}),
+    ("Que telemoveis da Apple estão disponiveis?", {"entities": [(18, 23, "BRAND")]}),
+    ("Telemoveis da Apple", {"entities": [(14, 19, "BRAND")]}),
+    ("Quero telemoveis da Asus", {"entities": [(20, 24, "BRAND")]}),
+    ("Quero telemoveis da Xiaomi", {"entities": [(20, 26, "BRAND")]}),
+    # MONEY       Valores monetários
+    ("Telemoveis abaixo dos 100euros", {"entities": [(22, 30, "MONEY")]}),
+    ("Telemoveis acima dos 100euros", {"entities": [(21, 29, "MONEY")]}),
+    ("Telemoveis entre os 100euros e 200euros", {"entities": [(20, 28, "MONEY"), (31, 39, "MONEY")]}),
+    ("Telemoveis abaixo dos 70euros", {"entities": [(22, 29, "MONEY")]}),
+    ("Telemoveis abaixo dos 70euros e 50 centimos", {"entities": [(22, 43, "MONEY")]}),
+    ("Telemoveis abaixo dos 70€", {"entities": [(22, 25, "MONEY")]}),
+    ("Telemoveis abaixo dos 70,50€", {"entities": [(22, 28, "MONEY")]}),
+    ("Tens algum telemovel abaixo dos 70€?", {"entities": [(28, 31, "MONEY")]}),
+    # PACKAGE     Pacotes
+    # SPEED       Velocidade da net
 ]
+
+### entidades uteis ###
+# Datas
+## problemas tecnicos
+## filmes
+# MOVIE       Filmes
+# DURATION    Duração (tempo)
+# GENRE       Géneros de filmes
+# PER         Nomes de pessoas (atores, realizadores)
+# MONEY       Valores monetários ?
+# AGE         Idade ?
+#       Cinemas (Local ?)
+## assistencia
+#       Assunto (linha apoio)
+## telemoveis
+# MODEL       Modelos de telemóveis
+# BRAND       Marcas de telemóveis
+# MONEY       Valores monetários
+# PACKAGE     Pacotes
+# SPEED       Velocidade da net
+#       Tarifários
+#       Locais (Lojas NOS)
 
 
 @plac.annotations(
