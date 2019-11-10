@@ -9,12 +9,16 @@ from spacy.util import minibatch, compounding
 
 # training data
 TRAIN_DATA = [
+    # DATE datas
     # MOVIE nomes de filmes
     ("Quando dá o filme Joker?", {"entities": [(18, 23, "MOVIE")]}),
     ("Quero ver o filme Guerra dos Mundos amanhã.", {"entities": [(18, 24, "MOVIE"), (25, 28, "MOVIE"), (29, 35, "MOVIE"), (36, 42, "DATE")]}),
     ("Quero ver o filme Guerra dos Mundos amanhã.", {"entities": [(18, 35, "MOVIE"), (36, 42, "DATE")]}),
     ("Quando começa o filme A Herdade?", {"entities": [(22, 31, "MOVIE")]}),
     ("Qual a duração do filme Doutor Sono?", {"entities": [(24, 35, "MOVIE")]}),
+    # LOC Local por coordenadas (latitude e longitude)
+    ("Que filmes tens em Braga?", {"entities": [(19, 24, "LOC")]}),
+    ("Que filmes tens no Porto?", {"entities": [(19, 24, "LOC")]}),
     # DURATION duração de algo
     ("Filmes com menos de 1h", {"entities": [(20, 22, "DURATION")]}),
     ("Filmes com menos de uma hora", {"entities": [(20, 28, "DURATION")]}),
@@ -34,14 +38,14 @@ TRAIN_DATA = [
     # PER nomes, pessoas (atores, realizadores)
     ("Que filmes há com o Will Smith?", {"entities": [(20, 30, "PER")]}),
     ("Filmes com o Will Smith", {"entities": [(13, 23, "PER")]}),
-    # MONEY       Valores monetários
-    ("Algum filme abaixo dos 10euros?", {"entities": [(23, 30, "MONEY")]}),
-    ("Algum filme abaixo dos 7euros?", {"entities": [(23, 29, "MONEY")]}),
-    ("Algum filme abaixo dos 7euros e 50 centimos?", {"entities": [(23, 43, "MONEY")]}),
-    ("Algum filme abaixo dos 7€?", {"entities": [(23, 25, "MONEY")]}),
-    ("Algum filme abaixo dos 7,50€?", {"entities": [(23, 28, "MONEY")]}),
-    ("Tens algum filme abaixo dos 7€?", {"entities": [(28, 30, "MONEY")]}),
-    # AGE idade ???
+    # AGERESTRIC restriçao de idade
+    ("Que filmes há para crianças?", {"entities": [(19, 27, "AGERESTRIC")]}),
+    ("Que filmes há para adultos?", {"entities": [(19, 26, "AGERESTRIC")]}),
+    ("Que filmes há para 18+?", {"entities": [(19, 22, "AGERESTRIC")]}),
+    ("Que filmes há para 18-?", {"entities": [(19, 22, "AGERESTRIC")]}),
+    ("Que filmes há para mais de 18anos?", {"entities": [(27, 33, "AGERESTRIC")]}),
+    ("Que filmes há para menos de 18anos?", {"entities": [(28, 34, "AGERESTRIC")]}),
+
     # MODEL modelo de telemovel
     ("Quero informações sobre o iPhone 8", {"entities": [(26, 34, "MODEL")]}),
     ("Quero informações sobre o iPhone 11", {"entities": [(26, 35, "MODEL")]}),
@@ -52,7 +56,7 @@ TRAIN_DATA = [
     ("Telemoveis da Apple", {"entities": [(14, 19, "BRAND")]}),
     ("Quero telemoveis da Asus", {"entities": [(20, 24, "BRAND")]}),
     ("Quero telemoveis da Xiaomi", {"entities": [(20, 26, "BRAND")]}),
-    # MONEY       Valores monetários
+    # MONEY Valores monetários
     ("Telemoveis abaixo dos 100euros", {"entities": [(22, 30, "MONEY")]}),
     ("Telemoveis acima dos 100euros", {"entities": [(21, 29, "MONEY")]}),
     ("Telemoveis entre os 100euros e 200euros", {"entities": [(20, 28, "MONEY"), (31, 39, "MONEY")]}),
@@ -70,12 +74,11 @@ TRAIN_DATA = [
 ## problemas tecnicos
 ## filmes
 # MOVIE       Filmes
+# LOC         Local por coordenadas (latitude e longitude)
 # DURATION    Duração (tempo)
 # GENRE       Géneros de filmes
 # PER         Nomes de pessoas (atores, realizadores)
-# MONEY       Valores monetários ?
-# AGE         Idade ?
-#       Cinemas (Local ?)
+# AGERESTRIC  restriçao de idade
 ## assistencia
 #       Assunto (linha apoio)
 ## telemoveis
