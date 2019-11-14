@@ -59,10 +59,20 @@ def main(model=None, output_dir=None, n_iter=100):
             print("Losses", losses)
 
     # test the trained model
-    for text, _ in TRAIN_DATA:
+    totalEntities = 0
+    correctEntities = 0
+    for text, entities in TRAIN_DATA:
         doc = nlp(text)
         print("Entities", [(ent.text, ent.label_) for ent in doc.ents])
         print("Tokens", [(t.text, t.ent_type_, t.ent_iob) for t in doc])
+        for entity in entities["entities"]:
+            totalEntities += 1
+            for ent in doc.ents:
+                if ent.label_ == entity[2] and ent.text == text[entity[0]:entity[1]]:
+                    correctEntities += 1
+    print("Total Entities in TRAIN_DATA:",totalEntities)
+    print("Correctly detected Entities after train:",correctEntities)
+
 
     # save model to output directory
     if output_dir is not None:
