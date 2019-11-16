@@ -1,3 +1,0 @@
-python -m spacy download pt_core_news_sm
-
-./train_ner.py -m pt_core_news_sm -o ./model -n 300

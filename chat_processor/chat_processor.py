@@ -7,27 +7,38 @@ from categoria_dic import cat as dicionario
 import requests
 from cacheout import Cache
 from config import urls 
-
 import nltk
-nltk_dir = os.path.dirname(os.path.abspath(__file__)) + '/nltk_data'
-nltk.data.path.append(nltk_dir)
+import deeppavlov
 
 cache = None
+ner_model = None
 
 def init():
     global cache
     cache = Cache(maxsize=4096, ttl=0, default=None)
+
+    nltk_dir = os.path.dirname(os.path.abspath(__file__)) + '/nltk_data'
+    nltk.data.path.append(nltk_dir)
     download_recursos()
+
+    #Remove debug do Tensorflow
+    import logging
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = "2"
+    logging.getLogger('tensorflow').disabled = True
+
+    #build model para obter entidades
+    global ner_model
+    ner_model = deeppavlov.build_model(deeppavlov.configs.ner.ner_ontonotes_bert_mult, download=True)
 
 def download_recursos():
     try:
         nltk.data.find('tokenizers/punkt')
     except LookupError:
-        nltk.download('punkt', download_dir=nltk_dir)
+        nltk.download('punkt', download_dir=nltk_dir, quiet=True)
     try:
         nltk.data.find('corpora/stopwords')
     except LookupError:
-        nltk.download('stopwords', download_dir=nltk_dir)
+        nltk.download('stopwords', download_dir=nltk_dir, quiet=True)
 
 # remove stopwords e pontuação da mensagem recebida como input
 # retorna uma lista com as palavras
@@ -111,6 +122,31 @@ def has_params(cat):
     #TODO
     return False
 
+def proc_ents(inp):
+    print(inp)
+    words = inp[0][0]
+    ents = inp[1][0]
+
+    i = 0
+    w = ""
+    t = ""
+    ret = []
+    while i < len(words):
+        if ents[i] != "O":
+            if ents[i][0] == 'B':
+                if w != "":
+                    ret.append({'entity': w, 'type': t})
+                w = words[i]
+                t = ents[i][2:]
+            else:
+                w += " " + words[i]
+        i+=1
+
+    if w != "":
+        ret.append({'entity': w, 'type': t})
+
+    return ret
+
 def get_response(idChat, idUser, msg, name):
     if msg.lower() == "ver mais":
         content = cache.get("vermais" + idChat)
@@ -118,30 +154,26 @@ def get_response(idChat, idUser, msg, name):
         msg_send = process_all_list(content)
     else:
         cat, confianca = get_categoria_frase(msg)
+        params = proc_ents(ner_model([msg]))
+        print(params)
 
         if confianca > 0.65:
-            if cat == "resolucao_problemas":
-                #criar um fluxo diferente para a resolução de problemas
-                #por exemplo ir perguntando parametros que são necessários inserir no modelo e que ainda não temos, seja pelo contexto da conversa seja pelo utilizador
-                #tb deve ser necessário fazer aqui a autenticação
-                print("TODO")
+            #obtém o url de acordo a categoria
+            URL = get_service(cat)
+            if has_params(cat):
+                #TODO: obter parametros da frase
+                content = get_content(URL, cat) #adicionar parametros)
+                #perceber se o pedido deu ou não erro
+                #se der erro devolver uma mensagem de erro
             else:
-                #obtém o url de acordo a categoria
-                URL = get_service(cat)
-                if has_params(cat):
-                    #TODO: obter parametros da frase
-                    content = get_content(URL, cat) #adicionar parametros)
-                    #perceber se o pedido deu ou não erro
-                    #se der erro devolver uma mensagem de erro
-                else:
-                    content = get_content(URL, cat)
+                content = get_content(URL, cat)
 
-                #se for uma lista devolve de forma diferente
-                if isinstance(content, list):
-                    msg_send = process_list(content)
-                    cache.set("vermais" + idChat, content)
-                else:
-                    msg_send = content
+            #se for uma lista devolve de forma diferente
+            if isinstance(content, list):
+                msg_send = process_list(content)
+                cache.set("vermais" + idChat, content)
+            else:
+                msg_send = content
         else:
             msg_send = "Desculpe mas não foi possível identificar o que pretende. Tente de novo!"
     return str(msg_send)
