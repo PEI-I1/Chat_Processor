@@ -5,19 +5,19 @@ from spell_checker import spell_check_google, spell_check_ss
 import regex as re
 from categoria_dic import cat as dicionario
 import requests
-from cacheout import Cache
 from config import urls 
 import nltk
 import deeppavlov
 import urllib.parse
+import redis
+import json
 
-cache = None
 ner_model = None
+nltk_dir = None
+redis_db = None
 
 def init():
-    global cache
-    cache = Cache(maxsize=4096, ttl=0, default=None)
-
+    global nltk_dir
     nltk_dir = os.path.dirname(os.path.abspath(__file__)) + '/nltk_data'
     nltk.data.path.append(nltk_dir)
     download_recursos()
@@ -30,6 +30,10 @@ def init():
     #build model para obter entidades
     global ner_model
     ner_model = deeppavlov.build_model(deeppavlov.configs.ner.ner_ontonotes_bert_mult, download=True)
+
+    #Connect to redis
+    global redis_db
+    redis_db = redis.StrictRedis(host=urls['REDIS']['host'], port=urls['REDIS']['port'], db=0)
 
 def download_recursos():
     try:
@@ -174,8 +178,8 @@ def compare_params(params, cat_params):
 
 def get_response(idChat, idUser, msg, name):
     if msg.lower() == "ver mais":
-        content = cache.get("vermais" + idChat)
-        cache.delete("vermais" + idChat)
+        content = json.loads(redis_db.get("vermais" + idChat))
+        redis_db.delete("vermais" + idChat)
         msg_send = process_all_list(content)
     else:
         cat, confianca = get_categoria_frase(msg)
@@ -216,7 +220,7 @@ def get_response(idChat, idUser, msg, name):
             #se for uma lista devolve de forma diferente
             if isinstance(content, list):
                 msg_send = process_list(content)
-                cache.set("vermais" + idChat, content)
+                redis_db.set("vermais" + idChat, json.dumps(content))
             else:
                 msg_send = content
         else:
