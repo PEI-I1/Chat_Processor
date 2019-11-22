@@ -3,28 +3,11 @@
 from rules_mode import get_response_rules
 from default_mode import get_response_default
 from utils import process_all_list
-from config import urls
-import os, logging, json
-import nltk, deeppavlov
-import redis
-
-ner_model = None
-redis_db = None
+import globals, json, nltk
 
 def init():
     download_recursos()
-
-    #Remove debug do Tensorflow
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = "2"
-    logging.getLogger('tensorflow').disabled = True
-
-    #build model para obter entidades
-    global ner_model
-    ner_model = deeppavlov.build_model(deeppavlov.configs.ner.ner_ontonotes_bert_mult, download=True)
-
-    #Connect to redis
-    global redis_db
-    redis_db = redis.StrictRedis(host=urls['REDIS']['host'], port=urls['REDIS']['port'], db=0)
+    globals.init()
 
 def download_recursos():
     try:

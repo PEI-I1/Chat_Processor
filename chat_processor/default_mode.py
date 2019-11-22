@@ -1,8 +1,8 @@
 from categoria_dic import cat as dicionario
 from spell_checker import spell_check_ss
 from utils import process_list, get_service, get_params, get_content 
+import globals, nltk
 import regex as re
-import nltk
 
 # remove stopwords e pontuação da mensagem recebida como input
 # retorna uma lista com as palavras
@@ -88,7 +88,7 @@ def compare_params(params, cat_params):
 
 def get_response_default(idChat, idUser, msg, name):
     cat, confianca = get_categoria_frase(msg)
-    params = proc_ents(ner_model([msg]))
+    params = proc_ents(globals.ner_model([msg]))
 
     if confianca > 0.65:
         #obtém o url de acordo a categoria
@@ -125,7 +125,7 @@ def get_response_default(idChat, idUser, msg, name):
         #se for uma lista devolve de forma diferente
         if isinstance(content, list):
             msg_send = process_list(content)
-            redis_db.set("vermais" + idChat, json.dumps(content))
+            globals.redis_db.set("vermais" + idChat, json.dumps(content))
         else:
             msg_send = content
     else:
