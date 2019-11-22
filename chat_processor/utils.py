@@ -53,13 +53,37 @@ def get_params(cat):
 
     return foundCat
 
-#Faz um pedido a um URL, devolvendo o data
-def get_content(URL):
-    '''recebe um pedido e retorna a informação '''
+#Faz um pedido a um URL, devolvendo a informação
+# recebe como parâmetros:
+#  - cat: a funcionalidade/categoria
+#  - params: os parâmetros que vão no caminho (por ordem de aparição no caminho) (lista)
+#  - querystrings: os parâmetros que vão nas querystrings (um dicionário chave valor)
+def get_content(cat, params, querystrings):
+    URL = get_service(cat)
+    URL += cat
+
+    size = len(params)
+    i = 0
+    if size > 0:
+        for i in range(size):
+            params[i] = urllib.parse.quote(params[i], safe='')
+            i+=1
+
+        URL += "/".join(params)
+
+    if len(querystrings) > 0:
+        URL += "?"
+        aux = []
+        for (k,v) in querystrings:
+            aux.append(urllib.parse.quote(k, safe='') + "=" + urllib.parse.quote(v, safe='')) 
+        URL += "&".join(aux)
+
+    print(URL)
     try:
         res = requests.get(URL)
         res.raise_for_status()
         res = res.json().get('response')
     except:
         res = None
+
     return res

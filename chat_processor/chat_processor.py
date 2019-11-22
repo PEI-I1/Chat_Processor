@@ -30,8 +30,8 @@ def download_recursos():
 
 def get_response(idChat, idUser, msg, name):
     if msg.lower() == "ver mais":
-        content = json.loads(redis_db.get("vermais" + idChat))
-        redis_db.delete("vermais" + idChat)
+        content = json.loads(globals.redis_db.get("vermais" + idChat))
+        globals.redis_db.delete("vermais" + idChat)
         return str(process_all_list(content))
     else:
         return get_response_default(idChat, idUser, msg, name)

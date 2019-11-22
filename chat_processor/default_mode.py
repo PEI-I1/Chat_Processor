@@ -1,7 +1,7 @@
 from categoria_dic import cat as dicionario
 from spell_checker import spell_check_ss
-from utils import process_list, get_service, get_params, get_content 
-import globals, nltk
+from utils import process_list, get_params, get_content 
+import globals, nltk, json
 import regex as re
 
 # remove stopwords e pontuação da mensagem recebida como input
@@ -91,8 +91,6 @@ def get_response_default(idChat, idUser, msg, name):
     params = proc_ents(globals.ner_model([msg]))
 
     if confianca > 0.65:
-        #obtém o url de acordo a categoria
-        URL = get_service(cat)
         cat_params = get_params(cat)
         if len(cat_params) > 0:
             valid_params, params_to_ask = compare_params(params, cat_params)
@@ -113,14 +111,14 @@ def get_response_default(idChat, idUser, msg, name):
                     #se ao fim de 5 vezes o utilizador n responder corretamente, se for possivel devolver a cat sem parametros (verificar canRequestWithoutParams) senão dizer para ligar para o apoio (se possivel restringindo o assunto, senão devolvendo a lista)
                     print()
 
-                content = get_content(URL + cat)
+                content = get_content(cat, [], {})
                 #perceber se o pedido deu ou não erro
                 #se der erro devolver uma mensagem de erro
             else:
                 #perguntar ao utilizador os parâmetros
                 print()
         else:
-            content = get_content(URL + cat)
+            content = get_content(cat, [], {})
 
         #se for uma lista devolve de forma diferente
         if isinstance(content, list):
