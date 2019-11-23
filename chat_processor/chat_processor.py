@@ -29,9 +29,24 @@ def download_recursos():
         nltk.download('nonbreaking_prefixes', quiet=True)
 
 def get_response(idChat, idUser, msg, name):
-    if msg.lower() == "ver mais":
-        content = json.loads(globals.redis_db.get("vermais" + idChat))
-        globals.redis_db.delete("vermais" + idChat)
-        return str(process_all_list(content))
+    chatDataAux = globals.redis_db.get(idChat)
+    chatData = json.loads(chatDataAux) if chatDataAux else None
+
+    if not chatData:
+        chatData = {"msgs": [], "status": "", "params": []}
+        globals.redis_db.set(idChat, json.dumps(chatData))
+
+    if chatData["status"] == "modo regras":
+        return get_response_rules(idChat, idUser, msg, name)
     else:
-        return get_response_default(idChat, idUser, msg, name)
+        m = msg.lower()
+        if m == "modo de regras":
+            chatData["status"] = "modo regras"
+            globals.redis_db.set(idChat, json.dumps(chatData))
+            return get_response_rules(idChat, idUser, msg, name)
+        elif m == "ver mais":
+            content = json.loads(globals.redis_db.get("vermais" + idChat))
+            globals.redis_db.delete("vermais" + idChat)
+            return str(process_all_list(content))
+        else:
+            return get_response_default(idChat, idUser, msg, name)
