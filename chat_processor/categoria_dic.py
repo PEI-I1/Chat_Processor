@@ -1,3 +1,5 @@
+# TODO, support more parameters combination
+# example, on some cinemas end-points 'lat' and 'lon' are required or 'search_term'
 cat = [
     {
         'request': 'linhas_apoio',
@@ -160,5 +162,87 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneParam': False
+    },
+    # CINEMAS
+    {
+        'request': '/scrapper/cinemas/search',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['cinema', 'perto', 'próximo', 'estou', 'aqui', 'localidade', 'cidade', 'sítio', 'distrito', 'concelho', 'morada'],
+        'params': ['search_term', 'lat', 'lon'],
+        'paramsOpcional': ['search_term', 'lat', 'lon'],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
+    },
+    {
+        'request': '/scrapper/movies/by_cinema',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['cinema', 'perto', 'próximo', 'estou', 'aqui', 'localidade', 'cidade', 'sítio', 'distrito', 'concelho', 'morada', 'filme', 'filmes'],
+        'params': ['search_term', 'lat', 'lon'],
+        'paramsOpcional': ['search_term', 'lat', 'lon'],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
+    },
+    {
+        'request': '/scrapper/movies/search',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['filme', 'película', 'vídeo', 'procura', 'consulta', 'sobre'],
+        'params': ['genre', 'cast', 'producer', 'synopsis', 'age'],
+        'paramsOpcional': ['genre', 'cast', 'producer', 'synopsis', 'age'],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
+    },
+    {
+        'request': '/scrapper/movies/releases',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['filme', 'película', 'vídeo', 'estreias', 'estreia', 'novo', 'estrear', 'lançamento'],
+        'params': [],
+        'paramsOpcional': [],
+        'canRequestWithoutParams': True,
+        'needAtLeastOneParam': False
+    },
+    {
+        'request': '/scrapper/movies/details',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['filme', 'película', 'vídeo', 'detalhes', 'informação', 'informações', 'sobre', 'casting', 'ator', 'produtor', 'realizador', 'tipo', 'género', 'categoria', 'sinopse', 'história', 'idade', 'restrição', 'crianças', 'adultos'],
+        'params': ['movie'],
+        'paramsOpcional': [],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
+    },
+    {
+        'request': '/scrapper/sessions/by_duration',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['sessão', 'sessões', 'exibição', 'exibições', 'duração', 'tempo', 'tamanho', 'demora', 'extensão', 'minutos', 'horas', 'hora'],
+        'params': ['search_term', 'lat', 'lon', 'duration', 'date', 'time'],
+        'paramsOpcional': ['search_term', 'lat', 'lon', 'date', 'time'],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
+    },
+    {
+        'request': '/scrapper/sessions/next_sessions',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['sessão', 'sessões', 'exibição', 'exibições', 'seguir', 'próximas', 'agora', 'seguintes', 'prestes'],
+        'params': ['search_term', 'lat', 'lon'],
+        'paramsOpcional': ['search_term', 'lat', 'lon'],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
+    },
+    {
+        'request': '/scrapper/sessions/by_movie',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['sessão', 'sessões', 'exibição', 'exibições', 'próximas', 'filme'],
+        'params': ['search_term', 'lat', 'lon', 'movie', 'date', 'time'],
+        'paramsOpcional': ['search_term', 'lat', 'lon', 'date', 'time'],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
+    },
+    {
+        'request': '/scrapper/sessions/by_date',
+        'service': 'CINEMA_SCRAPER',
+        'words': ['sessão', 'sessões', 'exibição', 'exibições', 'próximas', 'dia', 'horas', 'hora', 'início', 'fim', 'hoje', 'amanhã', 'segunda', 'segunda-feira', 'terça', 'terça-feira', 'quarta', 'quarta-feira', 'quinta', 'quinta-feira', 'sexta', 'sexta-feira', 'sábado', 'domingo'],
+        'params': ['search_term', 'lat', 'lon', 'date', 'start_time', 'end_time'],
+        'paramsOpcional': ['search_term', 'lat', 'lon', 'date', 'start_time', 'end_time'],
+        'canRequestWithoutParams': False,
+        'needAtLeastOneParam': True
     }
 ]
