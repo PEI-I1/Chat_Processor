@@ -69,22 +69,25 @@ def proc_ents(inp):
 
     return ret
 
-def compare_params(params, cat_params):
+# compara os params obrigatórios da frase (params) com os da dic (cat_params)
+def compare_required_params(params, cat_params):
     to_ask = []
     valid = []
+    tuplo_params = []
 
     for p in cat_params:
         found = None
         for pp in params:
-            if p.type == pp:
-                found = p
+            # TODO adicionar situação com tipos de entidades repetidos (intervalo de tempo ou dinheiro)
+            if pp.type == p:
+                found = tuple((p,pp.entity))
 
         if found == None:
-            to_ask.append(p)
-        else:
-            valid.append(p)
+            found = tuple((p,None))
 
-    return valid, to_ask
+        tuplo_params.append(found)
+
+    return tuplo_params
 
 def get_response_default(idChat, idUser, msg, name):
     cat, confianca = get_categoria_frase(msg)
@@ -93,17 +96,21 @@ def get_response_default(idChat, idUser, msg, name):
     if confianca > 0.65:
         cat_params = get_params(cat)
         if len(cat_params) > 0:
-            valid_params, params_to_ask = compare_params(params, cat_params)
+            tuplo_params = compare_required_params(params, cat_params)
+
+            #TODO esta função
+            valid_params, params_to_ask = funcao_auxiliar_a_criar(tuplo_params)
 
             if len(params_to_ask) == 0:
-                plen = len(valid_params)
-                if plen == 1:
-                    cat += '/' + urllib.parse.quote(params_to_ask[0], safe='')
-                elif plen == 2:
-                    if params_to_ask[0] < params_to_ask[1]:
-                        cat += '/' + urllib.parse.quote(params_to_ask[0] + '/' + params_to_ask[1])
-                    else:
-                        cat += '/' + urllib.parse.quote(params_to_ask[1] + '/' + params_to_ask[0])
+                #
+                # plen = len(valid_params)
+                # if plen == 1:
+                #     cat += '/' + urllib.parse.quote(params_to_ask[0], safe='')
+                # elif plen == 2:
+                #     if params_to_ask[0] < params_to_ask[1]:
+                #         cat += '/' + urllib.parse.quote(params_to_ask[0] + '/' + params_to_ask[1])
+                #     else:
+                #         cat += '/' + urllib.parse.quote(params_to_ask[1] + '/' + params_to_ask[0])
                 else:
                     #TODO
                     #guardar contexto para quando o utilizador responder
