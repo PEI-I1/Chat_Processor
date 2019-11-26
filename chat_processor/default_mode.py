@@ -1,6 +1,6 @@
 from categoria_dic import cat as dicionario
 from spell_checker import spell_check_ss
-from utils import process_list, get_params, get_content 
+from utils import process_list, get_params, get_content
 import globals, nltk, json
 import regex as re
 
@@ -118,7 +118,11 @@ def get_response_default(idChat, idUser, msg, name):
                 #perguntar ao utilizador os parâmetros
                 print()
         else:
+            # NOTE: guardar é inutil neste caso, pralem de seguir o diagrama
+            # globals.redis_db.set(idChat, "algo")
             content = get_content(cat, [], {})
+            globals.redis_db.delete(idChat)
+
 
         #se for uma lista devolve de forma diferente
         if isinstance(content, list):
