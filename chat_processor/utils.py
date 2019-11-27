@@ -62,6 +62,18 @@ def get_params(cat):
 
     return foundCat
 
+# dado uma funcionalidade devolve a frase a ser usada quando faltam params obrigatórios
+def get_phrase_missing_param(cat):
+    size = len(dicionario)
+    i = 0
+    foundPhrase = None
+
+    while i < size and foundPhrase == None:
+        if dicionario[i]['request'] == cat:
+            foundPhrase = dicionario[i]['phraseMissingParams']
+
+    return foundPhrase
+
 #Faz um pedido a um URL, devolvendo a informação
 # recebe como parâmetros:
 #  - cat: a funcionalidade/categoria
