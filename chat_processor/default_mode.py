@@ -47,7 +47,7 @@ def get_categoria_frase(inp):
     noccur = criar_noccur_dic(palavras)
     return calcula_confianca(noccur)
 
-# separa a lista de tuplos de (tipo:entidade) em duas listas de tuplos
+# separa a lista de tuplos de (tipo:entidade) em duas listas
 # com os params válidos e os params para serem perguntados
 def separate_params(tuplo_params):
     valid_params = []
@@ -55,9 +55,9 @@ def separate_params(tuplo_params):
 
     for tipo,entidade in tuplo_params:
         if entidade:
-            valid_params.append(tuple((tipo,entidade)))
+            valid_params.append(e)
         else:
-            params_to_ask.append(tuple((tipo,entidade)))
+            params_to_ask.append(e)
 
     return valid_params, params_to_ask
 
@@ -114,29 +114,12 @@ def process_params(idChat, idUser, msg, name, chatData):
         valid_params, params_to_ask = separate_params(tuplo_params)
 
         if len(params_to_ask) == 0:
-            # alterar o valid params de forma a que o get_content consiga ler
+            # não faltam parâmetros
             content = get_content(cat,valid_params,{})
             globals.redis_db.delete(idChat)
-            # plen = len(valid_params)
-            # if plen == 1:
-            #     cat += '/' + urllib.parse.quote(params_to_ask[0], safe='')
-            # elif plen == 2:
-            #     if params_to_ask[0] < params_to_ask[1]:
-            #         cat += '/' + urllib.parse.quote(params_to_ask[0] + '/' + params_to_ask[1])
-            #     else:
-            #         cat += '/' + urllib.parse.quote(params_to_ask[1] + '/' + params_to_ask[0])
-            # else:
-            #     #TODO
-            #     #guardar contexto para quando o utilizador responder
-            #     #perguntar ao utilizador um dos parametros que falta
-            #     #se ao fim de 5 vezes o utilizador n responder corretamente, se for possivel devolver a cat sem parametros (verificar canRequestWithoutParams) senão dizer para ligar para o apoio (se possivel restringindo o assunto, senão devolvendo a lista)
-            #     print()
-
-            content = get_content(cat, [], {})\
-            #perceber se o pedido deu ou não erro
-            #se der erro devolver uma mensagem de erro
         else:
-            #perguntar ao utilizador os parâmetros
+            # perguntar ao utilizador os parâmetros
+            # NOTE: ver se é preciso adicionar um param no status da BD
             content = get_phrase_missing_param(cat)
     else:
         # NOTE: guardar é inutil neste caso, pralem de seguir o diagrama
