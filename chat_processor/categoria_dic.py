@@ -10,7 +10,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'phone_model',
@@ -20,7 +20,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'brand_phones',
@@ -30,7 +30,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'top_phones',
@@ -40,7 +40,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'promo_phones',
@@ -50,7 +50,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'new_phones',
@@ -60,7 +60,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'ofer_phones',
@@ -70,7 +70,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'prest_phones',
@@ -80,7 +80,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'points_phones',
@@ -90,7 +90,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'phones_by_price',
@@ -100,7 +100,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : 'Por favor, forneça um valor mínimo e um valor máximo.'
+        'missingParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
     },
     {
         'request': 'all_wtf',
@@ -110,7 +110,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
 
     },
     {
@@ -121,7 +121,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'store_address',
@@ -131,7 +131,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'packages',
@@ -141,7 +141,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'fiber_packages',
@@ -151,7 +151,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'satelite_packages',
@@ -161,7 +161,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'packages_service',
@@ -171,7 +171,7 @@ cat = [
         'paramsOpcional': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': 'packages_price',
@@ -179,9 +179,10 @@ cat = [
         'words': ['ordenar','preço','pacote','pacotes'],
         'params': ['MONEY', 'MONEY'],
         'paramsOpcional': [],
+        'locationParam': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     # CINEMAS
     {
@@ -189,20 +190,22 @@ cat = [
         'service': 'CINEMA_SCRAPER',
         'words': ['cinema', 'perto', 'próximo', 'estou', 'aqui', 'localidade', 'cidade', 'sítio', 'distrito', 'concelho', 'morada'],
         'params': [],
-        'paramsOpcional': ['search_term', 'lat', 'lon'],
+        'paramsOpcional': [],
+        'locationParam': ['search_term', 'lat', 'lon'],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/by_cinema',
         'service': 'CINEMA_SCRAPER',
         'words': ['cinema', 'perto', 'próximo', 'estou', 'aqui', 'localidade', 'cidade', 'sítio', 'distrito', 'concelho', 'morada', 'filme', 'filmes'],
         'params': [],
-        'paramsOpcional': ['search_term', 'lat', 'lon'],
+        'paramsOpcional': [],
+        'locationParam': ['search_term', 'lat', 'lon'],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/search',
@@ -210,9 +213,10 @@ cat = [
         'words': ['filme', 'película', 'vídeo', 'procura', 'consulta', 'sobre'],
         'params': [],
         'paramsOpcional': ['genre', 'cast', 'producer', 'synopsis', 'age'],
+        'locationParam': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/releases',
@@ -220,9 +224,10 @@ cat = [
         'words': ['filme', 'película', 'vídeo', 'estreias', 'estreia', 'novo', 'estrear', 'lançamento'],
         'params': [],
         'paramsOpcional': [],
+        'locationParam': [],
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/details',
@@ -230,48 +235,53 @@ cat = [
         'words': ['filme', 'película', 'vídeo', 'detalhes', 'informação', 'informações', 'sobre', 'casting', 'ator', 'produtor', 'realizador', 'tipo', 'género', 'categoria', 'sinopse', 'história', 'idade', 'restrição', 'crianças', 'adultos'],
         'params': ['movie'],
         'paramsOpcional': [],
+        'locationParam': [],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_duration',
         'service': 'CINEMA_SCRAPER',
         'words': ['sessão', 'sessões', 'exibição', 'exibições', 'duração', 'tempo', 'tamanho', 'demora', 'extensão', 'minutos', 'horas', 'hora'],
         'params': ['duration'],
-        'paramsOpcional': ['search_term', 'lat', 'lon', 'date', 'time'],
+        'paramsOpcional': ['date', 'time'],
+        'locationParam': ['search_term', 'lat', 'lon'],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/next_sessions',
         'service': 'CINEMA_SCRAPER',
         'words': ['sessão', 'sessões', 'exibição', 'exibições', 'seguir', 'próximas', 'agora', 'seguintes', 'prestes'],
         'params': [],
-        'paramsOpcional': ['search_term', 'lat', 'lon'],
+        'paramsOpcional': [],
+        'locationParam': ['search_term', 'lat', 'lon'],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_movie',
         'service': 'CINEMA_SCRAPER',
         'words': ['sessão', 'sessões', 'exibição', 'exibições', 'próximas', 'filme'],
         'params': ['movie'],
-        'paramsOpcional': ['search_term', 'lat', 'lon', 'date', 'time'],
+        'paramsOpcional': ['date', 'time'],
+        'locationParam': ['search_term', 'lat', 'lon'],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_date',
         'service': 'CINEMA_SCRAPER',
         'words': ['sessão', 'sessões', 'exibição', 'exibições', 'próximas', 'dia', 'horas', 'hora', 'início', 'fim', 'hoje', 'amanhã', 'segunda', 'segunda-feira', 'terça', 'terça-feira', 'quarta', 'quarta-feira', 'quinta', 'quinta-feira', 'sexta', 'sexta-feira', 'sábado', 'domingo'],
         'params': ['date'],
-        'paramsOpcional': ['search_term', 'lat', 'lon', 'start_time', 'end_time'],
+        'paramsOpcional': ['start_time', 'end_time'],
+        'locationParam': ['search_term', 'lat', 'lon'],
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'phraseMissingParams' : ''
+        'missingParamsPhrase' : ''
     }
 ]
