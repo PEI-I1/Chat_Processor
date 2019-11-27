@@ -1,6 +1,15 @@
 from categoria_dic import cat as dicionario
 from config import urls
-import requests, urllib.parse
+import requests, urllib.parse, unidecode
+
+def clean_msg(msg):
+    #mensagem toda em letras pequenas
+    msg = msg.lower()
+
+    #remover acentos
+    msg = unidecode.unidecode(msg)
+
+    return msg
 
 #Recebe a lista e devolve os 5 primeiros elementos formatados a enviar ao user
 def process_list(content):

@@ -33,7 +33,7 @@ def get_response(idChat, idUser, msg, name):
     chatData = json.loads(chatDataAux) if chatDataAux else None
 
     if not chatData:
-        chatData = {"msgs": [], "status": "", "params": []}
+        chatData = {"msgs": [], "status": "", "cat": "", "cat_change": "", "params": [], "tries": 0}
         globals.redis_db.set(idChat, json.dumps(chatData))
 
     if chatData["status"] == "modo regras":
@@ -49,4 +49,4 @@ def get_response(idChat, idUser, msg, name):
             globals.redis_db.delete("vermais" + idChat)
             return str(process_all_list(content))
         else:
-            return get_response_default(idChat, idUser, msg, name)
+            return get_response_default(idChat, idUser, msg, name, chatData)

@@ -6,3 +6,4 @@ symspellpy>=6.5.2
 deeppavlov>=0.6.1
 flask>=1.1.1
 redis>=3.3.11
+unidecode>=1.1.1

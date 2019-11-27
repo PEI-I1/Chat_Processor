@@ -1,8 +1,10 @@
 from categoria_dic import cat as dicionario
 from spell_checker import spell_check_ss
-from utils import process_list, get_params, get_content
+from utils import process_list, process_all_list, get_params, get_content, clean_msg
 import globals, nltk, json
 import regex as re
+
+confianca_level = 0.70
 
 # remove stopwords e pontuação da mensagem recebida como input
 # retorna uma lista com as palavras
@@ -89,54 +91,93 @@ def compare_required_params(params, cat_params):
 
     return tuplo_params
 
-def get_response_default(idChat, idUser, msg, name):
-    cat, confianca = get_categoria_frase(msg)
-    params = proc_ents(globals.ner_model([msg]))
+def process_params(idChat, idUser, msg, name, chatData):
+    if len(cat_params) > 0:
+        tuplo_params = compare_required_params(params, cat_params)
 
-    if confianca > 0.65:
-        cat_params = get_params(cat)
-        if len(cat_params) > 0:
-            tuplo_params = compare_required_params(params, cat_params)
+        #TODO esta função
+        valid_params, params_to_ask = funcao_auxiliar_a_criar(tuplo_params)
 
-            #TODO esta função
-            valid_params, params_to_ask = funcao_auxiliar_a_criar(tuplo_params)
-
-            if len(params_to_ask) == 0:
-                #
-                # plen = len(valid_params)
-                # if plen == 1:
-                #     cat += '/' + urllib.parse.quote(params_to_ask[0], safe='')
-                # elif plen == 2:
-                #     if params_to_ask[0] < params_to_ask[1]:
-                #         cat += '/' + urllib.parse.quote(params_to_ask[0] + '/' + params_to_ask[1])
-                #     else:
-                #         cat += '/' + urllib.parse.quote(params_to_ask[1] + '/' + params_to_ask[0])
-                else:
-                    #TODO
-                    #guardar contexto para quando o utilizador responder
-                    #perguntar ao utilizador um dos parametros que falta
-                    #se ao fim de 5 vezes o utilizador n responder corretamente, se for possivel devolver a cat sem parametros (verificar canRequestWithoutParams) senão dizer para ligar para o apoio (se possivel restringindo o assunto, senão devolvendo a lista)
-                    print()
-
-                content = get_content(cat, [], {})
-                #perceber se o pedido deu ou não erro
-                #se der erro devolver uma mensagem de erro
+        if len(params_to_ask) == 0:
+            #
+            # plen = len(valid_params)
+            # if plen == 1:
+            #     cat += '/' + urllib.parse.quote(params_to_ask[0], safe='')
+            # elif plen == 2:
+            #     if params_to_ask[0] < params_to_ask[1]:
+            #         cat += '/' + urllib.parse.quote(params_to_ask[0] + '/' + params_to_ask[1])
+            #     else:
+            #         cat += '/' + urllib.parse.quote(params_to_ask[1] + '/' + params_to_ask[0])
             else:
-                #perguntar ao utilizador os parâmetros
+                #TODO
+                #guardar contexto para quando o utilizador responder
+                #perguntar ao utilizador um dos parametros que falta
+                #se ao fim de 5 vezes o utilizador n responder corretamente, se for possivel devolver a cat sem parametros (verificar canRequestWithoutParams) senão dizer para ligar para o apoio (se possivel restringindo o assunto, senão devolvendo a lista)
                 print()
-        else:
-            # NOTE: guardar é inutil neste caso, pralem de seguir o diagrama
-            # globals.redis_db.set(idChat, "algo")
+
             content = get_content(cat, [], {})
-            globals.redis_db.delete(idChat)
-
-
-        #se for uma lista devolve de forma diferente
-        if isinstance(content, list):
-            msg_send = process_list(content)
-            globals.redis_db.set("vermais" + idChat, json.dumps(content))
+            #perceber se o pedido deu ou não erro
+            #se der erro devolver uma mensagem de erro
         else:
-            msg_send = content
+            #perguntar ao utilizador os parâmetros
+            print()
     else:
-        msg_send = "Desculpe mas não foi possível identificar o que pretende. Tente de novo!"
+        # NOTE: guardar é inutil neste caso, pralem de seguir o diagrama
+        # globals.redis_db.set(idChat, "algo")
+        content = get_content(cat, [], {})
+        globals.redis_db.delete(idChat)
+
+    #se for uma lista devolve de forma diferente
+    if isinstance(content, list):
+        msg_send = process_list(content)
+        globals.redis_db.set("vermais" + idChat, json.dumps(content))
+    else:
+        msg_send = content
+
+    return msg_send
+
+def get_response_default(idChat, idUser, msg, name, chatData):
+    #Mudar categoria???
+    if chatData["status"] == "mudar categoria?":
+        mc = clean_msg(msg)
+
+        if mc == "sim":
+            chatData["cat"] = chatData["cat_change"]
+            chatData["cat_change"] = ""
+            globals.redis_db.set(idChat, json.dumps(chatData))
+
+        msg_send = process_params(idChat, idUser, msg, name, chatData)
+    else:
+        cat, confianca = get_categoria_frase(msg)
+        params = proc_ents(globals.ner_model([msg]))
+
+        if chatData["cat"] == "":
+            if confianca > confianca_level:
+                chatData["cat"] == cat
+                globals.redis_db.set(idChat, json.dumps(chatData))
+                msg_send = process_params(idChat, idUser, msg, name, chatData)
+            else:
+                if chatData["tries"] == 5:
+                    msg_send = "Desculpe mas não foi possível identificar o que pretende.\n\n"
+                    msg_send += "Pode tentar o modo de regras ao escrever 'modo de regras'.\n\n"
+                    msg_send += "Ou pode se quiser ligar para uma das seguintes linhas de apoio:\n"
+                    #TODO: tentar melhorar as linhas de apoio por forma a tentar mostrar apenas o de um assunto
+                    msg_send += process_all_list(get_content("linhas_apoio", [], {}))
+                    globals.redis_db.delete(idChat)
+                else:
+                    chatData["tries"] += 1
+                    globals.redis_db.set(idChat, json.dumps(chatData))
+                    msg_send = "Desculpe mas não foi possível identificar o que pretende. Tente de novo!"
+        else:
+            if confianca > confianca_level:
+                if chatData["cat"] == cat:
+                    msg_send = process_params(idChat, idUser, msg, name, chatData)
+                else:
+                    chatData["cat_change"] = cat
+                    chatData["params"] = params
+                    globals.redis_db.set(idChat, json.dumps(chatData))
+                    msg_send = "Pretende mudar de categoria de '" + chatData["cat"] + "' para '" + cat + "'? Responda por favor 'sim' ou 'não'"
+            else:
+                msg_send = process_params(idChat, idUser, msg, name, chatData)
+
     return str(msg_send)
