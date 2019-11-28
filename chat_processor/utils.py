@@ -86,6 +86,18 @@ def get_params_location(request):
 
     return found_loc_params
 
+# dado uma funcionalidade devolve o valor do 'needAtLeastOneOptionalParam'
+def get_needAtLeastOneOptionalParam(request):
+    size = len(dicionario)
+    i = 0
+    value = None
+
+    while i < size and value == None:
+        if dicionario[i]['request'] == request:
+            value = dicionario[i]['needAtLeastOneOptionalParam']
+    return value
+
+
 # dado uma funcionalidade devolve a frase a ser usada quando faltam params obrigatórios
 def get_phrase_missing_param(cat):
     size = len(dicionario)
@@ -97,8 +109,6 @@ def get_phrase_missing_param(cat):
             foundPhrase = dicionario[i]['phraseMissingParams']
 
     return foundPhrase
-
-
 
 #Faz um pedido a um URL, devolvendo a informação
 # recebe como parâmetros:
