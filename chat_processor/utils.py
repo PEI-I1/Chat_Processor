@@ -62,6 +62,18 @@ def get_params(cat):
 
     return foundCat
 
+# dado uma funcionalidade devolve os parãmetros relativos à localização
+def get_locationParam(cat):
+    size = len(dicionario)
+    i = 0
+    found = None
+
+    while i < size and found == None:
+        if dicionario[i]['request'] == cat:
+            found = dicionario[i]['locationParam']
+
+    return found
+
 # dado uma funcionalidade devolve a frase a ser usada quando faltam params obrigatórios
 def get_phrase_missing_param(cat):
     size = len(dicionario)
@@ -73,6 +85,8 @@ def get_phrase_missing_param(cat):
             foundPhrase = dicionario[i]['phraseMissingParams']
 
     return foundPhrase
+
+
 
 #Faz um pedido a um URL, devolvendo a informação
 # recebe como parâmetros:

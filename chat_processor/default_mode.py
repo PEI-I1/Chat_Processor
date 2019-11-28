@@ -107,15 +107,21 @@ def compare_required_params(params, cat_params):
 
 def process_params(idChat, idUser, msg, name, chatData):
     cat_params = get_params(chatData["cat"])
+    location_params = get_locationParam(charData["cat"])
     params = proc_ents(globals.ner_model([msg]))
     if len(cat_params) > 0:
         tuplo_params = compare_required_params(params, cat_params)
         valid_params, params_to_ask = separate_params(tuplo_params)
 
         if len(params_to_ask) == 0:
-            # não faltam parâmetros
-            content = get_content(cat,valid_params,{})
-            globals.redis_db.delete(idChat)
+            if len(location_params) > 0:
+                # faltam parãmetros de localização
+                # TODO ver como vamos saber a distinção entre search e lat/lon
+                pass
+            else:
+                # não faltam parâmetros optionais nem de localização
+                content = get_content(cat,valid_params,{})
+                globals.redis_db.delete(idChat)
         else:
             # perguntar ao utilizador os parâmetros
             # NOTE: ver se é preciso adicionar um param no status da BD
