@@ -106,10 +106,9 @@ def compare_required_params(params, cat_params):
     return tuplo_params
 
 def process_params(idChat, idUser, msg, name, chatData):
+    cat_params = get_params(chatData["cat"])
+    params = proc_ents(globals.ner_model([msg]))
     if len(cat_params) > 0:
-        tuplo_params = compare_required_params(params, cat_params)
-
-        #TODO esta função
         tuplo_params = compare_required_params(params, cat_params)
         valid_params, params_to_ask = separate_params(tuplo_params)
 
@@ -122,8 +121,6 @@ def process_params(idChat, idUser, msg, name, chatData):
             # NOTE: ver se é preciso adicionar um param no status da BD
             content = get_phrase_missing_param(cat)
     else:
-        # NOTE: guardar é inutil neste caso, pralem de seguir o diagrama
-        # globals.redis_db.set(idChat, "algo")
         content = get_content(cat, [], {})
         globals.redis_db.delete(idChat)
 
