@@ -15,4 +15,4 @@ def index():
     return get_response(req['idChat'], req['idUser'], req['msg'], req['name'])
 
 if __name__ == '__main__':
-    app.run(port=8001)
+    app.run(port=5001)
