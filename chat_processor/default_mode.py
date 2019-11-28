@@ -106,11 +106,12 @@ def compare_required_params(params, cat_params):
     return tuplo_params
 
 def process_params(idChat, idUser, msg, name, chatData):
-    cat_params = get_params(chatData["cat"])
-    location_params = get_locationParam(charData["cat"])
+    detected_request = chatData["cat"]
+    required_params = get_params_required(detected_request)
+    location_params = get_params_location(detected_request)
     params = proc_ents(globals.ner_model([msg]))
-    if len(cat_params) > 0:
-        tuplo_params = compare_required_params(params, cat_params)
+    if len(required_params) > 0:
+        tuplo_params = compare_required_params(params, required_params)
         valid_params, params_to_ask = separate_params(tuplo_params)
 
         if len(params_to_ask) == 0:

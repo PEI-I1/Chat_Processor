@@ -39,40 +39,40 @@ def process_all_list(content):
     return msg_send
 
 #Dado uma funcionalidade devolve o URL
-def get_service(cat):
+def get_service(request):
     size = len(dicionario)
     i = 0
-    foundCat = None
+    found_service = None
 
-    while i < size and foundCat == None:
-        if dicionario[i]['request'] == cat:
-            foundCat = dicionario[i]['service']
+    while i < size and found_service == None:
+        if dicionario[i]['request'] == request:
+            found_service = dicionario[i]['service']
 
-    return urls[foundCat]
+    return urls[found_service]
 
 #Dado uma funcionalidade devolve os params necessários
-def get_params(cat):
+def get_params_required(request):
     size = len(dicionario)
     i = 0
-    foundCat = None
+    found_params = None
 
-    while i < size and foundCat == None:
-        if dicionario[i]['request'] == cat:
-            foundCat = dicionario[i]['params']
+    while i < size and found_params == None:
+        if dicionario[i]['request'] == request:
+            found_params = dicionario[i]['paramsRequired']
 
-    return foundCat
+    return found_params
 
 # dado uma funcionalidade devolve os parãmetros relativos à localização
-def get_locationParam(cat):
+def get_params_location(request):
     size = len(dicionario)
     i = 0
-    found = None
+    found_loc_params = None
 
-    while i < size and found == None:
-        if dicionario[i]['request'] == cat:
-            found = dicionario[i]['locationParam']
+    while i < size and found_loc_params == None:
+        if dicionario[i]['request'] == request:
+            found_loc_params = dicionario[i]['locationParam']
 
-    return found
+    return found_loc_params
 
 # dado uma funcionalidade devolve a frase a ser usada quando faltam params obrigatórios
 def get_phrase_missing_param(cat):
