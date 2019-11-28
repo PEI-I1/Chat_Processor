@@ -51,15 +51,15 @@ def get_categoria_frase(inp):
 # com os params válidos e os params para serem perguntados
 def separate_params(tuplo_params):
     valid_params = []
-    params_to_ask = []
+    missing_params = []
 
     for tipo,entidade in tuplo_params:
         if entidade:
             valid_params.append(e)
         else:
-            params_to_ask.append(e)
+            missing_params.append(e)
 
-    return valid_params, params_to_ask
+    return valid_params, missing_params
 
 def proc_ents(inp):
     words = inp[0][0]
@@ -85,20 +85,20 @@ def proc_ents(inp):
 
     return ret
 
-# compara os params obrigatórios da frase (params) com os da dic (cat_params)
-def compare_required_params(params, cat_params):
+# compara os params obrigatórios da frase (msg_params) com os da dic (request_params)
+def compare_required_params(msg_params, request_params):
     to_ask = []
     valid = []
     tuplo_params = []
 
-    for p in cat_params:
+    for p in request_params:
         found = None
-        for pp in params:
+        for pp in msg_params:
             # TODO adicionar situação com tipos de entidades repetidos (intervalo de tempo ou dinheiro)
             if pp.type == p:
                 found = tuple((p,pp.entity))
 
-        if found == None:
+        if not found:
             found = tuple((p,None))
 
         tuplo_params.append(found)
@@ -108,13 +108,14 @@ def compare_required_params(params, cat_params):
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
     required_params = get_params_required(detected_request)
+    optional_params = get_params_optional(detected_request)
     location_params = get_params_location(detected_request)
-    params = proc_ents(globals.ner_model([msg]))
-    if len(required_params) > 0:
-        tuplo_params = compare_required_params(params, required_params)
-        valid_params, params_to_ask = separate_params(tuplo_params)
+    msg_params = proc_ents(globals.ner_model([msg]))
+    if len(required_params) or len(optional_params) or len(location_params):
+        tuplo_required_params = compare_required_params(msg_params, required_params)
+        valid_required_params, missing_required_params = separate_params(tuplo_required_params)
 
-        if len(params_to_ask) == 0:
+        if len(missing_required_params) == 0:
             if len(location_params) > 0:
                 # faltam parãmetros de localização
                 # TODO ver como vamos saber a distinção entre search e lat/lon

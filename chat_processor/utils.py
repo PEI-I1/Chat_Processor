@@ -62,6 +62,18 @@ def get_params_required(request):
 
     return found_params
 
+#Dado uma funcionalidade devolve os params necessários
+def get_params_optional(request):
+    size = len(dicionario)
+    i = 0
+    found_params_opt = None
+
+    while i < size and found_params_opt == None:
+        if dicionario[i]['request'] == request:
+            found_params_opt = dicionario[i]['paramsOptional']
+
+    return found_params_opt
+
 # dado uma funcionalidade devolve os parãmetros relativos à localização
 def get_params_location(request):
     size = len(dicionario)
