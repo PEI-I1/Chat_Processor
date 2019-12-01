@@ -38,6 +38,19 @@ def process_all_list(content):
 
     return msg_send
 
+#Dado uma funcionalidade devolve a entrada da mesma no dicionário
+def get_entry(request):
+    size = len(dicionario)
+    i = 0
+    found_value = None
+
+    while i < size and found_value == None:
+        if dicionario[i]['request'] == request:
+            found_value = dicionario[i]
+        i+=1
+
+    return found_value
+
 #Dado uma funcionalidade devolve o URL
 def get_service(request):
     size = len(dicionario)
@@ -47,68 +60,9 @@ def get_service(request):
     while i < size and found_service == None:
         if dicionario[i]['request'] == request:
             found_service = dicionario[i]['service']
+        i+=1
 
     return urls[found_service]
-
-#Dado uma funcionalidade devolve os params necessários
-def get_params_required(request):
-    size = len(dicionario)
-    i = 0
-    found_params = None
-
-    while i < size and found_params == None:
-        if dicionario[i]['request'] == request:
-            found_params = dicionario[i]['paramsRequired']
-
-    return found_params
-
-#Dado uma funcionalidade devolve os params necessários
-def get_params_optional(request):
-    size = len(dicionario)
-    i = 0
-    found_params_opt = None
-
-    while i < size and found_params_opt == None:
-        if dicionario[i]['request'] == request:
-            found_params_opt = dicionario[i]['paramsOptional']
-
-    return found_params_opt
-
-# dado uma funcionalidade devolve os parãmetros relativos à localização
-def get_params_location(request):
-    size = len(dicionario)
-    i = 0
-    found_loc_params = None
-
-    while i < size and found_loc_params == None:
-        if dicionario[i]['request'] == request:
-            found_loc_params = dicionario[i]['locationParam']
-
-    return found_loc_params
-
-# dado uma funcionalidade devolve o valor do 'needAtLeastOneOptionalParam'
-def get_needAtLeastOneOptionalParam(request):
-    size = len(dicionario)
-    i = 0
-    value = None
-
-    while i < size and value == None:
-        if dicionario[i]['request'] == request:
-            value = dicionario[i]['needAtLeastOneOptionalParam']
-    return value
-
-
-# dado uma funcionalidade devolve a frase a ser usada quando faltam params obrigatórios
-def get_phrase_missing_param(cat):
-    size = len(dicionario)
-    i = 0
-    foundPhrase = None
-
-    while i < size and foundPhrase == None:
-        if dicionario[i]['request'] == cat:
-            foundPhrase = dicionario[i]['phraseMissingParams']
-
-    return foundPhrase
 
 #Faz um pedido a um URL, devolvendo a informação
 # recebe como parâmetros:

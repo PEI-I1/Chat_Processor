@@ -5,6 +5,7 @@ import globals, nltk, json
 import regex as re
 
 confianca_level = 0.70
+tries = 5
 
 # remove stopwords e pontuação da mensagem recebida como input
 # retorna uma lista com as palavras
@@ -53,11 +54,11 @@ def separate_params(tuplo_params):
     valid_params = []
     missing_params = []
 
-    for tipo,entidade in tuplo_params:
-        if entidade:
-            valid_params.append(e)
+    for p in tuplo_params:
+        if p[2]: #entidade
+            valid_params.append(p)
         else:
-            missing_params.append(e)
+            missing_params.append(p)
 
     return valid_params, missing_params
 
@@ -89,15 +90,15 @@ def proc_ents(inp):
 def compare_required_params(msg_params, request_params):
     tuplo_params = []
 
-    for p in request_params:
+    for (n, t) in request_params.items():
         found = None
         for pp in msg_params:
             # TODO adicionar situação com tipos de entidades repetidos (intervalo de tempo ou dinheiro)
-            if pp.type == p:
-                found = tuple((p,pp.entity))
+            if pp.type == t:
+                found = tuple((n,t,pp.entity))
 
         if not found:
-            found = tuple((p,None))
+            found = tuple((n,t,None))
 
         tuplo_params.append(found)
 
@@ -107,11 +108,11 @@ def compare_required_params(msg_params, request_params):
 def compare_optional_params(msg_params, optional_params):
     tuplo_optional_params = []
 
-    for p in optional_params:
+    for (n, t) in optional_params.items():
         found = None
         for pp in msg_params:
-            if pp.type == p:
-                found = tuple((p,pp.entity))
+            if pp.type == t:
+                found = tuple((n,t,pp.entity))
 
         tuplo_optional_params.append(found)
 
@@ -122,8 +123,8 @@ def compara_location_params(msg_params,location_params):
     tuplo_location_params = []
 
     for p in msg_params:
-        if 'search_term' == p.type:
-            search_term = tuple(('search_term',p.entity))
+        if 'GPE' == p.type:
+            search_term = tuple(('search_term',p.type,p.entity))
         # if 'lat' == p.type:
         #     lat = tuple(('lat',p.entity))
         # if 'lon' == p.type:
@@ -132,15 +133,19 @@ def compara_location_params(msg_params,location_params):
 
     return tuplo_location_params
 
-
+def add_new_params(l, new_l):
+    for p in new_l:
+        if len([param for param in l if param[0] == p[0]]) == 0:
+            l.append(p)
 
 # TODO checkar se temos alguma coisa na bd conforme fazemos
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
-    required_params = get_params_required(detected_request)
-    optional_params = get_params_optional(detected_request)
-    location_params = get_params_location(detected_request)
-    needAtLeastOneOptionalParam = get_needAtLeastOneOptionalParam(detected_request)
+    entry = get_entry(detected_request)
+    required_params = entry['paramsRequired']
+    optional_params = entry['paramsOptional']
+    location_params = entry['locationParam']
+    needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
     msg_params = proc_ents(globals.ner_model([msg]))
     content = None
 
@@ -151,8 +156,9 @@ def process_params(idChat, idUser, msg, name, chatData):
 
         # quando falta parãmetro obrigatório -> perguntar ao utilizador os parâmetros
         if len(missing_required_params) > 0:
-            # NOTE: ver se é preciso adicionar um param no status da BD
-            content = get_phrase_missing_param(cat)
+            add_new_params(chatData['params'], valid_required_params)
+            globals.redis_db.set(idChat, json.dumps(chatData))
+            content = entry['missingParamsPhrase']
 
         # faltam parãmetros de localização ou opcionais
         if (len(location_params) > 0 or needAtLeastOneOptionalParam is True) and not content:
@@ -160,19 +166,23 @@ def process_params(idChat, idUser, msg, name, chatData):
             pass
         else:
             # não faltam parâmetros opcionais nem de localização
-            content = get_content(cat,valid_params,{})
+            valid_params = [p[2] for p in chatData['params']]
+            content = get_content(detected_request, valid_params,{})
             globals.redis_db.delete(idChat)
 
     else:
-        content = get_content(cat, [], {})
+        content = get_content(detected_request, [], {})
         globals.redis_db.delete(idChat)
 
     #se for uma lista devolve de forma diferente
-    if isinstance(content, list):
-        msg_send = process_list(content)
-        globals.redis_db.set("vermais" + idChat, json.dumps(content))
+    if content:
+        if isinstance(content, list):
+            msg_send = process_list(content)
+            globals.redis_db.set("vermais" + idChat, json.dumps(content))
+        else:
+            msg_send = content
     else:
-        msg_send = content
+        msg_send = "Não foi possível obter a resposta..."
 
     return msg_send
 
@@ -193,16 +203,20 @@ def get_response_default(idChat, idUser, msg, name, chatData):
 
         if chatData["cat"] == "":
             if confianca > confianca_level:
-                chatData["cat"] == cat
+                chatData["cat"] = cat
                 globals.redis_db.set(idChat, json.dumps(chatData))
                 msg_send = process_params(idChat, idUser, msg, name, chatData)
             else:
-                if chatData["tries"] == 5:
+                if chatData["tries"] == tries - 1:
                     msg_send = "Desculpe mas não foi possível identificar o que pretende.\n\n"
                     msg_send += "Pode tentar o modo de regras ao escrever 'modo de regras'.\n\n"
                     msg_send += "Ou pode se quiser ligar para uma das seguintes linhas de apoio:\n"
                     #TODO: tentar melhorar as linhas de apoio por forma a tentar mostrar apenas o de um assunto
-                    msg_send += process_all_list(get_content("linhas_apoio", [], {}))
+                    linhas_apoio = get_content("linhas_apoio", [], {})
+                    if linhas_apoio:
+                        msg_send += process_all_list(linhas_apoio)
+                    else:
+                        msg_send += "Não foi possível obter as linhas de apoio..."
                     globals.redis_db.delete(idChat)
                 else:
                     chatData["tries"] += 1
