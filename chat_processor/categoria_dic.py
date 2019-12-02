@@ -1,20 +1,19 @@
-# TODO, support more parameters combination
-# TODO, adicionar os pedidos que faltam do FY_scrapper
+# TODO, comfirmar os pedidos do FS_scrapper
 # example, on some cinemas end-points 'lat' and 'lon' are required or 'search_term'
 cat = [
     {
-        'request': 'linhas_apoio',
+        'request': 'fs_scrapper/linhas_apoio',
         'service': 'FS_SCRAPER',
         'words': ['linhas','linha','apoio','assunto','número','contacto','contactos','empresa','empresas','aderir','informações','adicionais','informação','adicional','serviços','chamada','chamadas','ligar','falar',"assistente"],
-        'paramsRequired': {'0': 'SUBJECT'},
-        'paramsOptional': {},
+        'paramsRequired': {},
+        'paramsOptional': {'0': 'SUBJECT'},
         'locationParam': {},
-        'canRequestWithoutParams': True,
+        'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : 'Por favor, diga-nos o assunto em que precisa de apoio.'
     },
     {
-        'request': 'phone_model',
+        'request': 'fs_scrapper/phone_model',
         'service': 'FS_SCRAPER',
         'words': ['modelos','modelo','telemóvel','telemóveis'],
         'paramsRequired': {'0':'PRODUCT'},
@@ -25,7 +24,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'brand_phones',
+        'request': 'fs_scrapper/brand_phones',
         'service': 'FS_SCRAPER',
         'words': ['marca','marcas','comprar','telemóvel','telemóveis','preço'],
         'paramsRequired': {'0':'ORG'},
@@ -36,7 +35,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'top_phones',
+        'request': 'fs_scrapper/top_phones',
         'service': 'FS_SCRAPER',
         'words': ['top','telemóvel','telemóveis','melhores','link'],
         'paramsRequired': {},
@@ -47,7 +46,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'promo_phones',
+        'request': 'fs_scrapper/promo_phones',
         'service': 'FS_SCRAPER',
         'words': ['promoções','promoção','desconto','descontos','barato','baratos','telemóvel','telemóveis'],
         'paramsRequired': {},
@@ -58,7 +57,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'new_phones',
+        'request': 'fs_scrapper/new_phones',
         'service': 'FS_SCRAPER',
         'words': ['novidades','novos','telemóvel','telemóveis','recente','recentes'],
         'paramsRequired': {},
@@ -69,7 +68,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'ofer_phones',
+        'request': 'fs_scrapper/ofer_phones',
         'service': 'FS_SCRAPER',
         'words': ['oferta','telemóvel','telemóveis'],
         'paramsRequired': {},
@@ -80,7 +79,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'prest_phones',
+        'request': 'fs_scrapper/prest_phones',
         'service': 'FS_SCRAPER',
         'words': ['prestações','prestação','telemóvel','telemóveis'],
         'paramsRequired': {},
@@ -91,7 +90,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'points_phones',
+        'request': 'fs_scrapper/points_phones',
         'service': 'FS_SCRAPER',
         'words': ['ponto','pontos','telemóvel','telemóveis'],
         'paramsRequired': {},
@@ -102,7 +101,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'phones_by_price',
+        'request': 'fs_scrapper/phones_by_price',
         'service': 'FS_SCRAPER',
         'words': ['ordenar','preço','telemóvel','telemóveis'],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
@@ -113,7 +112,7 @@ cat = [
         'missingParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
     },
     {
-        'request': 'all_wtf',
+        'request': 'fs_scrapper/all_wtf',
         'service': 'FS_SCRAPER',
         'words': ['tarifários','telemóvel','wtf'],
         'paramsRequired': {},
@@ -125,7 +124,7 @@ cat = [
 
     },
     {
-        'request': 'stores_by_zone',
+        'request': 'fs_scrapper/stores_by_zone',
         'service': 'FS_SCRAPER',
         'words': ['loja','lojas','zona'],
         'paramsRequired': {'0':'GPE'},
@@ -136,7 +135,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'store_address',
+        'request': 'fs_scrapper/store_address',
         'service': 'FS_SCRAPER',
         'words': ['morada','loja','lojas'],
         'paramsRequired': {'0':'FAC'},
@@ -147,7 +146,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'packages',
+        'request': 'fs_scrapper/packages',
         'service': 'FS_SCRAPER',
         'words': ['pacotes'],
         'paramsRequired': {},
@@ -158,7 +157,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'fiber_packages',
+        'request': 'fs_scrapper/fiber_packages',
         'service': 'FS_SCRAPER',
         'words': ['pacotes', 'fibra'],
         'paramsRequired': {},
@@ -169,7 +168,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'satelite_packages',
+        'request': 'fs_scrapper/satelite_packages',
         'service': 'FS_SCRAPER',
         'words': ['pacotes', 'satelite', 'satélite'],
         'paramsRequired': {},
@@ -180,7 +179,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'packages_service',
+        'request': 'fs_scrapper/packages_service',
         'service': 'FS_SCRAPER',
         'words': ['ordenar','preço','pacote','pacotes'],
         'paramsRequired': {'0':'PACKAGE'},
@@ -191,7 +190,7 @@ cat = [
         'missingParamsPhrase' : ''
     },
     {
-        'request': 'packages_price',
+        'request': 'fs_scrapper/packages_price',
         'service': 'FS_SCRAPER',
         'words': ['ordenar','preço','pacote','pacotes'],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
@@ -210,7 +209,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : ''
     },
     {
@@ -221,7 +220,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : ''
     },
     {
@@ -250,22 +249,22 @@ cat = [
         'request': '/scrapper/movies/details',
         'service': 'CINEMA_SCRAPER',
         'words': ['filme', 'película', 'vídeo', 'detalhes', 'informação', 'informações', 'sobre', 'casting', 'ator', 'produtor', 'realizador', 'tipo', 'género', 'categoria', 'sinopse', 'história', 'idade', 'restrição', 'crianças', 'adultos'],
-        'paramsRequired': {'movie':'WORK OF ART'},
+        'paramsRequired': {'0':'WORK OF ART'},
         'paramsOptional': {},
         'locationParam': {},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_duration',
         'service': 'CINEMA_SCRAPER',
         'words': ['sessão', 'sessões', 'exibição', 'exibições', 'duração', 'tempo', 'tamanho', 'demora', 'extensão', 'minutos', 'horas', 'hora'],
-        'paramsRequired': {'duration':'TIME'},
+        'paramsRequired': {'0':'TIME'},
         'paramsOptional': {'date':'DATE', 'time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : ''
     },
     {
@@ -276,29 +275,29 @@ cat = [
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_movie',
         'service': 'CINEMA_SCRAPER',
         'words': ['sessão', 'sessões', 'exibição', 'exibições', 'próximas', 'filme'],
-        'paramsRequired': {'movie':'WORK OF ART'},
+        'paramsRequired': {'0':'WORK OF ART'},
         'paramsOptional': {'date':'DATE', 'time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_date',
         'service': 'CINEMA_SCRAPER',
         'words': ['sessão', 'sessões', 'exibição', 'exibições', 'próximas', 'dia', 'horas', 'hora', 'início', 'fim', 'hoje', 'amanhã', 'segunda', 'segunda-feira', 'terça', 'terça-feira', 'quarta', 'quarta-feira', 'quinta', 'quinta-feira', 'sexta', 'sexta-feira', 'sábado', 'domingo'],
-        'paramsRequired': {'date':'DATE'},
-        'paramsOptional': {'start_time':'TIME', 'end_time':'TIME'},
+        'paramsRequired': {},
+        'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': False,
         'missingParamsPhrase' : ''
     }
 ]
