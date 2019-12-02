@@ -73,6 +73,44 @@ def proc_ents(inp):
 
     return ret
 
+# lista os params opcionais que faltam
+def lista_params_opcionais(missing_optional_params):
+    lista = []
+    frase = []
+    resposta = []
+
+    for (k,v) in missing_optional_params.items():
+        if k is 'date':
+            lista.append('data')
+        elif k is 'start_time':
+            lista.append('hora de início')
+        elif k is 'end_time':
+            lista.append('hora de fim')
+        elif k is 'time':
+            lista.append('duração')
+        elif k is 'genre':
+            lista.append('gênero')
+        elif k is 'cast':
+            lista.append('elenco')
+        elif k is 'producer':
+            lista.append('realizador')
+        elif k is 'synopsis':
+            lista.append('sinopse')
+        elif k is 'age':
+            lista.append('idade')
+
+    for i in range(0,len(lista)):
+        if i < len(lista)-1:
+            palavra = lista[i] + ', '
+        elif i == len(lista)-1:
+            palavra = lista[i] + ' e '
+        else:
+            palavra = lista[i] + '.'
+        frase.append(palavra)
+
+    resposta = "Por favor, diga informações acerda de um destes parãmetros para adicionar à pesquisa: " + frase
+    return resposta
+
 # recolhe os params necessarios (params) apartir da DB (db_params) e da frase (msg_params)
 def compare_params(params, msg_params, db_params):
     required_params = {}
@@ -139,6 +177,7 @@ def convert_valid_params(valid_required_params,valid_optional_params):
 
     return valid_required_params_array, valid_optional_params_array
 
+
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
@@ -178,7 +217,8 @@ def process_params(idChat, idUser, msg, name, chatData):
             if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
                 # TODO: listar possibilidades ao utilizador e pedir resposta a
                 #         pelo menos uma delas
-                return "List of all params, and we need at least one."
+                resposta = "Por favor, diga informações acerda de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade"
+                return resposta
             else:
                 # processar resposta do user e devolver o conteudo pedido
                 if chatData["status"] == "waitingMoreOptionalParams":
@@ -195,7 +235,8 @@ def process_params(idChat, idUser, msg, name, chatData):
                 else:
                   chatData["status"] = "waitingMoreOptionalParams"
                   globals.redis_db.set(idChat, json.dumps(chatData))
-                  return "List of all params for the person to pick"
+                  resposta = lista_params_opcionais(missing_optional_params)
+                  return resposta
 
 
             # se o user nao tiver mais params opcionais a adicionar, devolvemos resposta
