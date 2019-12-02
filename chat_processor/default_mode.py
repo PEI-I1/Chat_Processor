@@ -73,10 +73,9 @@ def proc_ents(inp):
 
     return ret
 
-# compara os params da frase (msg_params) com os da dic (params)
-def compare_params(msg_params,params,db_params):
+# recolhe os params necessarios (params) apartir da DB (db_params) e da frase (msg_params)
+def compare_params(params, msg_params, db_params):
     required_params = {}
-
     required_params.append(db_params)
 
     for (n, t) in params.items():
@@ -92,38 +91,6 @@ def compare_params(msg_params,params,db_params):
             required_params.append(found)
 
     return required_params
-
-# compara os params da frase (msg_params) com os da dic (required_params)
-# def compare_optional_params(msg_params, optional_params):
-#     optional_params = {}
-
-#     for (n, t) in optional_params.items():
-#         found = None
-#         for pp in msg_params:
-#             if pp.type == t:
-#                 found = {n:{"type":t,"entity":pp.entity}}
-
-#         if not found:
-#             found = {n:{"type":t}}
-
-#         optional_params.append(found)
-
-#     return optional_params
-
-
-# compara os params da frase (msg_params) com os optionais da dic (optional_params)
-# def compare_optional_params(msg_params, optional_params):
-#     tuplo_optional_params = []
-
-#     for (n, t) in optional_params.items():
-#         found = None
-#         for pp in msg_params:
-#             if pp.type == t:
-#                 found = tuple((n,t,pp.entity))
-
-#         tuplo_optional_params.append(found)
-
-#     return tuplo_optional_params
 
 # compara os params da frase (msg_params) com os locations params da dic (tuplo_location_params)
 # def compara_location_params(msg_params,location_params):
@@ -141,14 +108,14 @@ def compare_params(msg_params,params,db_params):
 #     return tuplo_location_params
 
 
-# com os params válidos e os params para serem perguntados
+# devolve os params válidados e os params em falta
 def separate_params(params):
     valid_params = {}
     missing_params = {}
 
     for (n,value) in params.items():
         # se tiver entity está validado, senao esta em falta
-        if value.get('entity',None):
+        if value.get('entity', None):
             valid_params.append({n:value})
         else:
             missing_params.append({n:value})
@@ -161,7 +128,6 @@ def add_new_params(l, new_l):
             l.append(p)
 
 
-# TODO checkar se temos alguma coisa na bd conforme fazemos
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
@@ -175,11 +141,11 @@ def process_params(idChat, idUser, msg, name, chatData):
     # quando há parametros
     if len(paramsRequired) or len(paramsOptional) or len(location_params):
         # obrigatórios
-        required_params = compare_params(msg_params, paramsRequired,chatData['paramsRequired'])
+        required_params = compare_params(paramsRequired, msg_params, chatData['paramsRequired'])
         valid_required_params, missing_required_params = separate_params(required_params)
 
         # opcionais
-        optional_params = compare_params(msg_params, paramsOptional,chatData['paramsOptional'])
+        optional_params = compare_params(paramsOptional, msg_params, chatData['paramsOptional'])
         valid_optional_params, missing_optional_params = separate_params(paramsOptional)
 
         # adicionar bd
@@ -187,23 +153,43 @@ def process_params(idChat, idUser, msg, name, chatData):
         add_new_params(chatData['paramsOptional'], valid_optional_params)
         globals.redis_db.set(idChat, json.dumps(chatData))
 
-        # quando n falta nenhum param obrigatório e n existem outros
-        if len(missing_required_params) == 0 and not len(paramsOptional) and not len(location_params):
+        # quando falta params obrigatório
+        #   -> perguntar ao utilizador os parametros que faltam
+        if len(missing_required_params):
+            # TODO: melhorar para casos em que falta mais que 1param
+            #         usando uma metodologia melhor
+            return entry['missingParamsPhrase']
+
+        # se faltarem params optionais
+        if len(missing_optional_params):
+
+            # se precisarmos de um param optional e não existir nenhum
+            if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True and not content:
+                # TODO: listar possibilidades ao utilizador e pedir resposta a
+                #         pelo menos uma delas
+                return "List of all params, and we need at least one."
+
+            # se o user nao tiver mais params opcionais a adicionar, devolvemos resposta
+            # FIXME: add more options for user response (sim/nao/não/etc)
+            # TODO: add 'userAdicionalOptionalParams'
+            if entry['userAdicionalOptionalParams'] == 'nao':
+                valid_required_params_array = []
+                for (n,value) in valid_required_params.items():
+                    valid_required_params_array[n] = value.entity
+                valid_optional_params_array = []
+                for (n,value) in valid_optional_params.items():
+                    valid_required_params_array.append({n: value.entity})
+                content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
+                globals.redis_db.delete(idChat)
+            else:
+                # TODO: apanhar os params opcionais dados pelo utilizador
+                #         e devolver resposta.
+                pass
+        else: # nao faltam params opcionais
+            # TODO: devolver resposta
             pass
 
-        # quando falta parãmetro obrigatório -> perguntar ao utilizador os parâmetros
-        if len(missing_required_params) > 0 and not content:
-            content = entry['missingParamsPhrase']
-
-        # se precisarmos de um param optional e não existir nenhum
-        if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True and not content:
-            pass
-
-        # quand n há param obrigatórios mas pode haver params opcionais (ex /scrapper/sessions/by_date)
-        if not len(paramsRequired) and len(paramsOptional) and needAtLeastOneOptionalParam is False and not content:
-            content = get_content(detected_request, [valid_optional_params], {})
-
-        # # faltam parãmetros de localização ou opcionais
+        # # faltam parametros de localização ou opcionais
         # if (len(location_params) > 0 or needAtLeastOneOptionalParam is True) and not content:
         #     # TODO ver como vamos saber a distinção entre search e lat/lon
         #     pass
