@@ -48,19 +48,6 @@ def get_categoria_frase(inp):
     noccur = criar_noccur_dic(palavras)
     return calcula_confianca(noccur)
 
-# separa a lista de tuplos de (tipo:entidade) em duas listas
-# com os params válidos e os params para serem perguntados
-def separate_params(tuplo_params):
-    valid_params = []
-    missing_params = []
-
-    for p in tuplo_params:
-        if p[2]: #entidade
-            valid_params.append(p)
-        else:
-            missing_params.append(p)
-
-    return valid_params, missing_params
 
 def proc_ents(inp):
     words = inp[0][0]
@@ -86,89 +73,135 @@ def proc_ents(inp):
 
     return ret
 
-# compara os params da frase (msg_params) com os da dic (request_params)
-def compare_required_params(msg_params, request_params):
-    tuplo_params = []
+# recolhe os params necessarios (params) apartir da DB (db_params) e da frase (msg_params)
+def compare_params(params, msg_params, db_params):
+    required_params = {}
+    required_params.append(db_params)
 
-    for (n, t) in request_params.items():
-        found = None
-        for pp in msg_params:
-            # TODO adicionar situação com tipos de entidades repetidos (intervalo de tempo ou dinheiro)
-            if pp.type == t:
-                found = tuple((n,t,pp.entity))
+    for (n, t) in params.items():
+        if not required_params.get(n,None):
+            found = None
+            for pp in msg_params:
+                if pp.type == t:
+                    found = {n:{"type":t,"entity":pp.entity}}
 
-        if not found:
-            found = tuple((n,t,None))
+            if not found:
+                found = {n:{"type":t}}
 
-        tuplo_params.append(found)
+            required_params.append(found)
 
-    return tuplo_params
-
-# compara os params da frase (msg_params) com os optionais da dic (optional_params)
-def compare_optional_params(msg_params, optional_params):
-    tuplo_optional_params = []
-
-    for (n, t) in optional_params.items():
-        found = None
-        for pp in msg_params:
-            if pp.type == t:
-                found = tuple((n,t,pp.entity))
-
-        tuplo_optional_params.append(found)
-
-    return tuplo_optional_params
+    return required_params
 
 # compara os params da frase (msg_params) com os locations params da dic (tuplo_location_params)
-def compara_location_params(msg_params,location_params):
-    tuplo_location_params = []
+# def compara_location_params(msg_params,location_params):
+#     tuplo_location_params = []
 
-    for p in msg_params:
-        if 'GPE' == p.type:
-            search_term = tuple(('search_term',p.type,p.entity))
-        # if 'lat' == p.type:
-        #     lat = tuple(('lat',p.entity))
-        # if 'lon' == p.type:
-        #     lon = tuple(('lon',p.entity))
-    tuplo_location_params.append(search_term)
+#     for p in msg_params:
+#         if 'GPE' == p.type:
+#             search_term = tuple(('search_term',p.type,p.entity))
+#         # if 'lat' == p.type:
+#         #     lat = tuple(('lat',p.entity))
+#         # if 'lon' == p.type:
+#         #     lon = tuple(('lon',p.entity))
+#     tuplo_location_params.append(search_term)
 
-    return tuplo_location_params
+#     return tuplo_location_params
+
+
+# devolve os params válidados e os params em falta
+def separate_params(params):
+    valid_params = {}
+    missing_params = {}
+
+    for (n,value) in params.items():
+        # se tiver entity está validado, senao esta em falta
+        if value.get('entity', None):
+            valid_params.append({n:value})
+        else:
+            missing_params.append({n:value})
+
+    return valid_params, missing_params
 
 def add_new_params(l, new_l):
     for p in new_l:
-        if len([param for param in l if param[0] == p[0]]) == 0:
+        if len([param for param in l if param == p]) == 0:
             l.append(p)
 
-# TODO checkar se temos alguma coisa na bd conforme fazemos
+# converte a estrutura dos parametros para a forma aceite pelo get_content
+def convert_valid_params(valid_required_params,valid_optional_params):
+    valid_required_params_array = []
+    valid_optional_params_array = {}
+
+    for (n,value) in valid_required_params.items():
+        valid_required_params_array[n] = value.entity
+    for (n,value) in valid_optional_params.items():
+        valid_required_params_array.append({n: value.entity})
+
+    return valid_required_params_array, valid_optional_params_array
+
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
-    required_params = entry['paramsRequired']
-    optional_params = entry['paramsOptional']
+    paramsRequired = entry['paramsRequired']
+    paramsOptional = entry['paramsOptional']
     location_params = entry['locationParam']
     needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
     msg_params = proc_ents(globals.ner_model([msg]))
     content = None
 
     # quando há parametros
-    if len(required_params) or len(optional_params) or len(location_params):
-        tuplo_required_params = compare_required_params(msg_params, required_params)
-        valid_required_params, missing_required_params = separate_params(tuplo_required_params)
+    if len(paramsRequired) or len(paramsOptional) or len(location_params):
+        # obrigatórios
+        required_params = compare_params(paramsRequired, msg_params, chatData['paramsRequired'])
+        valid_required_params, missing_required_params = separate_params(required_params)
 
-        # quando falta parãmetro obrigatório -> perguntar ao utilizador os parâmetros
-        if len(missing_required_params) > 0:
-            add_new_params(chatData['params'], valid_required_params)
-            globals.redis_db.set(idChat, json.dumps(chatData))
-            content = entry['missingParamsPhrase']
+        # opcionais
+        optional_params = compare_params(paramsOptional, msg_params, chatData['paramsOptional'])
+        valid_optional_params, missing_optional_params = separate_params(paramsOptional)
 
-        # faltam parãmetros de localização ou opcionais
-        if (len(location_params) > 0 or needAtLeastOneOptionalParam is True) and not content:
-            # TODO ver como vamos saber a distinção entre search e lat/lon
-            pass
-        else:
-            # não faltam parâmetros opcionais nem de localização
-            valid_params = [p[2] for p in chatData['params']]
-            content = get_content(detected_request, valid_params,{})
+        # converter
+        valid_required_params_array, valid_required_params_array = convert_valid_params(valid_required_params,valid_optional_params)
+
+        # adicionar bd
+        add_new_params(chatData['paramsRequired'], valid_required_params)
+        add_new_params(chatData['paramsOptional'], valid_optional_params)
+        globals.redis_db.set(idChat, json.dumps(chatData))
+
+        # quando falta params obrigatório
+        #   -> perguntar ao utilizador os parametros que faltam
+        if len(missing_required_params):
+            # TODO: melhorar para casos em que falta mais que 1param
+            #         usando uma metodologia melhor
+            return entry['missingParamsPhrase']
+
+        # se faltarem params optionais
+        if len(missing_optional_params):
+
+            # se precisarmos de um param optional e não existir nenhum (/scrapper/movies/search')
+            if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
+                # TODO: listar possibilidades ao utilizador e pedir resposta a
+                #         pelo menos uma delas
+                return "List of all params, and we need at least one."
+            else:
+                # listar todos os params opcionais se uma var n existir
+                #TODO adicionar variavel
+                return "List of all params for the person to pick"
+
+
+            # se o user nao tiver mais params opcionais a adicionar, devolvemos resposta
+            # FIXME: add more options for user response (sim/nao/não/etc)
+            # TODO: add 'userAdicionalOptionalParams'
+            if entry['userAdicionalOptionalParams'] == 'nao':
+                content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
+                globals.redis_db.delete(idChat)
+            else:
+                # TODO: apanhar os params opcionais dados pelo utilizador
+                #         e devolver resposta.
+                pass
+        else: # nao faltam params opcionais
+            content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
             globals.redis_db.delete(idChat)
+            pass
 
     else:
         content = get_content(detected_request, [], {})
@@ -228,7 +261,7 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                     msg_send = process_params(idChat, idUser, msg, name, chatData)
                 else:
                     chatData["cat_change"] = cat
-                    chatData["params"] = params
+                    chatData["paramsRequired"] = params
                     globals.redis_db.set(idChat, json.dumps(chatData))
                     msg_send = "Pretende mudar de categoria de '" + chatData["cat"] + "' para '" + cat + "'? Responda por favor 'sim' ou 'não'"
             else:

@@ -78,8 +78,6 @@ def get_content(cat, params, querystrings):
     if size > 0:
         for i in range(size):
             params[i] = urllib.parse.quote(params[i], safe='')
-            i+=1
-
         URL += "/".join(params)
 
     if len(querystrings) > 0:
