@@ -154,14 +154,11 @@ def process_params(idChat, idUser, msg, name, chatData):
         # obrigatórios
         required_params = compare_params(paramsRequired, msg_params, chatData['paramsRequired'])
         valid_required_params, missing_required_params = separate_params(required_params)
-
         # opcionais
         optional_params = compare_params(paramsOptional, msg_params, chatData['paramsOptional'])
         valid_optional_params, missing_optional_params = separate_params(paramsOptional)
-
         # converter
         valid_required_params_array, valid_required_params_array = convert_valid_params(valid_required_params,valid_optional_params)
-
         # adicionar bd
         add_new_params(chatData['paramsRequired'], valid_required_params)
         add_new_params(chatData['paramsOptional'], valid_optional_params)
@@ -183,9 +180,22 @@ def process_params(idChat, idUser, msg, name, chatData):
                 #         pelo menos uma delas
                 return "List of all params, and we need at least one."
             else:
-                # listar todos os params opcionais se uma var n existir
-                #TODO adicionar variavel
-                return "List of all params for the person to pick"
+                # processar resposta do user e devolver o conteudo pedido
+                if chatData["status"] == "waitingMoreOptionalParams":
+                    # FIXME: dar mais opçoes de negaçao para o user
+                    if "nao" in msg:
+                        pass
+                    else:
+                        pass
+                    # NOTE: acho que o if else é inutil really...
+                    #       se nao houver params eles nao sao processados e nao
+                    content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
+                    globals.redis_db.delete(idChat)
+                # listar todos os params opcionais e esperar resposta
+                else:
+                  chatData["status"] = "waitingMoreOptionalParams"
+                  globals.redis_db.set(idChat, json.dumps(chatData))
+                  return "List of all params for the person to pick"
 
 
             # se o user nao tiver mais params opcionais a adicionar, devolvemos resposta
