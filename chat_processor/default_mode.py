@@ -127,6 +127,17 @@ def add_new_params(l, new_l):
         if len([param for param in l if param == p]) == 0:
             l.append(p)
 
+# converte a estrutura dos parametros para a forma aceite pelo get_content
+def convert_valid_params(valid_required_params,valid_optional_params):
+    valid_required_params_array = []
+    valid_optional_params_array = {}
+
+    for (n,value) in valid_required_params.items():
+        valid_required_params_array[n] = value.entity
+    for (n,value) in valid_optional_params.items():
+        valid_required_params_array.append({n: value.entity})
+
+    return valid_required_params_array, valid_optional_params_array
 
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
@@ -148,6 +159,9 @@ def process_params(idChat, idUser, msg, name, chatData):
         optional_params = compare_params(paramsOptional, msg_params, chatData['paramsOptional'])
         valid_optional_params, missing_optional_params = separate_params(paramsOptional)
 
+        # converter
+        valid_required_params_array, valid_required_params_array = convert_valid_params(valid_required_params,valid_optional_params)
+
         # adicionar bd
         add_new_params(chatData['paramsRequired'], valid_required_params)
         add_new_params(chatData['paramsOptional'], valid_optional_params)
@@ -163,22 +177,21 @@ def process_params(idChat, idUser, msg, name, chatData):
         # se faltarem params optionais
         if len(missing_optional_params):
 
-            # se precisarmos de um param optional e não existir nenhum
-            if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True and not content:
+            # se precisarmos de um param optional e não existir nenhum (/scrapper/movies/search')
+            if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
                 # TODO: listar possibilidades ao utilizador e pedir resposta a
                 #         pelo menos uma delas
                 return "List of all params, and we need at least one."
+            else:
+                # listar todos os params opcionais se uma var n existir
+                #TODO adicionar variavel
+                return "List of all params for the person to pick"
+
 
             # se o user nao tiver mais params opcionais a adicionar, devolvemos resposta
             # FIXME: add more options for user response (sim/nao/não/etc)
             # TODO: add 'userAdicionalOptionalParams'
             if entry['userAdicionalOptionalParams'] == 'nao':
-                valid_required_params_array = []
-                for (n,value) in valid_required_params.items():
-                    valid_required_params_array[n] = value.entity
-                valid_optional_params_array = []
-                for (n,value) in valid_optional_params.items():
-                    valid_required_params_array.append({n: value.entity})
                 content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
                 globals.redis_db.delete(idChat)
             else:
@@ -186,18 +199,9 @@ def process_params(idChat, idUser, msg, name, chatData):
                 #         e devolver resposta.
                 pass
         else: # nao faltam params opcionais
-            # TODO: devolver resposta
+            content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
+            globals.redis_db.delete(idChat)
             pass
-
-        # # faltam parametros de localização ou opcionais
-        # if (len(location_params) > 0 or needAtLeastOneOptionalParam is True) and not content:
-        #     # TODO ver como vamos saber a distinção entre search e lat/lon
-        #     pass
-        # else:
-        #     # não faltam parâmetros opcionais nem de localização
-        #     valid_params = [p[2] for p in chatData['paramsRequired']]
-        #     content = get_content(detected_request, valid_params,{})
-        #     globals.redis_db.delete(idChat)
 
     else:
         content = get_content(detected_request, [], {})
