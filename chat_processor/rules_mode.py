@@ -26,7 +26,7 @@ def get_response_rules(idChat, idUser, msg, name):
 
     if menu == 0:
         save_redis(idChat, idUser, 1)
-        return str('''Escolha uma das seguintes opções, indicando o número correspondente.
+        return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. cinemas ou sessões\n2. tarifários ou pacotes\n3. compra de telemóveis
 4. lojas da NOS\n5. linhas de apoio\n6. resolução de problemas técnicos\n7. exit''')
 
@@ -50,7 +50,7 @@ def get_response_rules(idChat, idUser, msg, name):
             return None         # o que fazer quando se sai do modo regas?
     
         else:
-            return str('''Escolha uma das seguintes opções, indicando o número correspondente.
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. cinemas ou sessões\n2. tarifários ou pacotes\n3. compra de telemóveis
 4. lojas da NOS\n5. linhas de apoio\n6. resolução de problemas técnicos\n7. sair''')
 
