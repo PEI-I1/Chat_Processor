@@ -47,6 +47,47 @@ def fs_rules(idChat, idUser, menu, msg):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. tarifários WTF\n2. pacotes\n3. sair''')
 
+    elif menu == 22:
+        if opcao == 1:
+            save_redis(idChat, idUser, 27)
+            return str('''Escreva o modelo que procura\n''')
+        elif opcao == 2:
+            save_redis(idChat, idUser, 28)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+            1. procurar telemóvel por marca\n 2. Procurar telemóvel por marca numa gama de valores\n
+3. procurar por telemóvel por marca com promoção\n4. Sair''')
+        elif opcao == 3:
+            #todo ir buscar top phones
+            remove_redis(idChat, idUser)
+            return None
+        elif opcao == 4:
+            # todo ir buscar phnes em promoção
+            remove_redis(idChat, idUser)
+            return None
+        elif opcao == 5:
+            # todo ir buscar phones mais recentes
+            remove_redis(idChat, idUser)
+            return None
+        elif opcao == 6:
+            # todo ir buscar phones com oferta
+            remove_redis(idChat, idUser)
+            return None
+        elif opcao == 7:
+            # todo ir buscar possibilidades de prestações
+            remove_redis(idChat, idUser)
+            return None
+        elif opcao == 8:
+            # todo ir buscar phones por pontos
+            remove_redis(idChat, idUser)
+            return None
+        elif opcao == 9:
+            # todo ir buscar com limites menu 220
+            save_redis(idChat, idUser, 220)
+            return None
+        else:
+            remove_redis(idChat, idUser)
+            return None
+
     elif menu == 23:
         if opcao == 1:
             save_redis(idChat, idUser, 29)
@@ -68,8 +109,8 @@ def fs_rules(idChat, idUser, menu, msg):
         if opcao == 1:
             save_redis(idChat, idUser, 202)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente. 
-            1. Serviços NOS\n 2. Entidades\n 3. Equipamentos NOS\n 
-            4. Denúncia\n 5. Faturas\n 6. Informações\n 7. sair\n''')
+            1. Serviços NOS\n 2. Entidades\n 3. Equipamentos NOS\n 4. Denúncia\n 5. Faturas\n 6. Informações\n
+7. sair\n''')
 
         if opcao == 2:
             # TODO fazer pedido aos scrappers -- devolver todas as linhas de apoio
@@ -95,6 +136,20 @@ def fs_rules(idChat, idUser, menu, msg):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
 
+    elif menu == 28:
+        if opcao == 1:
+            #todo procurar telemóvel por marca
+            return None
+        elif opcao == 2:
+            #todo procurar telemóvel por marca numa gama de valores
+            return None
+        elif opcao == 3:
+            #todo procurar telms por marca que estejam em promoção
+            return None
+        else:
+            remove_redis(idChat, idUser)
+            return None
+
     elif menu == 29:
         remove_redis(idChat, idUser)
         #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver todas as lojas nos na zona da msg
@@ -105,31 +160,32 @@ def fs_rules(idChat, idUser, menu, msg):
 
     elif menu == 202:
         if opcao == 1:
-            save_redis(idChat,idUser,241) # todo escolher menu
+            save_redis(idChat,idUser,241)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-            1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone\n 6. Ativação de Pacotes Internet\n 7. Apoio Informático''')
+            1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone\n 
+6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
         elif opcao == 2:
-            save_redis(idChat, idUser, 242)  # todo escolher menu
+            save_redis(idChat, idUser, 242)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n''')
+                        1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
         elif opcao == 3:
-            save_redis(idChat, idUser, 243)  # todo escolher menu
+            save_redis(idChat, idUser, 243)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n''')
+                        1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair\n 4.Sair''')
         elif opcao == 4:
-            save_redis(idChat, idUser, 244)  # todo escolher menu
+            save_redis(idChat, idUser, 244)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Denúncia de Fraude/Pirataria\n''') # todo repensar
+                        1. Denúncia de Fraude/Pirataria\n2. Sair''')
         elif opcao == 5:
-            save_redis(idChat, idUser, 245)  # todo escolher menu
+            save_redis(idChat, idUser, 245)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. «Contencioso\n''')
+                        1. «Contencioso\n2.Sair''')
         elif opcao == 6:
-            save_redis(idChat, idUser, 246)  # todo escolher menu
+            save_redis(idChat, idUser, 246)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Info Portabilidade\n 2. Video Intérprete\n''')
+                        1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
         else:
-            remove_redis(idChat,idUser)
+            remove_redis(idChat, idUser)
             return None
 
     elif menu == 203:
@@ -151,6 +207,14 @@ def fs_rules(idChat, idUser, menu, msg):
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
+
+    elif menu == 220:
+            print('''Insira o limite Inferior''')
+            limInf = input()
+            print('''Insira o limite Superior''')
+            limSup = input()
+            #todo ir buscar
+            return None
 
     elif menu == 241:
         if opcao == 1:
@@ -251,3 +315,4 @@ def fs_rules(idChat, idUser, menu, msg):
     # TODO continuar menus
     else:
         return str("Pedimos desculpa, mas algo correu mal.")
+
