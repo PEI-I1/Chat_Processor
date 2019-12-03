@@ -101,7 +101,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/phones_by_price',
+        'request': 'fs_scrapper/phones_price',
         'service': 'FS_SCRAPER',
         'words': ['ordenar','preço','telemóvel','telemóveis'],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
@@ -124,7 +124,7 @@ cat = [
 
     },
     {
-        'request': 'fs_scrapper/stores_by_zone',
+        'request': 'fs_scrapper/stores_zone',
         'service': 'FS_SCRAPER',
         'words': ['loja','lojas','zona'],
         'paramsRequired': {'0':'GPE'},
