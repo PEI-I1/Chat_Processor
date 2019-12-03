@@ -100,14 +100,15 @@ def lista_params_opcionais(missing_optional_params):
             lista.append('idade')
 
     for i in range(0,len(lista)):
-        if i < len(lista)-1:
+        if i < len(lista)-2:
             palavra = lista[i] + ', '
-        elif i == len(lista)-1:
+        elif i == len(lista)-2:
             palavra = lista[i] + ' e '
         else:
             palavra = lista[i] + '.'
         frase.append(palavra)
 
+    frase = ''.join(frase)
     resposta = "Por favor, diga informações acerda de um destes parãmetros para adicionar à pesquisa: " + frase
     return resposta
 
