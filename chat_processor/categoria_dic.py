@@ -10,7 +10,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : 'Por favor, diga-nos o assunto em que precisa de apoio.'
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o assunto em que precisa de apoio.'
     },
     {
         'request': 'fs_scrapper/phone_model',
@@ -21,7 +21,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/brand_phones',
@@ -32,7 +32,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/top_phones',
@@ -43,7 +43,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/promo_phones',
@@ -54,7 +54,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/new_phones',
@@ -65,7 +65,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/ofer_phones',
@@ -76,7 +76,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/prest_phones',
@@ -87,7 +87,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/points_phones',
@@ -98,7 +98,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/phones_by_price',
@@ -109,7 +109,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
+        'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
     },
     {
         'request': 'fs_scrapper/all_wtf',
@@ -120,7 +120,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
 
     },
     {
@@ -132,7 +132,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/store_address',
@@ -143,7 +143,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/packages',
@@ -154,7 +154,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/fiber_packages',
@@ -165,7 +165,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/satelite_packages',
@@ -176,7 +176,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/packages_service',
@@ -187,7 +187,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/packages_price',
@@ -198,7 +198,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     # CINEMAS
     {
@@ -210,7 +210,7 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/by_cinema',
@@ -221,7 +221,7 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/search',
@@ -232,7 +232,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/releases',
@@ -243,7 +243,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/movies/details',
@@ -254,7 +254,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_duration',
@@ -265,7 +265,7 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/next_sessions',
@@ -276,7 +276,7 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_movie',
@@ -287,7 +287,7 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/scrapper/sessions/by_date',
@@ -298,6 +298,6 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : ''
     }
 ]

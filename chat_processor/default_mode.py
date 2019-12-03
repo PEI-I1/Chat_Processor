@@ -188,8 +188,12 @@ def process_params(idChat, idUser, msg, name, chatData):
     msg_params = proc_ents(globals.ner_model([msg]))
     content = None
 
-    # quando há parametros
-    if len(paramsRequired) or len(paramsOptional) or len(location_params):
+    # quanto o pedido nao recebe params > devolve resposta
+    if not paramsRequired and not paramsOptional and not location_params:
+        content = get_content(detected_request, [], {})
+        globals.redis_db.delete(idChat)
+        pass
+    else:
         # obrigatórios
         required_params = compare_params(paramsRequired, msg_params, chatData['paramsRequired'])
         valid_required_params, missing_required_params = separate_params(required_params)
@@ -206,17 +210,16 @@ def process_params(idChat, idUser, msg, name, chatData):
         # quando falta params obrigatório
         #   -> perguntar ao utilizador os parametros que faltam
         if len(missing_required_params):
-            # TODO: melhorar para casos em que falta mais que 1param
-            #         usando uma metodologia melhor
-            return entry['missingParamsPhrase']
+            # FIXME: funciona para todos os nossos casos (só há um caso com 2params obrigatorios)
+            #           pode ser melhorada qd coisas mais importantes estiverem resolvidas
+            return entry['missingRequiredParamsPhrase']
 
         # se faltarem params optionais
         if len(missing_optional_params):
-
             # se precisarmos de um param optional e não existir nenhum (/scrapper/movies/search')
             if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
-                # TODO: listar possibilidades ao utilizador e pedir resposta a
-                #         pelo menos uma delas
+                # FIXME: funciona para o unico caso que temos
+                #         pode ser melhorada mais tarde
                 resposta = "Por favor, diga informações acerda de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade"
                 return resposta
             else:
@@ -237,29 +240,12 @@ def process_params(idChat, idUser, msg, name, chatData):
                   globals.redis_db.set(idChat, json.dumps(chatData))
                   resposta = lista_params_opcionais(missing_optional_params)
                   return resposta
-
-
-            # se o user nao tiver mais params opcionais a adicionar, devolvemos resposta
-            # FIXME: add more options for user response (sim/nao/não/etc)
-            # TODO: add 'userAdicionalOptionalParams'
-            if entry['userAdicionalOptionalParams'] == 'nao':
-                content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
-                globals.redis_db.delete(idChat)
-            else:
-                # TODO: apanhar os params opcionais dados pelo utilizador
-                #         e devolver resposta.
-                pass
         else: # nao faltam params opcionais
             content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
             globals.redis_db.delete(idChat)
-            pass
 
-    else:
-        content = get_content(detected_request, [], {})
-        globals.redis_db.delete(idChat)
-
-    #se for uma lista devolve de forma diferente
     if content:
+        #se for uma lista devolve de forma diferente
         if isinstance(content, list):
             msg_send = process_list(content)
             globals.redis_db.set("vermais" + idChat, json.dumps(content))
