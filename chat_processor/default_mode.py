@@ -234,7 +234,7 @@ def process_params(idChat, idUser, msg, name, chatData):
             msg_send = process_list(content)
             globals.redis_db.set("vermais" + idChat, json.dumps(content))
         else:
-            msg_send = content
+            msg_send = process(content)
     else:
         msg_send = "Não foi possível obter a resposta..."
 
