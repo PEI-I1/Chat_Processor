@@ -115,7 +115,7 @@ def lista_params_opcionais(missing_optional_params):
 # recolhe os params necessarios (params) apartir da DB (db_params) e da frase (msg_params)
 def compare_params(params, msg_params, db_params):
     required_params = {}
-    required_params.append(db_params)
+    required_params.update(db_params)
 
     for (n, t) in params.items():
         if not required_params.get(n,None):
@@ -127,25 +127,9 @@ def compare_params(params, msg_params, db_params):
             if not found:
                 found = {n:{"type":t}}
 
-            required_params.append(found)
+            required_params.update(found)
 
     return required_params
-
-# compara os params da frase (msg_params) com os locations params da dic (tuplo_location_params)
-# def compara_location_params(msg_params,location_params):
-#     tuplo_location_params = []
-
-#     for p in msg_params:
-#         if 'GPE' == p.type:
-#             search_term = tuple(('search_term',p.type,p.entity))
-#         # if 'lat' == p.type:
-#         #     lat = tuple(('lat',p.entity))
-#         # if 'lon' == p.type:
-#         #     lon = tuple(('lon',p.entity))
-#     tuplo_location_params.append(search_term)
-
-#     return tuplo_location_params
-
 
 # devolve os params válidados e os params em falta
 def separate_params(params):
@@ -155,9 +139,9 @@ def separate_params(params):
     for (n,value) in params.items():
         # se tiver entity está validado, senao esta em falta
         if value.get('entity', None):
-            valid_params.append({n:value})
+            valid_params.update({n:value})
         else:
-            missing_params.append({n:value})
+            missing_params.update({n:value})
 
     return valid_params, missing_params
 
@@ -174,10 +158,9 @@ def convert_valid_params(valid_required_params,valid_optional_params):
     for (n,value) in valid_required_params.items():
         valid_required_params_array[n] = value.entity
     for (n,value) in valid_optional_params.items():
-        valid_required_params_array.append({n: value.entity})
+        valid_required_params_array.update({n: value.entity})
 
     return valid_required_params_array, valid_optional_params_array
-
 
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
@@ -306,3 +289,4 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                 msg_send = process_params(idChat, idUser, msg, name, chatData)
 
     return str(msg_send)
+
