@@ -29,9 +29,6 @@ def process(content):
             msg_send += str(k).capitalize() + ": " + str(v) + "\n"
     return msg_send
 
-x = process({"link":"https://www.nos.pt/particulares/loja-equipamentos/pages/details.aspx?p=30343","nome":"Xiaomi Mi 9T","pontos":"Dispon\u00edvel","preco":"389,98","pretacoes":"Dispon\u00edvel","tags":["novidade","Oportunidade Presta\u00e7\u00f5es","asda","erwer"]})
-print(x)
-
 #Recebe a lista e devolve os 5 primeiros elementos formatados a enviar ao user
 def process_list(content):
     n = 0
