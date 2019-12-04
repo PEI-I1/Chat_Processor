@@ -7,18 +7,20 @@ from rules_mode_rp import problem_rules
 
 
 def load_redis(idChat, idUser):
-    #TODO carregar int do redis, caso não exista returnar 0
-    return 0
+    aux = globals.redis_db.get(idChat + idUser + '_rules_mode')
+
+    if aux:
+        return int(aux)
+    else:
+        return 0
 
 
 def save_redis(idChat, idUser, menu):
-    #TODO guardar int do menu no redis
-    return None
+    globals.redis_db.set(idChat + idUser + '_rules_mode', menu)
 
 
 def remove_redis(idChat, idUser):
-    #TODO utilizador quer sair do modo regras, remover entrada do redis
-    return None
+    globals.redis_db.delete(idChat + idUser + '_rules_mode')
 
 
 def get_response_rules(idChat, idUser, msg, name):
