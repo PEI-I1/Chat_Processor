@@ -1,4 +1,3 @@
-# TODO, comfirmar os pedidos do FS_scrapper
 # example, on some cinemas end-points 'lat' and 'lon' are required or 'search_term'
 cat = [
     {
@@ -8,9 +7,9 @@ cat = [
         'paramsRequired': {},
         'paramsOptional': {'0': 'SUBJECT'},
         'locationParam': {},
-        'canRequestWithoutParams': False,
+        'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o assunto em que precisa de apoio.'
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': 'fs_scrapper/phone_model',
@@ -21,7 +20,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o modelo de telemóvel que procura.'
     },
     {
         'request': 'fs_scrapper/brand_phones',
@@ -32,7 +31,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos a marca de telemóveis que procura.'
     },
     {
         'request': 'fs_scrapper/top_phones',
@@ -70,7 +69,7 @@ cat = [
     {
         'request': 'fs_scrapper/ofer_phones',
         'service': 'FS_SCRAPER',
-        'words': ['oferta','telemóvel','telemóveis'],
+        'words': ['oferta','telemóvel','telemóveis', 'extra'],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -111,6 +110,9 @@ cat = [
         'needAtLeastOneOptionalParam': False,
         'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
     },
+
+    #TODO falta aqui 4 routes   -- preciso de saber primeiro se tenho que mudar a api
+
     {
         'request': 'fs_scrapper/all_wtf',
         'service': 'FS_SCRAPER',
@@ -124,6 +126,18 @@ cat = [
 
     },
     {
+        'request': 'fs_scrapper/wtf_name',
+        'service': 'FS_SCRAPER',
+        'words': ['tarifário','telemóvel','wtf'],
+        'paramsRequired': {'0':'NAME'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o nome do tarifário WTF que pretende.'
+
+    },
+    {
         'request': 'fs_scrapper/stores_zone',
         'service': 'FS_SCRAPER',
         'words': ['loja','lojas','zona'],
@@ -132,7 +146,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos a zona do país que procura.'
     },
     {
         'request': 'fs_scrapper/store_address',
@@ -143,8 +157,9 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos a morada da loja que procura.'
     },
+    #TODO falta o specific package   -- preciso de saber primeiro se tenho que mudar a api
     {
         'request': 'fs_scrapper/packages',
         'service': 'FS_SCRAPER',
@@ -181,7 +196,7 @@ cat = [
     {
         'request': 'fs_scrapper/packages_service',
         'service': 'FS_SCRAPER',
-        'words': ['ordenar','preço','pacote','pacotes'],
+        'words': ['pacote','pacotes', 'serviços', 'serviço', 'TV', 'NET', 'TV+NET', 'TV+VOZ', 'TV+NET+VOZ'],
         'paramsRequired': {'0':'PACKAGE'},
         'paramsOptional': {},
         'locationParam': {},
@@ -198,8 +213,9 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
     },
+    #TODO faltam os últimos 5 métodos   -- preciso de saber primeiro se tenho que mudar a api
     # CINEMAS
     {
         'request': '/scrapper/cinemas/search',
