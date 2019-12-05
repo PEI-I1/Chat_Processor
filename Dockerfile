@@ -2,7 +2,6 @@ FROM python:3.6
 MAINTAINER PEI-i1
 
 RUN apt-get update && apt-get install -y \
-    redis \
     gcc \
     gfortran \
     libblas-dev \

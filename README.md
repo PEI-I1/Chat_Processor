@@ -30,6 +30,8 @@ TODO
 - Build Docker image: `docker build -t chat_processor .`
 - Run Docker container: `docker run -p 5001:5001 -it chat_processor`
 
+**NOTE:** You need to run redis-server apart (`redis-server &`).
+
 ## API
 
 <details>
