@@ -13,17 +13,17 @@ TODO
 - pip
 - python3.6
 - redis
-- gcc-fortran
-- blas
-- lapack
-- hdf5
+- gfortran
+- libblas-dev
+- liblapack-dev
+- libhdf5-dev
 
 #### Worktrough
 
 - `./install.sh`
 - `source ./env/bin/activate`
 - `redis-server &`
-- `python3 chat_processor/app.py`
+- `python3.6 chat_processor/app.py`
 
 ### Deployment
 

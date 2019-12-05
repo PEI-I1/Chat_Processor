@@ -1,4 +1,4 @@
-python_cmd="python3"
+python_cmd="python3.6"
 
 $python_cmd -m venv env
 source ./env/bin/activate
