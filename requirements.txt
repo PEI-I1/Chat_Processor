@@ -7,3 +7,4 @@ deeppavlov>=0.6.1
 flask>=1.1.1
 redis>=3.3.11
 unidecode>=1.1.1
+setuptools>=41.0.0
