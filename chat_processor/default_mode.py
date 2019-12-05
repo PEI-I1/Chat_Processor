@@ -1,7 +1,7 @@
 from categoria_dic import cat as dicionario
 from spell_checker import spell_check_ss
 from utils import *
-import globals, nltk, json
+import globals, nltk, json, copy
 import regex as re
 
 confianca_level = 0.70
@@ -98,6 +98,9 @@ def lista_params_opcionais(missing_optional_params):
             lista.append('sinopse')
         elif k is 'age':
             lista.append('idade')
+        else:
+            if v['type'] is 'SUBJECT':
+                lista.append('assunto')
 
     for i in range(0,len(lista)):
         if i < len(lista)-2:
@@ -109,58 +112,61 @@ def lista_params_opcionais(missing_optional_params):
         frase.append(palavra)
 
     frase = ''.join(frase)
-    resposta = "Por favor, diga informações acerda de um destes parãmetros para adicionar à pesquisa: " + frase
+    resposta = "Por favor, diga informações acerca de um destes parâmetros para adicionar à pesquisa: " + frase
     return resposta
 
 # recolhe os params necessarios (params) apartir da DB (db_params) e da frase (msg_params)
 def compare_params(params, msg_params, db_params):
-    required_params = {}
-    required_params.update(db_params)
+    required_params = copy.deepcopy(db_params)
+    size = len(msg_params)
 
     for (n, t) in params.items():
-        if not required_params.get(n,None):
+        if required_params.get(n,None) == None:
             found = None
-            for pp in msg_params:
-                if pp.type == t:
-                    found = {n:{"type":t,"entity":pp.entity}}
+            i = 0
 
-            if not found:
+            while i < size and found == None:
+                if msg_params[i]["type"] == t:
+                    found = {n:{"type":t,"entity":msg_params[i]["entity"]}}
+                i+=1
+
+            if found == None:
                 found = {n:{"type":t}}
 
             required_params.update(found)
 
     return required_params
 
-# devolve os params válidados e os params em falta
+# devolve os params válidos e os params em falta
 def separate_params(params):
     valid_params = {}
     missing_params = {}
 
     for (n,value) in params.items():
         # se tiver entity está validado, senao esta em falta
-        if value.get('entity', None):
-            valid_params.update({n:value})
+        if "entity" in value:
+            valid_params[n] = value
         else:
-            missing_params.update({n:value})
+            missing_params[n] = value
 
     return valid_params, missing_params
 
 def add_new_params(l, new_l):
-    for p in new_l:
-        if len([param for param in l if param == p]) == 0:
-            l.append(p)
+    for (k,v) in new_l.items():
+        if not k in l:
+            l.update({k:v})
 
 # converte a estrutura dos parametros para a forma aceite pelo get_content
 def convert_valid_params(valid_required_params,valid_optional_params):
     valid_required_params_array = []
-    valid_optional_params_array = {}
+    valid_optional_params_dict = {}
 
     for (n,value) in valid_required_params.items():
-        valid_required_params_array[n] = value.entity
+        valid_required_params_array[n] = value["entity"]
     for (n,value) in valid_optional_params.items():
-        valid_required_params_array.update({n: value.entity})
+        valid_optional_params_dict[n] = value["entity"]
 
-    return valid_required_params_array, valid_optional_params_array
+    return valid_required_params_array, valid_optional_params_dict
 
 def process_params(idChat, idUser, msg, name, chatData):
     detected_request = chatData["cat"]
@@ -176,56 +182,52 @@ def process_params(idChat, idUser, msg, name, chatData):
     if not paramsRequired and not paramsOptional and not location_params:
         content = get_content(detected_request, [], {})
         globals.redis_db.delete(idChat)
-        pass
     else:
         # obrigatórios
         required_params = compare_params(paramsRequired, msg_params, chatData['paramsRequired'])
         valid_required_params, missing_required_params = separate_params(required_params)
         # opcionais
         optional_params = compare_params(paramsOptional, msg_params, chatData['paramsOptional'])
-        valid_optional_params, missing_optional_params = separate_params(paramsOptional)
+        valid_optional_params, missing_optional_params = separate_params(optional_params)
         # converter
-        valid_required_params_array, valid_required_params_array = convert_valid_params(valid_required_params,valid_optional_params)
+        valid_required_params_array, valid_optional_params_dict = convert_valid_params(valid_required_params,valid_optional_params)
         # adicionar bd
         add_new_params(chatData['paramsRequired'], valid_required_params)
         add_new_params(chatData['paramsOptional'], valid_optional_params)
-        globals.redis_db.set(idChat, json.dumps(chatData))
 
         # quando falta params obrigatório
         #   -> perguntar ao utilizador os parametros que faltam
         if len(missing_required_params):
             # FIXME: funciona para todos os nossos casos (só há um caso com 2params obrigatorios)
             #           pode ser melhorada qd coisas mais importantes estiverem resolvidas
-            return entry['missingRequiredParamsPhrase']
-
+            content = entry['missingRequiredParamsPhrase']
+            globals.redis_db.set(idChat, json.dumps(chatData))
         # se faltarem params optionais
-        if len(missing_optional_params):
+        elif len(missing_optional_params):
             # se precisarmos de um param optional e não existir nenhum (/scrapper/movies/search')
             if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
                 # FIXME: funciona para o unico caso que temos
                 #         pode ser melhorada mais tarde
-                resposta = "Por favor, diga informações acerda de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade"
-                return resposta
+                content = "Por favor, diga informações acerda de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade"
+                globals.redis_db.set(idChat, json.dumps(chatData))
             else:
                 # processar resposta do user e devolver o conteudo pedido
                 if chatData["status"] == "waitingMoreOptionalParams":
-                    # FIXME: dar mais opçoes de negaçao para o user
-                    if "nao" in msg:
+                    if clean_msg(msg) == "nao":
                         pass
                     else:
                         pass
                     # NOTE: acho que o if else é inutil really...
                     #       se nao houver params eles nao sao processados e nao
-                    content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
+                    content = get_content(detected_request, valid_required_params_array, valid_optional_params_dict)
                     globals.redis_db.delete(idChat)
                 # listar todos os params opcionais e esperar resposta
                 else:
                   chatData["status"] = "waitingMoreOptionalParams"
                   globals.redis_db.set(idChat, json.dumps(chatData))
-                  resposta = lista_params_opcionais(missing_optional_params)
-                  return resposta
+                  content = lista_params_opcionais(missing_optional_params)
         else: # nao faltam params opcionais
-            content = get_content(detected_request, valid_required_params_array, valid_required_params_array)
+            content = get_content(detected_request, valid_required_params_array, valid_optional_params_dict)
             globals.redis_db.delete(idChat)
 
     if content:
@@ -234,7 +236,7 @@ def process_params(idChat, idUser, msg, name, chatData):
             msg_send = process_list(content)
             globals.redis_db.set("vermais" + idChat, json.dumps(content))
         else:
-            msg_send = process(content)
+            msg_send = content
     else:
         msg_send = "Não foi possível obter a resposta..."
 

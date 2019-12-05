@@ -35,7 +35,7 @@ def get_response(idChat, idUser, msg, name):
     if not chatData:
         chatData = {"msgs": [], "status": "", "tries": 0,
                     "cat": "", "cat_change": "",
-                    "paramsRequired": [], "paramsOptional":[]}
+                    "paramsRequired": {}, "paramsOptional":{}}
         globals.redis_db.set(idChat, json.dumps(chatData))
 
     if chatData["status"] == "modo regras":

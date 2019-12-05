@@ -103,7 +103,7 @@ def get_content(cat, params, querystrings):
     if len(querystrings) > 0:
         URL += "?"
         aux = []
-        for (k,v) in querystrings:
+        for (k,v) in querystrings.items():
             aux.append(urllib.parse.quote(k, safe='') + "=" + urllib.parse.quote(v, safe=''))
         URL += "&".join(aux)
 

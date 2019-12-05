@@ -1,7 +1,7 @@
 # example, on some cinemas end-points 'lat' and 'lon' are required or 'search_term'
 cat = [
     {
-        'request': 'fs_scrapper/linhas_apoio',
+        'request': '/fs_scrapper/linhas_apoio',
         'service': 'FS_SCRAPER',
         'words': ['linhas','linha','apoio','assunto','número','contacto','contactos','empresa','empresas','aderir','informações','adicionais','informação','adicional','serviços','chamada','chamadas','ligar','falar',"assistente"],
         'paramsRequired': {},
@@ -12,7 +12,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/phone_model',
+        'request': '/fs_scrapper/phone_model',
         'service': 'FS_SCRAPER',
         'words': ['modelos','modelo','telemóvel','telemóveis'],
         'paramsRequired': {'0':'PRODUCT'},
@@ -23,7 +23,7 @@ cat = [
         'missingRequiredParamsPhrase' : 'Por favor, diga-nos o modelo de telemóvel que procura.'
     },
     {
-        'request': 'fs_scrapper/brand_phones',
+        'request': '/fs_scrapper/brand_phones',
         'service': 'FS_SCRAPER',
         'words': ['marca','marcas','comprar','telemóvel','telemóveis','preço'],
         'paramsRequired': {'0':'ORG'},
@@ -34,7 +34,7 @@ cat = [
         'missingRequiredParamsPhrase' : 'Por favor, diga-nos a marca de telemóveis que procura.'
     },
     {
-        'request': 'fs_scrapper/top_phones',
+        'request': '/fs_scrapper/top_phones',
         'service': 'FS_SCRAPER',
         'words': ['top','telemóvel','telemóveis','melhores','link'],
         'paramsRequired': {},
@@ -45,7 +45,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/promo_phones',
+        'request': '/fs_scrapper/promo_phones',
         'service': 'FS_SCRAPER',
         'words': ['promoções','promoção','desconto','descontos','barato','baratos','telemóvel','telemóveis'],
         'paramsRequired': {},
@@ -56,7 +56,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/new_phones',
+        'request': '/fs_scrapper/new_phones',
         'service': 'FS_SCRAPER',
         'words': ['novidades','novos','telemóvel','telemóveis','recente','recentes'],
         'paramsRequired': {},
@@ -67,7 +67,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/ofer_phones',
+        'request': '/fs_scrapper/ofer_phones',
         'service': 'FS_SCRAPER',
         'words': ['oferta','telemóvel','telemóveis', 'extra'],
         'paramsRequired': {},
@@ -78,7 +78,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/prest_phones',
+        'request': '/fs_scrapper/prest_phones',
         'service': 'FS_SCRAPER',
         'words': ['prestações','prestação','telemóvel','telemóveis'],
         'paramsRequired': {},
@@ -89,7 +89,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/points_phones',
+        'request': '/fs_scrapper/points_phones',
         'service': 'FS_SCRAPER',
         'words': ['ponto','pontos','telemóvel','telemóveis'],
         'paramsRequired': {},
@@ -100,7 +100,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/phones_price',
+        'request': '/fs_scrapper/phones_price',
         'service': 'FS_SCRAPER',
         'words': ['ordenar','preço','telemóvel','telemóveis'],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
@@ -114,7 +114,7 @@ cat = [
     #TODO falta aqui 4 routes   -- preciso de saber primeiro se tenho que mudar a api
 
     {
-        'request': 'fs_scrapper/all_wtf',
+        'request': '/fs_scrapper/all_wtf',
         'service': 'FS_SCRAPER',
         'words': ['tarifários','telemóvel','wtf'],
         'paramsRequired': {},
@@ -126,7 +126,7 @@ cat = [
 
     },
     {
-        'request': 'fs_scrapper/wtf_name',
+        'request': '/fs_scrapper/wtf_name',
         'service': 'FS_SCRAPER',
         'words': ['tarifário','telemóvel','wtf'],
         'paramsRequired': {'0':'NAME'},
@@ -138,7 +138,7 @@ cat = [
 
     },
     {
-        'request': 'fs_scrapper/stores_zone',
+        'request': '/fs_scrapper/stores_zone',
         'service': 'FS_SCRAPER',
         'words': ['loja','lojas','zona'],
         'paramsRequired': {'0':'GPE'},
@@ -149,7 +149,7 @@ cat = [
         'missingRequiredParamsPhrase' : 'Por favor, diga-nos a zona do país que procura.'
     },
     {
-        'request': 'fs_scrapper/store_address',
+        'request': '/fs_scrapper/store_address',
         'service': 'FS_SCRAPER',
         'words': ['morada','loja','lojas'],
         'paramsRequired': {'0':'FAC'},
@@ -161,7 +161,7 @@ cat = [
     },
     #TODO falta o specific package   -- preciso de saber primeiro se tenho que mudar a api
     {
-        'request': 'fs_scrapper/packages',
+        'request': '/fs_scrapper/packages',
         'service': 'FS_SCRAPER',
         'words': ['pacotes'],
         'paramsRequired': {},
@@ -172,7 +172,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/fiber_packages',
+        'request': '/fs_scrapper/fiber_packages',
         'service': 'FS_SCRAPER',
         'words': ['pacotes', 'fibra'],
         'paramsRequired': {},
@@ -183,7 +183,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/satelite_packages',
+        'request': '/fs_scrapper/satelite_packages',
         'service': 'FS_SCRAPER',
         'words': ['pacotes', 'satelite', 'satélite'],
         'paramsRequired': {},
@@ -194,7 +194,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/packages_service',
+        'request': '/fs_scrapper/packages_service',
         'service': 'FS_SCRAPER',
         'words': ['pacote','pacotes', 'serviços', 'serviço', 'TV', 'NET', 'TV+NET', 'TV+VOZ', 'TV+NET+VOZ'],
         'paramsRequired': {'0':'PACKAGE'},
@@ -205,7 +205,7 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': 'fs_scrapper/packages_price',
+        'request': '/fs_scrapper/packages_price',
         'service': 'FS_SCRAPER',
         'words': ['ordenar','preço','pacote','pacotes'],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
