@@ -25,7 +25,7 @@ cat = [
     {
         'request': '/fs_scrapper/brand_phones',
         'service': 'FS_SCRAPER',
-        'words': ['marca','marcas','comprar','telemovel','telemoveis','preco'],
+        'words': ['marca','marcas', 'telemovel','telemoveis'],
         'paramsRequired': {'0':'ORG'},
         'paramsOptional': {},
         'locationParam': {},
@@ -36,7 +36,7 @@ cat = [
     {
         'request': '/fs_scrapper/top_phones',
         'service': 'FS_SCRAPER',
-        'words': ['top','telemovel','telemoveis','melhores','link'],
+        'words': ['top','telemovel','telemoveis','melhores'],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -110,9 +110,50 @@ cat = [
         'needAtLeastOneOptionalParam': False,
         'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
     },
-
-    #TODO falta aqui 4 routes   -- preciso de saber primeiro se tenho que mudar a api
-
+    {
+        'request': '/fs_scrapper/phones_brand_price',
+        'service': 'FS_SCRAPER',
+        'words': ['marca','marcas','ordenar','preco','telemovel','telemoveis'],
+        'paramsRequired': {'0':'ORG', '1':'MONEY', '2':'MONEY'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, forneça uma marca e um valor mínimo e um valor máximo.'
+    },
+    {
+        'request': '/fs_scrapper/phones_brand_promo',
+        'service': 'FS_SCRAPER',
+        'words': ['marca','marcas','promocoes','promocao','desconto','descontos','barato','baratos','telemovel','telemoveis'],
+        'paramsRequired': {'0':'ORG'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos a marca de telemóveis que procura.'
+    },
+    {
+        'request': '/fs_scrapper/phones_promo_price',
+        'service': 'FS_SCRAPER',
+        'words': ['promocoes','promocao','desconto','descontos','barato','baratos','ordenar','preco','telemovel','telemoveis'],
+        'paramsRequired': {'0':'MONEY', '1':'MONEY'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
+    },
+    {
+        'request': '/fs_scrapper/new_phones_brand',
+        'service': 'FS_SCRAPER',
+        'words': ['marca','marcas','novidades','novos','telemovel','telemoveis','recente','recentes'],
+        'paramsRequired': {'0':'ORG'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos a marca de telemóveis que procura.'
+    },
     {
         'request': '/fs_scrapper/all_wtf',
         'service': 'FS_SCRAPER',
@@ -159,7 +200,17 @@ cat = [
         'needAtLeastOneOptionalParam': False,
         'missingRequiredParamsPhrase' : 'Por favor, diga-nos a morada da loja que procura.'
     },
-    #TODO falta o specific package   -- preciso de saber primeiro se tenho que mudar a api
+    {
+        'request': '/fs_scrapper/specific_package',
+        'service': 'FS_SCRAPER',
+        'words': ['pacote'],
+        'paramsRequired': {'0':'PRODUCT', '1':'NAME'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o tipo (fibra ou satélite) e o nome do pacto que procura.'
+    },
     {
         'request': '/fs_scrapper/packages',
         'service': 'FS_SCRAPER',
@@ -202,7 +253,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos os serviços que procura (TV, NET, TV+NET, TV+VOZ, TV+NET+VOZ'
     },
     {
         'request': '/fs_scrapper/packages_price',
@@ -215,7 +266,61 @@ cat = [
         'needAtLeastOneOptionalParam': False,
         'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
     },
-    #TODO faltam os últimos 5 métodos   -- preciso de saber primeiro se tenho que mudar a api
+    {
+        'request': '/fs_scrapper/packages_service_price',
+        'service': 'FS_SCRAPER',
+        'words': ['pacote','pacotes', 'servicos', 'servico', 'TV', 'NET', 'TV+NET', 'TV+VOZ', 'TV+NET+VOZ', 'ordenar','preco'],
+        'paramsRequired': {'0':'PACKAGE','1':'MONEY', '2':'MONEY'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, forneça o serviço que pretende e um valor mínimo e um valor máximo.'
+    },
+    {
+        'request': '/fs_scrapper/fiber_packages_price',
+        'service': 'FS_SCRAPER',
+        'words': ['pacotes', 'fibra', 'ordenar','preco'],
+        'paramsRequired': {'0':'MONEY', '1':'MONEY'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
+    },
+    {
+        'request': '/fs_scrapper/satelite_packages_price',
+        'service': 'FS_SCRAPER',
+        'words': ['pacotes', 'satelite', 'ordenar','preco'],
+        'paramsRequired': {'0':'MONEY', '1':'MONEY'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, forneça um valor mínimo e um valor máximo.'
+    },
+    {
+        'request': '/fs_scrapper/fiber_packages_service',
+        'service': 'FS_SCRAPER',
+        'words': ['pacotes', 'fibra', 'servicos', 'servico', 'TV', 'NET', 'TV+NET', 'TV+VOZ', 'TV+NET+VOZ'],
+        'paramsRequired': {'0':'PACKAGE'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos os serviços que procura (TV, NET, TV+NET, TV+VOZ, TV+NET+VOZ'
+    },
+    {
+        'request': '/fs_scrapper/satelite_packages_service',
+        'service': 'FS_SCRAPER',
+        'words': ['pacotes', 'satelite', 'servicos', 'servico', 'TV', 'NET', 'TV+NET', 'TV+VOZ', 'TV+NET+VOZ'],
+        'paramsRequired': {'0':'PACKAGE'},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': False,
+        'needAtLeastOneOptionalParam': False,
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos os serviços que procura (TV, NET, TV+NET, TV+VOZ, TV+NET+VOZ'
+    },
     # CINEMAS
     {
         'request': '/scrapper/cinemas/search',
