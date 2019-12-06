@@ -16,11 +16,12 @@ def save_redis(idChat, idUser, menu):
     globals.redis_db.set(idChat + idUser + '_rules_mode', menu)
 
 
-def remove_redis(idChat, idUser):
+def remove_redis(idChat, idUser, chatData):
+    chatData["status"] = ''
     globals.redis_db.delete(idChat + idUser + '_rules_mode')
 
 
-def get_response_rules(idChat, idUser, msg, name):
+def get_response_rules(idChat, idUser, msg, name, chatData):
     menu = load_redis(idChat, idUser)
 
     if menu == 0:
@@ -33,20 +34,20 @@ def get_response_rules(idChat, idUser, msg, name):
         opcao = int(msg)
 
         if opcao == 1:
-            resposta = cinema_rules(idChat, idUser, opcao, msg)
+            resposta = cinema_rules(idChat, idUser, opcao, msg, chatData)
             return resposta
 
         elif opcao == 2 or opcao == 3 or opcao == 4 or opcao == 5:
-            resposta = fs_rules(idChat, idUser, opcao, msg)
+            resposta = fs_rules(idChat, idUser, opcao, msg, chatData)
             return resposta
 
         elif opcao == 6:
-            resposta = problem_rules(idChat, idUser, opcao, msg)
+            resposta = problem_rules(idChat, idUser, opcao, msg, chatData)
             return resposta
 
         elif opcao == 7:
-            remove_redis(idChat, idUser)
-            return None         # o que fazer quando se sai do modo regas?
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
     
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
@@ -54,22 +55,22 @@ def get_response_rules(idChat, idUser, msg, name):
 4. lojas da NOS\n5. linhas de apoio\n6. resolução de problemas técnicos\n7. sair''')
 
     elif 10 < menu < 20 or 100 < menu < 200:
-        resposta = cinema_rules(idChat, idUser, menu, msg)
+        resposta = cinema_rules(idChat, idUser, menu, msg, chatData)
         return resposta
 
     elif 20 < menu < 30 or 200 < menu < 300:
-        resposta = fs_rules(idChat, idUser, menu, msg)
+        resposta = fs_rules(idChat, idUser, menu, msg, chatData)
         return resposta
 
     elif 30 < menu < 40 or 300 < menu < 400:
-        resposta = problem_rules(idChat, idUser, menu, msg)
+        resposta = problem_rules(idChat, idUser, menu, msg, chatData)
         return resposta
 
     else:
         return str("Pedimos desculpa, mas algo correu mal.")
 
 
-def cinema_rules(idChat, idUser, menu, msg):
+def cinema_rules(idChat, idUser, menu, msg, chatData):
     opcao = int(msg)
 
     if menu == 1:
@@ -89,37 +90,37 @@ def cinema_rules(idChat, idUser, menu, msg):
     elif menu == 11:
         if opcao == 1:
             #todo Search for cinemas or get the closest ones
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 2:
             #todo Search for movies in cinema
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 3:
             #todo Search for movies based on genre, producer, cast, synopsis and age restriction
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 4:
             #todo Search for upcoming movies
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 5:
             #todo Get details of movie
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 6:
             # todo Search for sessions of movies under a certain duration
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 7:
             #todo Search for the next sessions
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 8:
             #todo Search sessions for a given movie
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         elif opcao == 9:
             #todo Search for sessions by date
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
 
-def fs_rules(idChat, idUser, menu, msg):
+def fs_rules(idChat, idUser, menu, msg, chatData):
     opcao = int(msg)
 
     if menu == 2:
@@ -159,8 +160,8 @@ def fs_rules(idChat, idUser, menu, msg):
 3. apresentar pacotes por serviço (TV+NET+VOZ, TV+NET, ...)\n4. apresentar pacotes por preço\n5. sair''')
 
         elif opcao == 3:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
@@ -177,35 +178,35 @@ def fs_rules(idChat, idUser, menu, msg):
 3. procurar por telemóvel por marca com promoção\n4. Sair''')
         elif opcao == 3:
             #todo ir buscar top phones
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 4:
             # todo ir buscar phnes em promoção
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 5:
             # todo ir buscar phones mais recentes
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 6:
             # todo ir buscar phones com oferta
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 7:
             # todo ir buscar possibilidades de prestações
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 8:
             # todo ir buscar phones por pontos
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 9:
             # todo ir buscar com limites menu 220
             save_redis(idChat, idUser, 220)
             return None
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
     elif menu == 23:
         if opcao == 1:
@@ -217,8 +218,8 @@ def fs_rules(idChat, idUser, menu, msg):
             return str('''Indique a morada da loja NOS desejada.''')
 
         elif opcao == 3:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
@@ -235,11 +236,11 @@ def fs_rules(idChat, idUser, menu, msg):
             # TODO fazer pedido aos scrappers -- devolver todas as linhas de apoio
             return None
         else:
-            remove_redis(idChat,idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
     elif menu == 25:
         if opcao == 1:
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver todos os tarifários wtf
 
         elif opcao == 2:
@@ -248,8 +249,8 @@ def fs_rules(idChat, idUser, menu, msg):
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
 
         elif opcao == 3:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
@@ -266,15 +267,15 @@ def fs_rules(idChat, idUser, menu, msg):
             #todo procurar telms por marca que estejam em promoção
             return None
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
     elif menu == 29:
-        remove_redis(idChat, idUser)
+        remove_redis(idChat, idUser, chatData)
         #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver todas as lojas nos na zona da msg
 
     elif menu == 201:
-        remove_redis(idChat, idUser)
+        remove_redis(idChat, idUser, chatData)
         #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver a loja nos correspondente à morada da msg
 
     elif menu == 202:
@@ -304,23 +305,23 @@ def fs_rules(idChat, idUser, menu, msg):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
                         1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
     elif menu == 203:
         if opcao == 1:
             nome = 'WTF 1GB'
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver tarifário wtf do nome
 
         elif opcao == 2:
             nome = 'WTF 5GB'
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver tarifário wtf do nome
 
         elif opcao == 3:
             nome = 'WTF 10GB'
-            remove_redis(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver tarifário wtf do nome
 
         else:
@@ -338,104 +339,104 @@ def fs_rules(idChat, idUser, menu, msg):
     elif menu == 241:
         if opcao == 1:
             #todo scrappers ir buscar pacotes nos com televisão
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 2:
             #todo scrappers ir buscar telemóveis
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 3:
             #todo scrappers ir buscar internet fixa
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 4:
             #todo scrappers ir buscar internet movel
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 5:
             #todo scrappers ir buscar telefone
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 6:
             #todo scrappers ir buscar ativação de pacotes internet
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 7:
             # todo scrappers ir buscar apoio infotmático
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         else:
             # sair
-            remove_redis(idChat,idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
     elif menu == 242:
         if opcao == 1:
             #todo scrappers ir buscar empresas
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 2:
             # todo scrappers ir buscar corporate
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 3:
             # todo scrappers ir buscar profissionais e empresas
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 4:
             # todo scrappers ir buscar Particulares
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         else:
             # sair
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
     elif menu == 243:
         if opcao == 1:
             #todo ir buscar reparacao equipamentos
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 2:
             # todo ir buscar reparacao equipamentos
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
     elif menu == 244:
         if opcao == 1:
             # todo ir buscar denuncia de pirataria
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
     elif menu == 245:
         if opcao == 1:
             # todo ir buscar faturas contencioso
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
     elif menu == 246:
         if opcao == 1:
             # todo ir buscar informações video interprete
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         elif opcao == 2:
             # todo ir buscar info portabilidade
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         else:
-            remove_redis(idChat, idUser)
-            return None
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
 
     # TODO continuar menus
     else:
         return str("Pedimos desculpa, mas algo correu mal.")
 
 
-def problem_rules(idChat, idUser, menu, msg):
+def problem_rules(idChat, idUser, menu, msg, chatData):
     #TODO
     return ""
