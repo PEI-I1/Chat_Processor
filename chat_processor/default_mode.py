@@ -27,16 +27,10 @@ def criar_noccur_dic(palavras):
 # com base na dic do noccur calcular qual é a categoria mais provável e a sua confiança
 # confiança = noccur da categoria que aparece mais / número de ocorrência de todas as categorias
 def calcula_confianca(noccur):
-    total = 0
-    confianca = 0
     if len(noccur):
+        total = sum(noccur.values())
         cat_maior = max(noccur, key=noccur.get)
-        valor_cat = noccur.get(cat_maior)
-
-        for valor in noccur.values():
-            total += valor
-
-        confianca = valor_cat / total
+        confianca = noccur.get(cat_maior) / total
     else:
         cat_maior = "Not Found"
         confianca = 0
@@ -168,27 +162,39 @@ def convert_valid_params(valid_required_params,valid_optional_params):
 
     return valid_required_params_array, valid_optional_params_dict
 
-def process_params(idChat, idUser, msg, name, chatData):
+def validAndMissingParams(msg_params, chatData, entry):
+    # obrigatórios
+    required_params = compare_params(entry['paramsRequired'], msg_params, chatData['paramsRequired'])
+    valid_required_params, missing_required_params = separate_params(required_params)
+    # opcionais
+    optional_params = compare_params(entry['paramsOptional'], msg_params, chatData['paramsOptional'])
+    valid_optional_params, missing_optional_params = separate_params(optional_params)
+
+    return valid_required_params, missing_required_params, valid_optional_params, missing_optional_params
+
+def convert_params_CC(msg_params, entry):
+    # obrigatórios
+    required_params = compare_params(entry['paramsRequired'], msg_params, {})
+    valid_required_params, missing_required_params = separate_params(required_params)
+    # opcionais
+    optional_params = compare_params(entry['paramsOptional'], msg_params, {})
+    valid_optional_params, missing_optional_params = separate_params(optional_params)
+
+    return valid_required_params, valid_optional_params
+
+def process_params(idChat, idUser, msg, name, chatData, msg_params):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
-    paramsRequired = entry['paramsRequired']
-    paramsOptional = entry['paramsOptional']
     location_params = entry['locationParam']
     needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
-    msg_params = proc_ents(globals.ner_model([msg]))
     content = None
 
     # quanto o pedido nao recebe params > devolve resposta
-    if not paramsRequired and not paramsOptional and not location_params:
+    if not entry['paramsRequired'] and not entry['paramsOptional'] and not location_params:
         content = get_content(detected_request, [], {})
         globals.redis_db.delete(idChat)
     else:
-        # obrigatórios
-        required_params = compare_params(paramsRequired, msg_params, chatData['paramsRequired'])
-        valid_required_params, missing_required_params = separate_params(required_params)
-        # opcionais
-        optional_params = compare_params(paramsOptional, msg_params, chatData['paramsOptional'])
-        valid_optional_params, missing_optional_params = separate_params(optional_params)
+        valid_required_params, missing_required_params, valid_optional_params, missing_optional_params = validAndMissingParams(msg_params, chatData, entry)
         # converter
         valid_required_params_array, valid_optional_params_dict = convert_valid_params(valid_required_params,valid_optional_params)
         # adicionar bd
@@ -249,19 +255,28 @@ def get_response_default(idChat, idUser, msg, name, chatData):
 
         if mc == "sim":
             chatData["cat"] = chatData["cat_change"]
-            chatData["cat_change"] = ""
-            globals.redis_db.set(idChat, json.dumps(chatData))
 
-        msg_send = process_params(idChat, idUser, msg, name, chatData)
+        entry = get_entry(chatData["cat"])
+        valid_req_params, valid_opt_params = convert_params_CC(chatData["paramsRequired"], entry)
+        chatData['paramsRequired'] = valid_req_params
+        chatData['paramsOptional'] = valid_opt_params
+
+        chatData["status"] == ""
+        chatData["cat_change"] = ""
+
+        params = proc_ents(globals.ner_model([msg]))
+        msg_send = process_params(idChat, idUser, msg, name, chatData, params)
     else:
         cat, confianca = get_categoria_frase(msg)
+        print(cat)
+        print(confianca)
         params = proc_ents(globals.ner_model([msg]))
 
         if chatData["cat"] == "":
             if confianca > confianca_level:
                 chatData["cat"] = cat
                 globals.redis_db.set(idChat, json.dumps(chatData))
-                msg_send = process_params(idChat, idUser, msg, name, chatData)
+                msg_send = process_params(idChat, idUser, msg, name, chatData, params)
             else:
                 if chatData["tries"] == tries - 1:
                     msg_send = "Desculpe mas não foi possível identificar o que pretende.\n\n"
@@ -281,14 +296,15 @@ def get_response_default(idChat, idUser, msg, name, chatData):
         else:
             if confianca > confianca_level:
                 if chatData["cat"] == cat:
-                    msg_send = process_params(idChat, idUser, msg, name, chatData)
+                    msg_send = process_params(idChat, idUser, msg, name, chatData, params)
                 else:
                     chatData["cat_change"] = cat
                     chatData["paramsRequired"] = params
+                    chatData["status"] = "mudar categoria?"
                     globals.redis_db.set(idChat, json.dumps(chatData))
                     msg_send = "Pretende mudar de categoria de '" + chatData["cat"] + "' para '" + cat + "'? Responda por favor 'sim' ou 'não'"
             else:
-                msg_send = process_params(idChat, idUser, msg, name, chatData)
+                msg_send = process_params(idChat, idUser, msg, name, chatData, params)
 
     return str(msg_send)
 
