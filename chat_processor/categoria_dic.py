@@ -5,7 +5,7 @@ cat = [
         'service': 'FS_SCRAPER',
         'words': ['linhas','linha','apoio','assunto','numero','contacto','contactos','empresa','empresas','aderir','informacoes','adicionais','informacao','adicional','servicos','chamada','chamadas','ligar','falar',"assistente"],
         'paramsRequired': {},
-        'paramsOptional': {'0': 'SUBJECT'},
+        'paramsOptional': {'subject': 'SUBJECT'},
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,

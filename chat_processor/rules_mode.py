@@ -1,6 +1,5 @@
 import globals #redis_db
-from utils import get_content, get_entry
-from utils import get_content, get_service
+from utils import get_content
 
 
 def load_redis(idChat, idUser):
@@ -89,31 +88,31 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 11:
         if opcao == 1:
-            #todo Search for cinemas or get the closest ones
+            #TODO Search for cinemas or get the closest ones
             remove_redis(idChat, idUser, chatData)
         elif opcao == 2:
-            #todo Search for movies in cinema
+            #TODO Search for movies in cinema
             remove_redis(idChat, idUser, chatData)
         elif opcao == 3:
-            #todo Search for movies based on genre, producer, cast, synopsis and age restriction
+            #TODO Search for movies based on genre, producer, cast, synopsis and age restriction
             remove_redis(idChat, idUser, chatData)
         elif opcao == 4:
-            #todo Search for upcoming movies
+            #TODO Search for upcoming movies
             remove_redis(idChat, idUser, chatData)
         elif opcao == 5:
-            #todo Get details of movie
+            #TODO Get details of movie
             remove_redis(idChat, idUser, chatData)
         elif opcao == 6:
-            # todo Search for sessions of movies under a certain duration
+            #TODO Search for sessions of movies under a certain duration
             remove_redis(idChat, idUser, chatData)
         elif opcao == 7:
-            #todo Search for the next sessions
+            #TODO Search for the next sessions
             remove_redis(idChat, idUser, chatData)
         elif opcao == 8:
-            #todo Search sessions for a given movie
+            #TODO Search sessions for a given movie
             remove_redis(idChat, idUser, chatData)
         elif opcao == 9:
-            #todo Search for sessions by date
+            #TODO Search for sessions by date
             remove_redis(idChat, idUser, chatData)
         else:
             remove_redis(idChat, idUser, chatData)
@@ -152,17 +151,14 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 25)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
-
         elif opcao == 2:
             save_redis(idChat, idUser, 26)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar pacotes de satélite\n2. apresentar pacotes com fibra
 3. apresentar pacotes por serviço (TV+NET+VOZ, TV+NET, ...)\n4. apresentar pacotes por preço\n5. sair''')
-
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
-
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. tarifários WTF\n2. pacotes\n3. sair''')
@@ -177,50 +173,52 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             1. procurar telemóvel por marca\n 2. Procurar telemóvel por marca numa gama de valores\n
 3. procurar por telemóvel por marca com promoção\n4. Sair''')
         elif opcao == 3:
-            #todo ir buscar top phones
+            requerido = get_content('/fs_scrapper/top_phones', [], {})
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 4:
-            # todo ir buscar phnes em promoção
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        elif opcao == 5:
-            # todo ir buscar phones mais recentes
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        elif opcao == 6:
-            # todo ir buscar phones com oferta
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        elif opcao == 7:
-            # todo ir buscar possibilidades de prestações
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        elif opcao == 8:
-            # todo ir buscar phones por pontos
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        elif opcao == 9:
-            # todo ir buscar com limites menu 220
-            save_redis(idChat, idUser, 220)
+            #TODO falta aqui um menu por causa das funcionalidades misturadas! promo_phones, phones_brand_promo e phones_promo_price
             return None
-        else:
+        elif opcao == 5:
+            #TODO falta aqui um menu por causa das funcionalidades misturadas! new_phones e new_phones_brand
+            return None
+        elif opcao == 6:
+            requerido = get_content('/fs_scrapper/ofer_phones', [], {})
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 7:
+            requerido = get_content('/fs_scrapper/prest_phones', [], {})
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 8:
+            requerido = get_content('/fs_scrapper/points_phones', [], {})
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 9:
+            #TODO falta aqui um menu por causa das funcionalidades misturadas! phones_price, phones_brand_price e phones_promo_price
+            #TODO menu 220 ??
+            return None
+        elif opcao == 10:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar modelo de telemóvel\n2. procurar telemóvel por marca\n3. apresentar top de telemóveis mais procurados
+4. apresentar telemóveis em promoção\n5. apresentar telemóveis mais recentes
+6. apresentar telemóveis com ofertas\n7. apresentar telemóveis com opção de pagamento a prestações
+8. apresentar telemóveis com opção de pagamento com pontos
+9. procurar telemóveis dentro de uma gama de valores\n10. sair''')
 
     elif menu == 23:
         if opcao == 1:
             save_redis(idChat, idUser, 29)
             return str('''Indique o nome do local onde deseja procurar lojas NOS.''')
-
         elif opcao == 2:
             save_redis(idChat, idUser, 201)
             return str('''Indique a morada da loja NOS desejada.''')
-
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
-
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. lojas por cidade\n2. informações relativas a uma loja\n3. sair''')
@@ -229,101 +227,127 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         if opcao == 1:
             save_redis(idChat, idUser, 202)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente. 
-            1. Serviços NOS\n 2. Entidades\n 3. Equipamentos NOS\n 4. Denúncia\n 5. Faturas\n 6. Informações\n
-7. sair\n''')
-
+1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
+7. sair''')
         if opcao == 2:
-            # TODO fazer pedido aos scrappers -- devolver todas as linhas de apoio
-            return None
-        else:
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], {})
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. linha de apoio de acordo com o assunto\n2. todas as linhas de apoio\n3. sair''')
+
     elif menu == 25:
         if opcao == 1:
+            requerido = get_content('/fs_scrapper/all_wtf', [], {})
             remove_redis(idChat, idUser, chatData)
-            #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver todos os tarifários wtf
-
+            return requerido
         elif opcao == 2:
             save_redis(idChat, idUser, 203)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
-
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
-
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
 
     elif menu == 28:
         if opcao == 1:
-            #todo procurar telemóvel por marca
+            #TODO procurar telemóvel por marca -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
             return None
         elif opcao == 2:
-            #todo procurar telemóvel por marca numa gama de valores
+            #TODO procurar telemóvel por marca numa gama de valores -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
             return None
         elif opcao == 3:
-            #todo procurar telms por marca que estejam em promoção
+            #TODO procurar telms por marca que estejam em promoção -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
             return None
-        else:
+        elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar telemóvel por marca\n 2. Procurar telemóvel por marca numa gama de valores
+3. procurar por telemóvel por marca com promoção\n4. Sair''')
 
     elif menu == 29:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/stores_zone', aux, {})
         remove_redis(idChat, idUser, chatData)
-        #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver todas as lojas nos na zona da msg
+        return requerido
 
     elif menu == 201:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/store_address', aux, {})
         remove_redis(idChat, idUser, chatData)
-        #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver a loja nos correspondente à morada da msg
+        return requerido
 
     elif menu == 202:
         if opcao == 1:
             save_redis(idChat,idUser,241)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-            1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone\n 
+1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone 
 6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
         elif opcao == 2:
             save_redis(idChat, idUser, 242)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
+1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
         elif opcao == 3:
             save_redis(idChat, idUser, 243)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair\n 4.Sair''')
+1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
         elif opcao == 4:
+            aux = {}
+            aux['subject'] = "Denúncia de fraude / pirataria"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 5:
+            aux = {}
+            aux['subject'] = "Contencioso"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 6:
             save_redis(idChat, idUser, 244)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Denúncia de Fraude/Pirataria\n2. Sair''')
-        elif opcao == 5:
-            save_redis(idChat, idUser, 245)
-            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. «Contencioso\n2.Sair''')
-        elif opcao == 6:
-            save_redis(idChat, idUser, 246)
-            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-                        1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
-        else:
+1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
+        elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente. 
+1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
+7. sair\n''')
 
     elif menu == 203:
         if opcao == 1:
-            nome = 'WTF 1GB'
+            aux = []
+            aux.append('WTF 1GB')
+            requerido = get_content('/fs_scrapper/wtf_name', aux, {})
             remove_redis(idChat, idUser, chatData)
-            #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver tarifário wtf do nome
-
+            return requerido
         elif opcao == 2:
-            nome = 'WTF 5GB'
+            aux = []
+            aux.append('WTF 5GB')
+            requerido = get_content('/fs_scrapper/wtf_name', aux, {})
             remove_redis(idChat, idUser, chatData)
-            #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver tarifário wtf do nome
-
+            return requerido
         elif opcao == 3:
-            nome = 'WTF 10GB'
+            aux = []
+            aux.append('WTF 10GB')
+            requerido = get_content('/fs_scrapper/wtf_name', aux, {})
             remove_redis(idChat, idUser, chatData)
-            #TODO perguntar ao zé como fazer o pedido aos scrappers -- devolver tarifário wtf do nome
-
+            return requerido
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
@@ -333,106 +357,133 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             limInf = input()
             print('''Insira o limite Superior''')
             limSup = input()
-            #todo ir buscar
+            #TODO ir buscar     -- VE O EXEMPLO DAS OPÇOES DO MENU 23
             return None
 
     elif menu == 241:
         if opcao == 1:
-            #todo scrappers ir buscar pacotes nos com televisão
+            aux = {}
+            aux['subject'] = "Pacotes com televisão"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 2:
-            #todo scrappers ir buscar telemóveis
+            aux = {}
+            aux['subject'] = "Telemóvel"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 3:
-            #todo scrappers ir buscar internet fixa
+            aux = {}
+            aux['subject'] = "Internet fixa"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 4:
-            #todo scrappers ir buscar internet movel
+            aux = {}
+            aux['subject'] = "Internet móvel"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 5:
-            #todo scrappers ir buscar telefone
+            aux = {}
+            aux['subject'] = "Telefone"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 6:
-            #todo scrappers ir buscar ativação de pacotes internet
+            aux = {}
+            aux['subject'] = "Ativação pacotes internet"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 7:
-            # todo scrappers ir buscar apoio infotmático
+            aux = {}
+            aux['subject'] = "Apoio informático"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 8:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
         else:
-            # sair
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone 
+6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
 
     elif menu == 242:
         if opcao == 1:
-            #todo scrappers ir buscar empresas
+            aux = {}
+            aux['subject'] = "Empresas"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 2:
-            # todo scrappers ir buscar corporate
+            aux = {}
+            aux['subject'] = "Corporate"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 3:
-            # todo scrappers ir buscar profissionais e empresas
+            aux = {}
+            aux['subject'] =  "Profissionais e empresas"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 4:
-            # todo scrappers ir buscar Particulares
+            aux = {}
+            aux['subject'] = "Particulares"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
         else:
-            # sair
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
+
     elif menu == 243:
         if opcao == 1:
-            #todo ir buscar reparacao equipamentos
+            aux = {}
+            aux['subject'] =  "Reparação de equipamentos"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 2:
-            # todo ir buscar reparacao equipamentos
+            aux = {}
+            aux['subject'] =  "Devolução de equipamentos NOS"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
         else:
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
+
+    #TODO NÃO ACHO QUE A OPCAO 2 SE ADEQUE A ESTE MENU, A 1 É SOBRE NECESSIDADES ESPECIAIS E A 2 SOBRE A PROTABILIDADE DE NRS DE TELEMÓVEL
     elif menu == 244:
         if opcao == 1:
-            # todo ir buscar denuncia de pirataria
+            aux = {}
+            aux['subject'] =  "Video intérprete"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        else:
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-    elif menu == 245:
-        if opcao == 1:
-            # todo ir buscar faturas contencioso
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        else:
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-    elif menu == 246:
-        if opcao == 1:
-            # todo ir buscar informações video interprete
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return requerido
         elif opcao == 2:
-            # todo ir buscar info portabilidade
+            aux = {}
+            aux['subject'] =  "InfoPortabilidade"
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
         else:
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
 
-    # TODO continuar menus
     else:
         return str("Pedimos desculpa, mas algo correu mal.")
 
