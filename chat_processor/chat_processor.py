@@ -45,7 +45,7 @@ def get_response(idChat, idUser, msg, name):
         if m == "modo de regras":
             chatData["status"] = "modo regras"
             globals.redis_db.set(idChat, json.dumps(chatData))
-            return get_response_rules(idChat, idUser, msg, name)
+            return get_response_rules(idChat, idUser, msg, name, chatData)
         elif m == "ver mais":
             content = json.loads(globals.redis_db.get("vermais" + idChat))
             globals.redis_db.delete("vermais" + idChat)
