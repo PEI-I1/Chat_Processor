@@ -20,7 +20,7 @@ def criar_noccur_dic(palavras):
     for pal in palavras:
         for cat in dicionario:
             for word in cat['words']:
-                if word == pal:
+                if word == clean_msg(pal):
                     noccur[cat['request']] = noccur.get(cat['request'], 0) + 1
     return noccur
 
@@ -283,7 +283,7 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                     msg_send += "Pode tentar o modo de regras ao escrever 'modo de regras'.\n\n"
                     msg_send += "Ou pode se quiser ligar para uma das seguintes linhas de apoio:\n"
                     #TODO: tentar melhorar as linhas de apoio por forma a tentar mostrar apenas o de um assunto
-                    linhas_apoio = get_content("linhas_apoio", [], {})
+                    linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
                     if linhas_apoio:
                         msg_send += process_all_list(linhas_apoio)
                     else:
