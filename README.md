@@ -47,7 +47,7 @@ POST /getResponse
 | `idUser` | `string` | **Required**. User id. |
 | `msg` | `string` | **Required**. User message. |
 | `name` | `string` | **Required**. User name. |
-| `location` | `object` `None or { "lat": real number, "lon": real number}` | **Optional**. User location. |
+| `location` | `None` or `{"lat": float, "lon": float}` | **Required**. User location. |
 
 Example:
 ```
