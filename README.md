@@ -47,6 +47,7 @@ POST /getResponse
 | `idUser` | `string` | **Required**. User id. |
 | `msg` | `string` | **Required**. User message. |
 | `name` | `string` | **Required**. User name. |
+| `location` | `object` `None | { "lat": real number, "lon": real number}` | **Optional**. User location. |
 
 Example:
 ```
@@ -54,7 +55,22 @@ Example:
     "idChat":"111",
     "idUser":"111",
     "msg":"Quero ver um filme.",
-    "name":"António Maria"
+    "name":"António Maria",
+    "location": None
+}
+```
+
+Example sending location:
+```
+{
+    "idChat":"111",
+    "idUser":"111",
+    "msg":"Quero ver um filme.",
+    "name":"António Maria",
+    "location": {
+        "lat": 32.543042,
+        "lon": -10.424717
+    }
 }
 ```
 

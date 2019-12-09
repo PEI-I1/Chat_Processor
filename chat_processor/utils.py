@@ -2,6 +2,11 @@ from categoria_dic import cat as dicionario
 from config import urls
 import requests, urllib.parse, unidecode
 
+def merge_dicts(x, y):
+    z = x.copy()
+    z.update(y)
+    return z
+
 def clean_msg(msg):
     #mensagem toda em letras pequenas
     msg = msg.lower()
@@ -84,6 +89,20 @@ def get_service(request):
 
     return urls[found_service]
 
+#Faz um pedido ao API_ENDPOINT de forma a perguntar pela localização do utilizador
+def get_loc(idChat):
+    URL = urls["API_ENDPOINT"] + "/get_location/" + urllib.parse.quote(idChat, safe='')
+
+    print(URL)
+    try:
+        res = requests.get(URL)
+        res.raise_for_status()
+        res = res.json().get('response')
+    except:
+        res = None
+
+    return res
+
 #Faz um pedido a um URL, devolvendo a informação
 # recebe como parâmetros:
 #  - cat: a funcionalidade/categoria
@@ -97,21 +116,23 @@ def get_content(cat, params, querystrings):
     i = 0
     if size > 0:
         for i in range(size):
-            params[i] = urllib.parse.quote(params[i], safe='')
+            params[i] = urllib.parse.quote(str(params[i]), safe='')
         URL += "/".join(params)
 
     if len(querystrings) > 0:
         URL += "?"
         aux = []
         for (k,v) in querystrings.items():
-            aux.append(urllib.parse.quote(k, safe='') + "=" + urllib.parse.quote(v, safe=''))
+            aux.append(urllib.parse.quote(k, safe='') + "=" + urllib.parse.quote(str(v), safe=''))
         URL += "&".join(aux)
 
     print(URL)
     try:
         res = requests.get(URL)
         res.raise_for_status()
-        res = res.json().get('response')
+        res = res.json()
+        # O fs_scraper devolve o resultado no campo 'response'
+        res = res.get('response', res)
     except:
         res = None
 

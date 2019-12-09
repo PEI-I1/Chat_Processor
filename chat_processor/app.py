@@ -12,7 +12,12 @@ def index():
     req = request.get_json()
     req['msg'] = req['msg'].encode('utf-8').decode('utf-8')
     print(req)
-    return get_response(req['idChat'], req['idUser'], req['msg'], req['name'])
+    if req['location'] and 'lat' in req['location'] and 'lon' in req['location']:
+        location = {'lat': req['location']['lat'], 'lon': req['location']['lon']}
+    else:
+        location = None
+
+    return get_response(req['idChat'], req['idUser'], req['msg'], req['name'], location)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

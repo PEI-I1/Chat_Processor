@@ -28,17 +28,21 @@ def download_recursos():
     except LookupError:
         nltk.download('nonbreaking_prefixes', quiet=True)
 
-def get_response(idChat, idUser, msg, name):
+def get_response(idChat, idUser, msg, name, location):
     chatDataAux = globals.redis_db.get(idChat)
     chatData = json.loads(chatDataAux) if chatDataAux else None
 
     if not chatData:
         chatData = {"msgs": [], "status": "", "tries": 0,
                     "cat": "", "cat_change": "",
-                    "paramsRequired": {}, "paramsOptional":{}}
-        globals.redis_db.set(idChat, json.dumps(chatData))
+                    "paramsRequired": {}, "paramsOptional":{}, "locationParam": None}
+
+    if location:
+        chatData["status"] = ""
+        chatData["locationParam"] = location
 
     if chatData["status"] == "modo regras":
+        globals.redis_db.set(idChat, json.dumps(chatData))
         return get_response_rules(idChat, idUser, msg, name, chatData)
     else:
         m = msg.lower()
