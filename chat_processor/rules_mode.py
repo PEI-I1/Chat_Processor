@@ -49,7 +49,7 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
-    
+
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. cinemas ou sessões\n2. tarifários ou pacotes\n3. compra de telemóveis
@@ -116,6 +116,10 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
         else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar cinemas\n2. procurar filmes em sessão\n3. procurar filmes por parametro
+4. buscar próximas estreias\n5. buscar informação de um filme\n6. procurar sessões sobre uma duração específica
+7. procurar pelas próximas sessões\n8. procurar sessões de um filme\n9. procurar sessões por datas\n10. sair''')
 
 
 def fs_rules(idChat, idUser, menu, msg, chatData):
@@ -232,7 +236,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 24:
         if opcao == 1:
             save_redis(idChat, idUser, 202)
-            return str('''Escolha uma das seguintes opções, digitando o número correspondente. 
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
 7. sair''')
         if opcao == 2:
@@ -330,7 +334,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         if opcao == 1:
             save_redis(idChat,idUser,241)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone 
+1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone
 6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
         elif opcao == 2:
             save_redis(idChat, idUser, 242)
@@ -360,7 +364,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
         else:
-            return str('''Escolha uma das seguintes opções, digitando o número correspondente. 
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
 7. sair\n''')
 
@@ -573,7 +577,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str("Saiu do modo de regras")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone 
+1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone
 6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
 
     elif menu == 242:
