@@ -120,7 +120,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
 
 def fs_rules(idChat, idUser, menu, msg, chatData):
-    opcao = int(msg)
+    opcao = int(msg)        #TODO testar a ver se não vai dar problemas
 
     if menu == 2:
         save_redis(idChat, idUser, 21)
@@ -170,18 +170,21 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         elif opcao == 2:
             save_redis(idChat, idUser, 28)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-            1. procurar telemóvel por marca\n 2. Procurar telemóvel por marca numa gama de valores\n
-3. procurar por telemóvel por marca com promoção\n4. Sair''')
+1. procurar telemóveis por marca\n 2. procurar telemóveis por marca numa gama de valores
+3. procurar telemóveis por marca com promoção\n4. procurar telemóveis mais recentes de uma marca\n5. sair''')
         elif opcao == 3:
             requerido = get_content('/fs_scrapper/top_phones', [], {})
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 4:
-            #TODO falta aqui um menu por causa das funcionalidades misturadas! promo_phones, phones_brand_promo e phones_promo_price
-            return None
+            save_redis(idChat, idUser, 206)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar telemóveis em promoção\n 2. procurar telemóveis por marca com promoção
+3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
         elif opcao == 5:
-            #TODO falta aqui um menu por causa das funcionalidades misturadas! new_phones e new_phones_brand
-            return None
+            save_redis(idChat, idUser, 207)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar telemóveis mais recentes\n 2. procurar telemóveis mais recentes de uma marca\n3. sair''')
         elif opcao == 6:
             requerido = get_content('/fs_scrapper/ofer_phones', [], {})
             remove_redis(idChat, idUser, chatData)
@@ -195,9 +198,10 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 9:
-            #TODO falta aqui um menu por causa das funcionalidades misturadas! phones_price, phones_brand_price e phones_promo_price
-            #TODO menu 220 ??
-            return None
+            save_redis(idChat, idUser, 208)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar telemóveis numa gama de valores\n 2. procurar telemóveis por marca numa gama de valores
+3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
         elif opcao == 10:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -256,6 +260,27 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
 
+    elif menu == 26:
+        if opcao == 1:
+            #TODO falta aqui menu com as funcionalidades satelite_packages, satelite_packages_price e satelite_packages_service
+            return None
+        elif opcao == 2:
+            #TODO falta aqui menu com as funcionalidades fiber_packages, fiber_packages_price e fiber_packages_service
+            return None
+        elif opcao == 3:
+            #TODO falta aqui menu com as funcionalidades packages_service, packages_service_price, satelite_packages_service e fiber_packages_service
+            return None
+        elif opcao == 4:
+            #TODO falta aqui menu com as funcionalidades packages_price, packages_service_price, satelite_packages_price e fiber_packages_price
+            return None
+        elif opcao == 5:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar pacotes de satélite\n2. apresentar pacotes com fibra
+3. apresentar pacotes por serviço (TV+NET+VOZ, TV+NET, ...)\n4. apresentar pacotes por preço\n5. sair''')
+
     elif menu == 28:
         if opcao == 1:
             #TODO procurar telemóvel por marca -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
@@ -267,12 +292,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             #TODO procurar telms por marca que estejam em promoção -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
             return None
         elif opcao == 4:
+            #TODO procurar telms por marca mais recentes -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
+            return None
+        elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. procurar telemóvel por marca\n 2. Procurar telemóvel por marca numa gama de valores
-3. procurar por telemóvel por marca com promoção\n4. Sair''')
+3. procurar por telemóvel por marca com promoção\nprocurar telemóveis mais recentes de uma marca\n5. sair''')
 
     elif menu == 29:
         aux = []
@@ -352,12 +380,61 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
 
-    elif menu == 220:
+    elif menu == 206:
+        if opcao == 1:
+            #TODO tlms em promoção
+            return None
+        elif opcao == 2:
+            #TODO tlms em promoção por marca
+            return None
+        elif opcao == 3:
+            #TODO tlms em promoção em gama de valores
+            return None
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar telemóveis em promoção\n 2. procurar telemóveis por marca com promoção
+3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
+
+    elif menu == 207:
+        if opcao == 1:
+            #TODO tlms mais recentes
+            return None
+        elif opcao == 2:
+            #TODO tlms mais recentes por marca
+            return None
+        elif opcao == 3:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar telemóveis mais recentes\n 2. procurar telemóveis mais recentes de uma marca\n3. sair''')
+
+    elif menu == 208:
+        if opcao == 1:
+            #TODO tlms numa gama de valores
+            return None
+        elif opcao == 2:
+            #TODO tlms numa gama de valores por marca
+            return None
+        elif opcao == 3:
+            #TODO tlms numa gama de valores em promoção
+            return None
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar telemóveis numa gama de valores\n 2. procurar telemóveis por marca numa gama de valores
+3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
+
+    elif menu == 220:           #TODO temos que alterar este menu !!!!
             print('''Insira o limite Inferior''')
             limInf = input()
             print('''Insira o limite Superior''')
             limSup = input()
-            #TODO ir buscar     -- VE O EXEMPLO DAS OPÇOES DO MENU 23
             return None
 
     elif menu == 241:
@@ -491,3 +568,4 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 def problem_rules(idChat, idUser, menu, msg, chatData):
     #TODO
     return ""
+
