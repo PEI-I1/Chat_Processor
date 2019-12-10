@@ -78,17 +78,10 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
     if menu == 1:
         save_redis(idChat, idUser, 11)
-        return str('''Escolha uma das seguintes opções, digitando o número correspondente.\n
-1. procurar cinemas\n
-2. procurar filmes em sessão\n
-3. procurar filmes por parametro\n
-4. buscar próximas estreias\n
-5. buscar informação de um filme\n
-6. procurar sessões sobre uma duração específica\n
-7. procurar pelas próximas sessões\n
-8. procurar sessões de um filme\n
-9. procurar sessões por datas\n
-10. sairn\n''')
+        return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar cinemas\n2. procurar filmes em sessão\n3. procurar filmes por parametro
+4. buscar próximas estreias\n5. buscar informação de um filme\n6. procurar sessões sobre uma duração específica
+7. procurar pelas próximas sessões\n8. procurar sessões de um filme\n9. procurar sessões por datas\n10. sair''')
 
     elif menu == 11:
         if opcao == 1:
@@ -118,9 +111,10 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
         elif opcao == 9:
             #TODO Search for sessions by date
             remove_redis(idChat, idUser, chatData)
-        else:
+        elif opcao == 10:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
+        else:
 
 
 def fs_rules(idChat, idUser, menu, msg, chatData):
