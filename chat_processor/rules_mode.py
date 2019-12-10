@@ -179,7 +179,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         elif opcao == 4:
             save_redis(idChat, idUser, 206)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. apresentar telemóveis em promoção\n 2. procurar telemóveis por marca com promoção
+1. apresentar telemóveis em promoção\n2. procurar telemóveis por marca com promoção
 3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
         elif opcao == 5:
             save_redis(idChat, idUser, 207)
@@ -262,17 +262,25 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 26:
         if opcao == 1:
-            #TODO falta aqui menu com as funcionalidades satelite_packages, satelite_packages_price e satelite_packages_service
-            return None
+            save_redis(idChat, idUser, 209)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar pacotes com satélite\n2. procurar pacotes com satélite numa gama de valores
+3. procurar pacotes com satélite por serviço\n4. sair''')
         elif opcao == 2:
-            #TODO falta aqui menu com as funcionalidades fiber_packages, fiber_packages_price e fiber_packages_service
-            return None
+            save_redis(idChat, idUser, 210)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar pacotes com fibra\n2. procurar pacotes com fibra numa gama de valores
+3. procurar pacotes com fibra por serviço\n4. sair''')
         elif opcao == 3:
-            #TODO falta aqui menu com as funcionalidades packages_service, packages_service_price, satelite_packages_service e fiber_packages_service
-            return None
+            save_redis(idChat, idUser, 211)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar pacotes por serviço\n2. procurar pacotes por serviço numa gama de valores
+3. procurar pacotes com satélite por serviço\n4. procurar pacotes com fibra por serviço\n5. sair''')
         elif opcao == 4:
-            #TODO falta aqui menu com as funcionalidades packages_price, packages_service_price, satelite_packages_price e fiber_packages_price
-            return None
+            save_redis(idChat, idUser, 212)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar pacotes numa gama de valores\n2. procurar pacotes por serviço numa gama de valores
+3. procurar pacotes com satélite numa gama de valores\n4. procurar pacotes com fibra numa gama de valores\n5. sair''')
         elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -430,6 +438,84 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. procurar telemóveis numa gama de valores\n 2. procurar telemóveis por marca numa gama de valores
 3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
 
+    elif menu == 209:
+        if opcao == 1:
+            #TODO pacotes satelite
+            return None
+        elif opcao == 2:
+            #TODO pacotes satelite por preço
+            return None
+        elif opcao == 3:
+            #TODO pacotes satelite por serviço
+            return None
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar pacotes com satélite\n2. procurar pacotes com satélite numa gama de valores
+3. procurar pacotes com satélite por serviço\n4. sair''')
+
+    elif menu == 210:
+        if opcao == 1:
+            #TODO pacotes fibra
+            return None
+        elif opcao == 2:
+            #TODO pacotes fibra por preço
+            return None
+        elif opcao == 3:
+            #TODO pacotes fibra por serviço
+            return None
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. apresentar pacotes com fibra\n2. procurar pacotes com fibra numa gama de valores
+3. procurar pacotes com fibra por serviço\n4. sair''')
+
+    elif menu == 211:
+        if opcao == 1:
+            #TODO pacotes por serviço
+            return None
+        elif opcao == 2:
+            #TODO pacotes por serviço por preço
+            return None
+        elif opcao == 3:
+            #TODO pacotes satelite por serviço
+            return None
+        elif opcao == 4:
+            #TODO pacotes fibra por serviço
+            return None
+        elif opcao == 5:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar pacotes por serviço\n2. procurar pacotes por serviço numa gama de valores
+3. procurar pacotes com satélite por serviço\n4. procurar pacotes com fibra por serviço\n5. sair''')
+
+    elif menu == 212:
+        if opcao == 1:
+            #TODO pacotes por preço
+            return None
+        elif opcao == 2:
+            #TODO pacotes por serviço por preço
+            return None
+        elif opcao == 3:
+            #TODO pacotes satelite por preço
+            return None
+        elif opcao == 4:
+            #TODO pacotes fibra por preço
+            return None
+        elif opcao == 5:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. procurar pacotes numa gama de valores\n2. procurar pacotes por serviço numa gama de valores
+3. procurar pacotes com satélite numa gama de valores\n4. procurar pacotes com fibra numa gama de valores\n5. sair''')
+
     elif menu == 220:           #TODO temos que alterar este menu !!!!
             print('''Insira o limite Inferior''')
             limInf = input()
@@ -540,7 +626,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
 
-    #TODO NÃO ACHO QUE A OPCAO 2 SE ADEQUE A ESTE MENU, A 1 É SOBRE NECESSIDADES ESPECIAIS E A 2 SOBRE A PROTABILIDADE DE NRS DE TELEMÓVEL
     elif menu == 244:
         if opcao == 1:
             aux = {}
