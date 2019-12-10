@@ -1,5 +1,6 @@
 import globals #redis_db
 from utils import get_content
+import json
 
 
 def load_redis(idChat, idUser):
@@ -17,7 +18,7 @@ def save_redis(idChat, idUser, menu):
 
 def remove_redis(idChat, idUser, chatData):
     chatData["status"] = ''
-    globals.redis_db.set(idChat, chatData)
+    globals.redis_db.set(idChat, json.dumps(chatData))
     globals.redis_db.delete(idChat + idUser + '_rules_mode')
 
 
