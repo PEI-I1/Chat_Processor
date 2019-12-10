@@ -71,7 +71,10 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
 
 
 def cinema_rules(idChat, idUser, menu, msg, chatData):
-    opcao = int(msg)
+    try:
+        opcao = int(msg)
+    except ValueError:
+        opcao = -1
 
     if menu == 1:
         save_redis(idChat, idUser, 11)
@@ -121,7 +124,10 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
 
 def fs_rules(idChat, idUser, menu, msg, chatData):
-    opcao = int(msg)        #TODO testar a ver se não vai dar problemas
+    try:
+        opcao = int(msg)
+    except ValueError:
+        opcao = -1
 
     if menu == 2:
         save_redis(idChat, idUser, 21)
