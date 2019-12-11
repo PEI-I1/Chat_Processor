@@ -192,16 +192,29 @@ def get_city(entry, msg_params):
 
     return loc
 
+def process_content(idChat, chatData, content):
+    if content != None:
+        if content:
+            #se for uma lista devolve de forma diferente
+            if isinstance(content, list):
+                pretty_print(idChat, chatData["cat"], content, False)
+                globals.redis_db.set("vermais" + str(idChat), json.dumps({"cat": chatData["cat"], "content": content}))
+            else:
+                pretty_print(idChat, chatData["cat"], content, True)
+        else:
+            send_msg(idChat, "Não existe informação sobre o que pretende...")
+    else:
+        send_msg(idChat, "Não foi possível obter a resposta...")
+
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
     location_params = entry['locationParam']
     needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
-    content = None
 
     # quanto o pedido nao recebe params > devolve resposta
     if not entry['paramsRequired'] and not entry['paramsOptional'] and not location_params:
-        content = get_content(detected_request, [], {})
+        process_content(idChat, chatData, get_content(detected_request, [], {}))
         globals.redis_db.delete(idChat)
     elif len(location_params) > 0 and chatData["locationParam"] == None and chatData["status"] != "gps_loc" and chatData["status"] != "search_loc":
         loc = get_city(entry, msg_params)
@@ -209,33 +222,33 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
         if loc:
             chatData["locationParam"] = {"search_term": loc}
             chatData["status"] = ""
-            content = process_params(idChat, idUser, msg, name, chatData, msg_params)
+            process_params(idChat, idUser, msg, name, chatData, msg_params)
         else:
             chatData["status"] = "gps_loc"
             globals.redis_db.set(idChat, json.dumps(chatData))
             # pede ao utilizador a localização
             get_loc(idChat)
-            content = "Qual a sua localização?"
+            send_msg(idChat, "Qual a sua localização?")
     elif chatData["status"] == "gps_loc":
         loc = get_city(entry, msg_params)
 
         if loc:
             chatData["locationParam"] = {"search_term": loc}
             chatData["status"] = ""
-            content = process_params(idChat, idUser, msg, name, chatData, msg_params)
+            process_params(idChat, idUser, msg, name, chatData, msg_params)
         else:
             chatData["status"] = "search_loc"
             globals.redis_db.set(idChat, json.dumps(chatData))
-            content = "Em que cidade se encontra?"
+            send_msg(idChat, "Em que cidade se encontra?")
     elif chatData["status"] == "search_loc":
         loc = get_city(entry, msg_params)
         
         if loc: 
             chatData["locationParam"] = {"search_term": loc}
             chatData["status"] = ""
-            content = process_params(idChat, idUser, msg, name, chatData, msg_params)
+            process_params(idChat, idUser, msg, name, chatData, msg_params)
         else:
-            content = "Não foi possível perceber onde se encontra!"
+            send_msg(idChat, "Não foi possível perceber onde se encontra!")
             globals.redis_db.delete(idChat)
     else:
         valid_required_params, missing_required_params, valid_optional_params, missing_optional_params = validAndMissingParams(msg_params, chatData, entry)
@@ -250,7 +263,7 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
         if len(missing_required_params):
             # FIXME: funciona para todos os nossos casos (só há um caso com 2params obrigatorios)
             #           pode ser melhorada qd coisas mais importantes estiverem resolvidas
-            content = entry['missingRequiredParamsPhrase']
+            send_msg(idChat, entry['missingRequiredParamsPhrase'])
             globals.redis_db.set(idChat, json.dumps(chatData))
         # se faltarem params optionais
         elif len(missing_optional_params):
@@ -258,7 +271,7 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
                 # FIXME: funciona para o unico caso que temos
                 #         pode ser melhorada mais tarde
-                content = "Por favor, diga informações acerda de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade"
+                send_msg(idChat, "Por favor, diga informações acerda de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade")
                 globals.redis_db.set(idChat, json.dumps(chatData))
             else:
                 # processar resposta do user e devolver o conteudo pedido
@@ -270,32 +283,17 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                     # NOTE: acho que o if else é inutil really...
                     #       se nao houver params eles nao sao processados e nao
                     querystrings = merge_dicts(valid_optional_params_dict, chatData['locationParam'])
-                    content = get_content(detected_request, valid_required_params_array, querystrings)
+                    process_content(idChat, chatData, get_content(detected_request, valid_required_params_array, querystrings))
                     globals.redis_db.delete(idChat)
                 # listar todos os params opcionais e esperar resposta
                 else:
                   chatData["status"] = "waitingMoreOptionalParams"
                   globals.redis_db.set(idChat, json.dumps(chatData))
-                  content = lista_params_opcionais(missing_optional_params)
+                  process_content(idChat, chatData, lista_params_opcionais(missing_optional_params))
         else: # nao faltam params opcionais
             querystrings = merge_dicts(valid_optional_params_dict, chatData['locationParam'])
-            content = get_content(detected_request, valid_required_params_array, querystrings)
+            process_content(idChat, chatData, get_content(detected_request, valid_required_params_array, querystrings))
             globals.redis_db.delete(idChat)
-
-    if content != None:
-        if content:
-            #se for uma lista devolve de forma diferente
-            if isinstance(content, list):
-                msg_send = pretty_print(chatData["cat"], content, False)
-                globals.redis_db.set("vermais" + idChat, json.dumps({"cat": chatData["cat"], "content": content}))
-            else:
-                msg_send = pretty_print(chatData["cat"], content, True)
-        else:
-            msg_send = "Não existe informação sobre o que pretende..."
-    else:
-        msg_send = "Não foi possível obter a resposta..."
-
-    return msg_send
 
 def get_response_default(idChat, idUser, msg, name, chatData):
     #Mudar categoria???
@@ -314,7 +312,7 @@ def get_response_default(idChat, idUser, msg, name, chatData):
         chatData["cat_change"] = ""
 
         params = proc_ents(globals.ner_model([msg]))
-        msg_send = process_params(idChat, idUser, msg, name, chatData, params)
+        process_params(idChat, idUser, msg, name, chatData, params)
     else:
         cat, confianca = get_categoria_frase(msg)
         print(cat)
@@ -328,36 +326,33 @@ def get_response_default(idChat, idUser, msg, name, chatData):
             if confianca > confianca_level:
                 chatData["cat"] = cat
                 globals.redis_db.set(idChat, json.dumps(chatData))
-                msg_send = process_params(idChat, idUser, msg, name, chatData, params)
+                process_params(idChat, idUser, msg, name, chatData, params)
             else:
                 if chatData["tries"] == tries - 1:
-                    msg_send = "Desculpe mas não foi possível identificar o que pretende.\n\n"
-                    msg_send += "Pode tentar o modo de regras ao escrever 'modo de regras'.\n\n"
-                    msg_send += "Ou pode se quiser ligar para uma das seguintes linhas de apoio:\n"
+                    send_msg(idChat, "Desculpe mas não foi possível identificar o que pretende.")
+                    send_msg(idChat, "Pode tentar o modo de regras ao escrever 'modo de regras'.")
+                    send_msg(idChat, "Ou pode se quiser ligar para uma das seguintes linhas de apoio:")
                     #TODO: tentar melhorar as linhas de apoio por forma a tentar mostrar apenas o de um assunto
                     linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
                     if linhas_apoio:
-                        msg_send += pretty_print("/fs_scrapper/linhas_apoio", linhas_apoio, True)
+                        pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
                     else:
-                        msg_send += "Não foi possível obter as linhas de apoio..."
+                        send_msg(idChat, "Não foi possível obter as linhas de apoio...")
                     globals.redis_db.delete(idChat)
                 else:
                     chatData["tries"] += 1
                     globals.redis_db.set(idChat, json.dumps(chatData))
-                    msg_send = "Desculpe mas não foi possível identificar o que pretende. Tente de novo!"
+                    send_msg("Desculpe mas não foi possível identificar o que pretende. Tente de novo!")
         else:
             if confianca > confianca_level:
                 if chatData["cat"] == cat:
-                    msg_send = process_params(idChat, idUser, msg, name, chatData, params)
+                    process_params(idChat, idUser, msg, name, chatData, params)
                 else:
                     chatData["cat_change"] = cat
                     chatData["paramsRequired"] = params
                     chatData["status"] = "mudar categoria?"
                     globals.redis_db.set(idChat, json.dumps(chatData))
                     #TODO: em vez da cat (path) aparecer um texto da cat
-                    msg_send = "Pretende mudar de categoria de '" + chatData["cat"] + "' para '" + cat + "'? Responda por favor 'sim' ou 'não'"
+                    send_msg(idChat, "Pretende mudar de categoria de '" + chatData["cat"] + "' para '" + cat + "'? Responda por favor 'sim' ou 'não'")
             else:
-                msg_send = process_params(idChat, idUser, msg, name, chatData, params)
-
-    return str(msg_send)
-
+                process_params(idChat, idUser, msg, name, chatData, params)

@@ -17,7 +17,8 @@ def index():
     else:
         location = None
 
-    return get_response(req['idChat'], req['idUser'], req['msg'], req['name'], location)
+    get_response(req['idChat'], req['idUser'], req['msg'], req['name'], location)
+    return "success"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

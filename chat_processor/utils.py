@@ -42,15 +42,29 @@ def get_service(request):
 
     return urls[found_service]
 
+#Faz um pedido ao API_ENDPOINT de forma a enviar uma msg ao utilizador
+def send_msg(idChat, msg):
+    URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
+
+    print(URL)
+    try:
+        res = requests.post(URL, data=msg)
+        res.raise_for_status()
+        res = res.text
+    except:
+        res = None
+
+    return res
+
 #Faz um pedido ao API_ENDPOINT de forma a perguntar pela localização do utilizador
 def get_loc(idChat):
-    URL = urls["API_ENDPOINT"] + "/get_location/" + urllib.parse.quote(idChat, safe='')
+    URL = urls["API_ENDPOINT"] + "/get_location/" + urllib.parse.quote(str(idChat), safe='')
 
     print(URL)
     try:
         res = requests.get(URL)
         res.raise_for_status()
-        res = res.json().get('response')
+        res = res.text
     except:
         res = None
 

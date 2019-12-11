@@ -3,6 +3,7 @@
 from rules_mode import get_response_rules
 from default_mode import get_response_default
 from pretty_print import pretty_print
+from utils import send_msg
 import globals, json, nltk
 
 def init():
@@ -43,16 +44,16 @@ def get_response(idChat, idUser, msg, name, location):
 
     if chatData["status"] == "modo regras":
         globals.redis_db.set(idChat, json.dumps(chatData))
-        return get_response_rules(idChat, idUser, msg, name, chatData)
+        send_msg(idChat, get_response_rules(idChat, idUser, msg, name, chatData))
     else:
         m = msg.lower()
         if m == "modo de regras":
             chatData["status"] = "modo regras"
             globals.redis_db.set(idChat, json.dumps(chatData))
-            return get_response_rules(idChat, idUser, msg, name, chatData)
+            send_msg(idChat, get_response_rules(idChat, idUser, msg, name, chatData))
         elif m == "ver mais":
-            c = json.loads(globals.redis_db.get("vermais" + idChat))
-            globals.redis_db.delete("vermais" + idChat)
-            return pretty_print(c["cat"], c["content"], True)
+            c = json.loads(globals.redis_db.get("vermais" + str(idChat)))
+            globals.redis_db.delete("vermais" + str(idChat))
+            pretty_print(idChat, c["cat"], c["content"], True)
         else:
-            return get_response_default(idChat, idUser, msg, name, chatData)
+            get_response_default(idChat, idUser, msg, name, chatData)
