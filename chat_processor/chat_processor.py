@@ -2,7 +2,7 @@
 
 from rules_mode import get_response_rules
 from default_mode import get_response_default
-from utils import process_all_list
+from pretty_print import pretty_print
 import globals, json, nltk
 
 def init():
@@ -51,8 +51,8 @@ def get_response(idChat, idUser, msg, name, location):
             globals.redis_db.set(idChat, json.dumps(chatData))
             return get_response_rules(idChat, idUser, msg, name, chatData)
         elif m == "ver mais":
-            content = json.loads(globals.redis_db.get("vermais" + idChat))
+            c = json.loads(globals.redis_db.get("vermais" + idChat))
             globals.redis_db.delete("vermais" + idChat)
-            return str(process_all_list(content))
+            return pretty_print(c["cat"], c["content"], True)
         else:
             return get_response_default(idChat, idUser, msg, name, chatData)
