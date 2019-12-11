@@ -337,7 +337,7 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                     #TODO: tentar melhorar as linhas de apoio por forma a tentar mostrar apenas o de um assunto
                     linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
                     if linhas_apoio:
-                        msg_send += process_all_list(linhas_apoio)
+                        msg_send += pretty_print("/fs_scrapper/linhas_apoio", linhas_apoio, True)
                     else:
                         msg_send += "Não foi possível obter as linhas de apoio..."
                     globals.redis_db.delete(idChat)
