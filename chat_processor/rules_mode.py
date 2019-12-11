@@ -297,17 +297,20 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 28:
         if opcao == 1:
-            #TODO procurar telemóvel por marca -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
-            return None
+            #TODO procurar telemóvel por marca -- DONE
+            save_redis(idChat, idUser, 281)
+            return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 2:
-            #TODO procurar telemóvel por marca numa gama de valores -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
+            #TODO procurar telemóvel por marca numa gama de valores -- NOT DONE
             return None
         elif opcao == 3:
-            #TODO procurar telms por marca que estejam em promoção -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
-            return None
+            #TODO procurar telms por marca que estejam em promoção -- DONE
+            save_redis(idChat, idUser, 283)
+            return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 4:
-            #TODO procurar telms por marca mais recentes -- TEM QUE SE ENVIAR MENU DE PERGUNTA AO USER, EX OPÇOES DO MENU 23
-            return None
+            #TODO procurar telms por marca mais recentes -- DONE
+            save_redis(idChat, idUser, 284)
+            return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -315,6 +318,27 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. procurar telemóvel por marca\n 2. Procurar telemóvel por marca numa gama de valores
 3. procurar por telemóvel por marca com promoção\nprocurar telemóveis mais recentes de uma marca\n5. sair''')
+
+    elif menu == 281:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/brand_phones', aux, {})
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
+    elif menu == 283:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/phones_brand_promo', aux, {})
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
+    elif menu == 284:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/new_phones_brand', aux, {})
+        remove_redis(idChat, idUser, chatData)
+        return requerido
 
     elif menu == 29:
         aux = []
@@ -396,11 +420,16 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 206:
         if opcao == 1:
-            #TODO tlms em promoção
-            return None
+            #TODO tlms em promoção -- DONE
+            aux = {}
+            aux['subject'] = "Telemóveis em Promoção"
+            requerido = get_content('/fs_scrapper/promo_phones', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
         elif opcao == 2:
-            #TODO tlms em promoção por marca
-            return None
+            #TODO tlms em promoção por marca -- DONE
+            save_redis(idChat, idUser, 262)
+            return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 3:
             #TODO tlms em promoção em gama de valores
             return None
@@ -412,13 +441,25 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. apresentar telemóveis em promoção\n 2. procurar telemóveis por marca com promoção
 3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
 
+    elif menu == 262:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/phones_brand_promo', aux, {})
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
     elif menu == 207:
         if opcao == 1:
-            #TODO tlms mais recentes
-            return None
+            #TODO tlms mais recentes -- DONE
+            aux = {}
+            aux['subject'] = "Telemóveis mais Recentes"
+            requerido = get_content('/fs_scrapper/new_phones', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
         elif opcao == 2:
-            #TODO tlms mais recentes por marca
-            return None
+            #TODO tlms mais recentes por marca -- DONE menu 284 já existente, reaproveitado
+            save_redis(idChat, idUser, 284)
+            return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -446,14 +487,19 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 209:
         if opcao == 1:
-            #TODO pacotes satelite
-            return None
+            #TODO pacotes satelite -- DONE
+            aux = {}
+            aux['subject'] = "Pacotes Satélite"
+            requerido = get_content('/fs_scrapper/satelite_packages', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
         elif opcao == 2:
             #TODO pacotes satelite por preço
             return None
         elif opcao == 3:
-            #TODO pacotes satelite por serviço
-            return None
+            #TODO pacotes satelite por serviço -- DONE
+            save_redis(idChat, idUser, 293)
+            return str("Indique o serviço que pretende.\n")
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -462,16 +508,28 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. apresentar pacotes com satélite\n2. procurar pacotes com satélite numa gama de valores
 3. procurar pacotes com satélite por serviço\n4. sair''')
 
+    elif menu == 293:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/satelite_packages_service', aux, {})
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
     elif menu == 210:
         if opcao == 1:
-            #TODO pacotes fibra
-            return None
+            #TODO pacotes fibra -- DONE
+            aux = {}
+            aux['subject'] = "Pacotes Fibra"
+            requerido = get_content('/fs_scrapper/fibra_packages', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
         elif opcao == 2:
             #TODO pacotes fibra por preço
             return None
         elif opcao == 3:
-            #TODO pacotes fibra por serviço
-            return None
+            #TODO pacotes fibra por serviço -- DONE
+            save_redis(idChat, idUser, 213)
+            return str("Indique o serviço que pretende.\n")
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -480,19 +538,29 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. apresentar pacotes com fibra\n2. procurar pacotes com fibra numa gama de valores
 3. procurar pacotes com fibra por serviço\n4. sair''')
 
+    elif menu == 213:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/fiber_packages_service', aux, {})
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
     elif menu == 211:
         if opcao == 1:
-            #TODO pacotes por serviço
-            return None
+            #TODO pacotes por serviço -- DONE
+            save_redis(idChat, idUser, 214)
+            return str("Indique o serviço que pretende.\n")
         elif opcao == 2:
             #TODO pacotes por serviço por preço
             return None
         elif opcao == 3:
-            #TODO pacotes satelite por serviço
-            return None
+            #TODO pacotes satelite por serviço -- DONE
+            save_redis(idChat, idUser, 293) # menu reaproveitado
+            return str("Indique o serviço que pretende.\n")
         elif opcao == 4:
-            #TODO pacotes fibra por serviço
-            return None
+            #TODO pacotes fibra por serviço -- DONE
+            save_redis(idChat, idUser, 213) # menu reaproveitado
+            return str("Indique o serviço que pretende.\n")
         elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -500,6 +568,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. procurar pacotes por serviço\n2. procurar pacotes por serviço numa gama de valores
 3. procurar pacotes com satélite por serviço\n4. procurar pacotes com fibra por serviço\n5. sair''')
+
+    elif menu == 214:
+        aux = []
+        aux.append(msg)
+        requerido = get_content('/fs_scrapper/packages_service', aux, {})
+        remove_redis(idChat, idUser, chatData)
+        return requerido
 
     elif menu == 212:
         if opcao == 1:
