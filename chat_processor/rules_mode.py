@@ -11,15 +11,46 @@ def load_redis(idChat, idUser):
     else:
         return 0
 
+def remove_redis(idChat, idUser, chatData):
+    chatData["status"] = ''
+    globals.redis_db.set(idChat, json.dumps(chatData))
+    globals.redis_db.delete(idChat + idUser + '_rules_mode')
+
 
 def save_redis(idChat, idUser, menu):
     globals.redis_db.set(idChat + idUser + '_rules_mode', menu)
 
 
-def remove_redis(idChat, idUser, chatData):
-    chatData["status"] = ''
-    globals.redis_db.set(idChat, json.dumps(chatData))
-    globals.redis_db.delete(idChat + idUser + '_rules_mode')
+def save_step_number(idChat, idUser, number):
+    globals.redis_db.set(idChat + idUser + '_rules_number', number)
+
+
+def load_number(idChat, idUser):
+    aux = globals.redis_db.get(idChat + idUser + '_rules_number')
+
+    if aux:
+        return int(aux)
+    else:
+        return 0
+
+def remove_step_number(idChat, idUser):
+    globals.redis_db.delete(idChat + idUser + '_rules_number')
+
+def save_step_string(idChat, idUser, string):
+    globals.redis_db.set(idChat + idUser + '_rules_string', string)
+
+
+def load_string(idChat, idUser):
+    aux = globals.redis_db.get(idChat + idUser + '_rules_string')
+
+    if aux:
+        return aux
+    else:
+        return None
+
+
+def remove_step_string(idChat, idUser):
+    globals.redis_db.delete(idChat + idUser + '_rules_string')
 
 
 def get_response_rules(idChat, idUser, msg, name, chatData):
@@ -494,8 +525,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
-            #TODO pacotes satelite por preço
-            return None
+            #TODO pacotes satelite por preço -- DONE
+            save_redis(idChat, idUser, 292)
+            return str("Indique o valor mínimo que pretende pagar.\n")
         elif opcao == 3:
             #TODO pacotes satelite por serviço -- DONE
             save_redis(idChat, idUser, 293)
@@ -507,6 +539,39 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar pacotes com satélite\n2. procurar pacotes com satélite numa gama de valores
 3. procurar pacotes com satélite por serviço\n4. sair''')
+
+    elif menu == 292:
+        try:
+            num = float(msg)
+            save_step_number(idChat, idUser, num)
+            save_redis(idChat, idUser, 294)
+            return str("Indique o valor mínimo que pretende pagar.\n")
+        except:
+            return str("Inseriu valores errados!")
+
+    elif menu == 294:
+        try:
+            valorMin = float(msg)
+            save_step_number(idChat, idUser, valorMin)
+            save_redis(idChat, idUser, 295)
+            return str("Indique o valor máximo que pretende pagar.\n")
+        except:
+            return str("Algo correu mal!")
+
+    elif menu == 295:
+        try:
+            valorMax = float(msg)
+            valorMin = load_number(idChat, idUser)
+            aux = []
+            aux.append(valorMin)
+            aux.append(valorMax)
+            requerido = get_content('/fs_scrapper/satelite_packages_price', aux, {})
+            remove_step_number(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        except:
+            return str("Algo correu mal!")  # TODO CHECK RESPONSE
+
 
     elif menu == 293:
         aux = []
@@ -587,8 +652,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             #TODO pacotes satelite por preço
             return None
         elif opcao == 4:
-            #TODO pacotes fibra por preço
-            return None
+            #TODO pacotes fibra por preço -- DONE
+            save_redis(idChat, idUser, 216)
+            return str("Indique o valor mínimo que pretende pagar.\n")
         elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -597,11 +663,31 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. procurar pacotes numa gama de valores\n2. procurar pacotes por serviço numa gama de valores
 3. procurar pacotes com satélite numa gama de valores\n4. procurar pacotes com fibra numa gama de valores\n5. sair''')
 
+
+    elif menu == 216:
+        try:
+            valorMin = float(msg)
+            save_step_number(idChat, idUser, valorMin)
+            save_redis(idChat, idUser, 217)
+            return str("Indique o valor máximo que pretende pagar.\n")
+        except:
+            return str("Algo correu mal!") #TODO CHECK RESPONSE
+
+    elif menu == 217:
+        try:
+            valorMax = float(msg)
+            valorMin = load_number(idChat, idUser)
+            aux = []
+            aux.append(valorMin)
+            aux.append(valorMax)
+            requerido = get_content('/fs_scrapper/fiber_packages_price', aux, {})
+            remove_step_number(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        except:
+            return str("Algo correu mal!")  # TODO CHECK RESPONSE
+
     elif menu == 220:           #TODO temos que alterar este menu !!!!
-            print('''Insira o limite Inferior''')
-            limInf = input()
-            print('''Insira o limite Superior''')
-            limSup = input()
             return None
 
     elif menu == 241:
