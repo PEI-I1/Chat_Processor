@@ -1,5 +1,6 @@
 import globals #redis_db
 from utils import get_content
+from regexRulesMode import regexPrice
 import json
 
 ###################################################################
@@ -613,7 +614,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 216:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 217)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -622,7 +623,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 217:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             aux = []
             aux.append(valorMin)
@@ -636,7 +637,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 218:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 219)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -645,7 +646,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 219:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             aux = []
             aux.append(valorMin)
@@ -659,7 +660,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 221:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 222)
             return str("Indique o valor máximo que pretende pagar.\n") #check
@@ -668,7 +669,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 222:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             aux = []
             aux.append(valorMin)
@@ -682,7 +683,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 223:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 224)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -691,7 +692,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 224:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             save_step_numberT(idChat, idUser, valorMax)
             save_redis(idChat, idUser, 225)
             return str("Indique a marca.\n")
@@ -714,7 +715,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 230:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 231)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -723,7 +724,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 231:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             aux = []
             aux.append(valorMin)
@@ -743,7 +744,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 233:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 234)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -752,7 +753,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 234:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             servico = load_string(idChat, idUser)
             aux = []
@@ -769,7 +770,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 235:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 236)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -778,7 +779,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 236:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             aux = []
             aux.append(valorMin)
@@ -799,7 +800,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 238:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 239)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -808,7 +809,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 239:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             servico = load_string(idChat, idUser)
             aux = []
@@ -908,13 +909,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 243:
         if opcao == 1:
             aux = {}
-            aux['subject'] =  "Reparação de equipamentos"
+            aux['subject'] = "Reparação de equipamentos"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
             aux = {}
-            aux['subject'] =  "Devolução de equipamentos NOS"
+            aux['subject'] = "Devolução de equipamentos NOS"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
             return requerido
@@ -928,13 +929,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 244:
         if opcao == 1:
             aux = {}
-            aux['subject'] =  "Video intérprete"
+            aux['subject'] = "Video intérprete"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
             aux = {}
-            aux['subject'] =  "InfoPortabilidade"
+            aux['subject'] = "InfoPortabilidade"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
             remove_redis(idChat, idUser, chatData)
             return requerido
@@ -947,7 +948,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 248:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 249)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -956,7 +957,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 249:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             aux = []
             aux.append(valorMin)
@@ -1004,7 +1005,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 286:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 287)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -1013,7 +1014,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 287:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             marca = load_string(idChat, idUser)
             aux = []
@@ -1030,7 +1031,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 292:
         try:
-            num = float(msg)
+            num = regexPrice(msg)
             save_step_number(idChat, idUser, num)
             save_redis(idChat, idUser, 294)
             return str("Indique o valor mínimo que pretende pagar.\n")
@@ -1046,7 +1047,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 294:
         try:
-            valorMin = float(msg)
+            valorMin = regexPrice(msg)
             save_step_number(idChat, idUser, valorMin)
             save_redis(idChat, idUser, 295)
             return str("Indique o valor máximo que pretende pagar.\n")
@@ -1055,7 +1056,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 295:
         try:
-            valorMax = float(msg)
+            valorMax = regexPrice(msg)
             valorMin = load_number(idChat, idUser)
             aux = []
             aux.append(valorMin)
