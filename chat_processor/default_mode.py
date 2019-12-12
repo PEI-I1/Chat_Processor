@@ -29,9 +29,9 @@ def criar_noccur_dic(palavras):
 # confiança = noccur da categoria que aparece mais / número de ocorrência de todas as categorias
 def calcula_confianca(noccur):
     if len(noccur):
-        total = sum(noccur.values())
+        #total = sum(noccur.values())
         cat_maior = max(noccur, key=noccur.get)
-        confianca = noccur.get(cat_maior) / total
+        confianca = noccur.get(cat_maior) #/ total
     else:
         cat_maior = "Not Found"
         confianca = 0

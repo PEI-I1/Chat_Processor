@@ -391,7 +391,7 @@ cat = [
     {
         'request': '/scrapper/sessions/by_movie',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'proximas', r'filme'],
+        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'filme'],
         'paramsRequired': {'0':'WORK OF ART'},
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
