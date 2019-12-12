@@ -49,7 +49,7 @@ def send_msg(idChat, msg):
 
     print(URL)
     try:
-        res = requests.post(URL, data=msg)
+        res = requests.post(URL, data=msg.encode("utf-8"))
         res.raise_for_status()
         res = res.text
     except:

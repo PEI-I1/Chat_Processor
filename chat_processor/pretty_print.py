@@ -9,6 +9,12 @@ def cinemas(idChat, content):
     send_msg(idChat, s) 
 
 def movies_by_cinema(idChat, content):
+    for c in content:
+        s = 'Os filmes em exibição no ' + c + ' são:\n'
+        s += "\n".join(content[c])
+        send_msg(idChat, s)
+
+def movies_search(idChat, content):
     send_msg(idChat, 'Os filmes que cumprem a pesquisa são:')
 
     for m in content:
@@ -17,17 +23,11 @@ def movies_by_cinema(idChat, content):
         s += bold("Elenco: ") + m["Cast"] + "\n"
         s += bold("Produtor: ") + m["Producer"] + "\n"
         s += bold("Género: ") + m["Genre"] + "\n"
-        s += bold("Duração: ") + m["Length (min)"] + " minutos\n"
-        s += bold("Idade: ") + m["Age rating"] + "anos\n"
+        s += bold("Duração: ") + str(m["Length (min)"]) + " minutos\n"
+        s += bold("Idade: ") + str(m["Age rating"]) + " anos\n"
         s += bold("Sinopse: ") + m["Synopsis"] + "\n"
         s += bold("Trailer: ") + m["Trailer"] + "\n"
         s += m["Banner"]
-        send_msg(idChat, s)
-
-def movies_search(idChat, content):
-    for c in content:
-        s = 'Os filmes em exibição no ' + c + ' são:\n'
-        s += "\n".join(content[c])
         send_msg(idChat, s)
 
 def releases(idChat, content):
@@ -48,8 +48,8 @@ def movie_details(idChat, content):
     s += bold("Elenco: ") + m["Cast"] + "\n"
     s += bold("Produtor: ") + m["Producer"] + "\n"
     s += bold("Género: ") + m["Genre"] + "\n"
-    s += bold("Duração: ") + m["Length (min)"] + " minutos\n"
-    s += bold("Idade: ") + m["Age rating"] + "anos\n"
+    s += bold("Duração: ") + str(m["Length (min)"]) + " minutos\n"
+    s += bold("Idade: ") + str(m["Age rating"]) + " anos\n"
     s += bold("Sinopse: ") + m["Synopsis"] + "\n"
     s += bold("Trailer: ") + m["Trailer"] + "\n"
     s += m["Banner"]
@@ -64,7 +64,7 @@ def sessions_by_duration(idChat, content):
             s = bold("Filme: ") + m["Movie"] + "\n"
             s += bold("Data: ") + m["Start date"] + "\n"
             s += bold("Hora de início: ") + m["Start time"] + "\n"
-            s += bold("Duração: ") + m["Length (min)"] + " minutos\n"
+            s += bold("Duração: ") + str(m["Length (min)"]) + " minutos\n"
             s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
             s += bold("Link de compra: ") + m["Ticket link"] + "\n"
             send_msg(idChat, s)

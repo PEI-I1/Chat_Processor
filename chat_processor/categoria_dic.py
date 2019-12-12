@@ -336,7 +336,7 @@ cat = [
     {
         'request': '/scrapper/movies/by_cinema',
         'service': 'CINEMA_SCRAPER',
-        'words': ['cinema', 'perto', 'proximo', 'estou', 'aqui', 'localidade', 'cidade', 'sitio', 'distrito', 'concelho', 'morada', 'filme', 'filmes', 'vida'],
+        'words': ['cinema', 'perto', 'proximo', 'estou', 'aqui', 'localidade', 'cidade', 'sitio', 'distrito', 'concelho', 'morada', 'filme', 'filmes'],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},

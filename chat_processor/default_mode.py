@@ -275,7 +275,7 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
                 # FIXME: funciona para o unico caso que temos
                 #         pode ser melhorada mais tarde
-                send_msg(idChat, "Por favor, diga informações acerda de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade")
+                send_msg(idChat, "Por favor, diga informações acerca de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade")
                 globals.redis_db.set(idChat, json.dumps(chatData))
             else:
                 # processar resposta do user e devolver o conteudo pedido
