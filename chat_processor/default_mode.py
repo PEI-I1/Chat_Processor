@@ -242,8 +242,8 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             send_msg(idChat, "Em que cidade se encontra?")
     elif chatData["status"] == "search_loc":
         loc = get_city(entry, msg_params)
-        
-        if loc: 
+
+        if loc:
             chatData["locationParam"] = {"search_term": loc}
             chatData["status"] = ""
             process_params(idChat, idUser, msg, name, chatData, msg_params)
@@ -257,6 +257,10 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
         # adicionar bd
         add_new_params(chatData['paramsRequired'], valid_required_params)
         add_new_params(chatData['paramsOptional'], valid_optional_params)
+        print(valid_required_params)
+        print(valid_optional_params)
+        print(missing_required_params)
+        print(missing_optional_params)
 
         # quando falta params obrigatório
         #   -> perguntar ao utilizador os parametros que faltam

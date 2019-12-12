@@ -105,3 +105,4 @@ venv.bak/
 
 #nltk
 nltk_data/
+dump.rdb
