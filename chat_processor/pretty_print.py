@@ -30,7 +30,7 @@ def new_phones(idChat, content):
 
 def ofer_phones(idChat, content):
     s = 'Os telemóveis com ofertas são: '
-    s += "\n".join(map(lambda t: bold(t["nome"] + ": ") + "\n" + bold("Preço: " + t["preco"] + " €\n" + bold("Oferta: ") + t["oferta"] + "\n", content))
+    s += "\n".join(map(lambda t: bold(t["nome"] + ": ") + "\n" + bold("Preço: " + t["preco"] + " €\n" + bold("Oferta: ") + t["oferta"] + "\n", content)))
     send_msg(idChat, s)
 
 def prest_phones(idChat, content):
