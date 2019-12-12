@@ -5,7 +5,7 @@ import json
 
 
 def load_redis(idChat, idUser):
-    aux = globals.redis_db.get(idChat + idUser + '_rules_mode')
+    aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_mode')
 
     if aux:
         return int(aux)
@@ -16,19 +16,19 @@ def load_redis(idChat, idUser):
 def remove_redis(idChat, idUser, chatData):
     chatData["status"] = ''
     globals.redis_db.set(idChat, json.dumps(chatData))
-    globals.redis_db.delete(idChat + idUser + '_rules_mode')
+    globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_mode')
 
 
 def save_redis(idChat, idUser, menu):
-    globals.redis_db.set(idChat + idUser + '_rules_mode', menu)
+    globals.redis_db.set(str(idChat) + str(idUser) + '_rules_mode', menu)
 
 
 def save_step_number(idChat, idUser, number):
-    globals.redis_db.set(idChat + idUser + '_rules_number', number)
+    globals.redis_db.set(str(idChat) + str(idUser) + '_rules_number', number)
 
 
 def load_number(idChat, idUser):
-    aux = globals.redis_db.get(idChat + idUser + '_rules_number')
+    aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_number')
 
     if aux:
         return int(aux)
@@ -37,15 +37,15 @@ def load_number(idChat, idUser):
 
 
 def remove_step_number(idChat, idUser):
-    globals.redis_db.delete(idChat + idUser + '_rules_number')
+    globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_number')
 
 
 def save_step_numberT(idChat, idUser, numberT):
-    globals.redis_db.set(idChat + idUser + '_rules_numberT', numberT)
+    globals.redis_db.set(str(idChat) + str(idUser) + '_rules_numberT', numberT)
 
 
 def load_numberT(idChat, idUser):
-    aux = globals.redis_db.get(idChat + idUser + '_rules_numberT')
+    aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_numberT')
 
     if aux:
         return int(aux)
@@ -54,15 +54,15 @@ def load_numberT(idChat, idUser):
 
 
 def remove_step_numberT(idChat, idUser):
-    globals.redis_db.delete(idChat + idUser + '_rules_numberT')
+    globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_numberT')
 
 
 def save_step_string(idChat, idUser, string):
-    globals.redis_db.set(idChat + idUser + '_rules_string', string)
+    globals.redis_db.set(str(idChat) + str(idUser) + '_rules_string', string)
 
 
 def load_string(idChat, idUser):
-    aux = globals.redis_db.get(idChat + idUser + '_rules_string')
+    aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_string')
 
     if aux:
         return aux
@@ -71,7 +71,7 @@ def load_string(idChat, idUser):
 
 
 def remove_step_string(idChat, idUser):
-    globals.redis_db.delete(idChat + idUser + '_rules_string')
+    globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_string')
 
 
 def printservicos():
