@@ -68,6 +68,159 @@ def new_phones_brand(idChat, content):
     s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
     send_msg(idChat, s)
 
+def all_wtf(idChat, content):
+    s = 'Os pacotes WTF existentes são os seguintes: '
+    s += "\n".join(map(lambda p: bold(p["nome"]) + " com o preço de " + p["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def wtf_name(idChat, content):
+    s = bold("Nome: ") + content["nome"] + "\n"
+    s += bold("Preço: ") + content["preco"] + "\n"
+    s += bold("Preço/mês: ") + content["preco"] + " €\n"
+    s += bold("Net: ") + content["net"] + "\n"
+    s += bold("SMS: ") + content["sms"] + "\n"
+    s += bold("Chamadas: ") + content["minutos"] + "\n"
+    s += bold("Cinemas: ") + content["cinema"] + "\n"
+    s += bold("Uber: ") + content["uber"] + "\n"
+    s += bold("Uber Eats: ") + content["uber_eats"]
+    send_msg(idChat, s)
+
+def store(idChat, content):
+    s = bold("Nome: ") + content["nome"] + "\n"
+    s += bold("Morada: ") + content["preco"] + "\n"
+    s += bold("Horário: ") + content["horario"]
+    send_msg(idChat, s)
+
+def store_address(idChat, content):
+    s = bold("Nome: ") + content["nome"] + "\n"
+    s += bold("Morada: ") + content["morada"] + "\n"
+    s += bold("Horário: ") + content["horario"] + "\n"
+    s += bold("Serviços:\n") + "\n".join(content["servicos"])
+    send_msg(idChat, s)
+
+def package(idChat, content):
+    s = bold("Nome: ") + content["nome"] + "\n"
+    s += bold("Tipo: ") + content["Tipo"] + "\n"
+    if content["canais"]:
+        s += bold("Canais: ") + content["canais"] + "\n"
+    if content["net"]:
+        s += bold("Net: ") + content["net"] + "\n"
+    if content["phone"]:
+        s += bold("Telefone: ") + content["phone"] + "\n"
+    if content["mobile"]:
+        s += bold("Telemóvel: ") + content["mobile"] + "\n"
+    if content["netMovel"]:
+        s += bold("Net Móvel: ") + content["netMovel"] + "\n"
+    send_msg(idChat, s)
+
+    fids = ["Fidelizacao_24Meses", "Fidelizacao_12Meses", "Fidelizacao_6Meses"]
+    for fid in fids:
+        aux = content[fid]
+
+        s = "Com " + bold(aux["Fidelizacao"]) + " de fidelização:\n"
+        s += bold("Preço: ") + aux["preco"] + " €\n"
+        s += bold("Preço de Adesão: ") + aux["precoAdesao"] + " €\n"
+        s += bold("Vantagens:\n") + "\n".join(aux["vantagens"])
+        send_msg(idChat, s)
+
+    aux = content["Sem_Fidelizacao"]
+
+    s = "Sem fidelização:\n"
+    s += bold("Preço: ") + aux["preco"] + " €\n"
+    s += bold("Preço de Adesão: ") + aux["precoAdesao"] + " €\n"
+    s += bold("Vantagens:\n") + "\n".join(aux["vantagens"])
+    send_msg(idChat, s)
+
+def packages(idChat, content):
+    send_msg(idChat, "Os pacotes NOS disponíveis são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Tipo: ") + content["Tipo"] + "\n"
+        s += bold("Serviço: ") + content["servico"]
+        send_msg(idChat, s)
+
+def fiber_packages(idChat, content):
+    send_msg(idChat, "Os pacotes Fibra da NOS disponíveis são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Serviço: ") + content["servico"]
+        send_msg(idChat, s)
+
+def satelite_packages(idChat, content):
+    send_msg(idChat, "Os pacotes Satélite da NOS disponíveis são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Serviço: ") + content["servico"]
+        send_msg(idChat, s)
+
+def packages_service(idChat, content):
+    send_msg(idChat, "Os pacotes NOS com esse serviço são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Tipo: ") + content["Tipo"]
+        send_msg(idChat, s)
+
+def packages_price(idChat, content):
+    send_msg(idChat, "Os pacotes NOS disponíveis entre esses valores são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Tipo: ") + content["Tipo"] + "\n"
+        s += bold("Serviço: ") + content["servico"]
+        send_msg(idChat, s)
+
+def packages_service_price(idChat, content):
+    send_msg(idChat, "Os pacotes NOS com esse serviço entre esses valores são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Tipo: ") + content["Tipo"]
+        send_msg(idChat, s)
+
+def fiber_packages_price(idChat, content):
+    send_msg(idChat, "Os pacotes Fibra da NOS disponíveis entre esses valores são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Serviço: ") + content["servico"]
+        send_msg(idChat, s)
+
+def satelite_packages_price(idChat, content):
+    send_msg(idChat, "Os pacotes Satélite da NOS disponíveis entre esses valores são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"] + "\n"
+        s += bold("Serviço: ") + content["servico"]
+        send_msg(idChat, s)
+
+def fiber_packages_service(idChat, content):
+    send_msg(idChat, "Os pacotes Fibra da NOS com esse serviço são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"]
+        send_msg(idChat, s)
+
+def satelite_packages_service(idChat, content):
+    send_msg(idChat, "Os pacotes Satélite da NOS com esse serviço são os seguintes:")
+
+    for p in content:
+        s = bold("Nome: ") + content["nome"] + "\n"
+        s += bold("Preço: ") + content["preco"]
+        send_msg(idChat, s)
+
 def cinemas(idChat, content):
     s = 'Os cinemas NOS perto de si são:\n'
     s += "\n".join(content["cinemas"])
@@ -183,21 +336,21 @@ switcher = {
     '/fs_scrapper/phones_brand_promo': phones_brand_promo,
     '/fs_scrapper/phones_promo_price': phones_promo_price,
     '/fs_scrapper/new_phones_brand': new_phones_brand,
-    '/fs_scrapper/all_wtf': send_msg,
-    '/fs_scrapper/wtf_name': send_msg,
-    '/fs_scrapper/stores_zone': send_msg,
-    '/fs_scrapper/store_address': send_msg,
-    '/fs_scrapper/specific_package': send_msg,
-    '/fs_scrapper/packages': send_msg,
-    '/fs_scrapper/fiber_packages': send_msg,
-    '/fs_scrapper/satelite_packages': send_msg,
-    '/fs_scrapper/packages_service': send_msg,
-    '/fs_scrapper/packages_price': send_msg,
-    '/fs_scrapper/packages_service_price': send_msg,
-    '/fs_scrapper/fiber_packages_price': send_msg,
-    '/fs_scrapper/satelite_packages_price': send_msg,
-    '/fs_scrapper/fiber_packages_service': send_msg,
-    '/fs_scrapper/satelite_packages_service': send_msg,
+    '/fs_scrapper/all_wtf': all_wtf,
+    '/fs_scrapper/wtf_name': wtf_name,
+    '/fs_scrapper/stores': store,
+    '/fs_scrapper/store_address': store_address,
+    '/fs_scrapper/specific_package': package,
+    '/fs_scrapper/packages': packages,
+    '/fs_scrapper/fiber_packages': fiber_packages,
+    '/fs_scrapper/satelite_packages': satelite_packages,
+    '/fs_scrapper/packages_service': packages_service,
+    '/fs_scrapper/packages_price': packages_price,
+    '/fs_scrapper/packages_service_price': packages_service_price,
+    '/fs_scrapper/fiber_packages_price': fiber_packages_price,
+    '/fs_scrapper/satelite_packages_price': satelite_packages_price,
+    '/fs_scrapper/fiber_packages_service': fiber_packages_service,
+    '/fs_scrapper/satelite_packages_service': satelite_packages_service,
     '/scrapper/cinemas/search': cinemas,
     '/scrapper/movies/by_cinema': movies_by_cinema,
     '/scrapper/movies/search': movies_search,
