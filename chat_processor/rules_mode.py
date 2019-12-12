@@ -240,7 +240,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 22:
         if opcao == 1:
-            save_redis(idChat, idUser, 27)
+            save_redis(idChat, idUser, 281)
             return str('''Escreva o modelo que procura\n''')
         elif opcao == 2:
             save_redis(idChat, idUser, 28)
