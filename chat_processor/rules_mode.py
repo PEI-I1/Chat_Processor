@@ -350,18 +350,19 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 28:
         if opcao == 1:
-            #TODO procurar telemóvel por marca -- DONE
+            #procurar telemóvel por marca
             save_redis(idChat, idUser, 281)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 2:
-            #TODO procurar telemóvel por marca numa gama de valores -- NOT DONE
-            return None
+            #procurar telemóvel por marca numa gama de valores
+            save_redis(idChat, idUser, 285)
+            return str("Indique a marca do telemóvel que pretende.\n")
         elif opcao == 3:
-            #TODO procurar telms por marca que estejam em promoção -- DONE
+            #procurar telms por marca que estejam em promoção
             save_redis(idChat, idUser, 283)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 4:
-            #TODO procurar telms por marca mais recentes -- DONE
+            #procurar telms por marca mais recentes
             save_redis(idChat, idUser, 284)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 5:
@@ -392,6 +393,38 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         requerido = get_content('/fs_scrapper/new_phones_brand', aux, {})
         remove_redis(idChat, idUser, chatData)
         return requerido
+
+    elif menu == 285:
+        marca = msg
+        save_step_string(idChat, idUser, marca)
+        save_redis(idChat, idUser, 286)
+        return str("Indique o valor mínimo que pretende pagar.\n")
+
+    elif menu == 286:
+        try:
+            valorMin = float(msg)
+            save_step_number(idChat, idUser, valorMin)
+            save_redis(idChat, idUser, 287)
+            return str("Indique o valor máximo que pretende pagar.\n")
+        except:
+            return str("Algo correu mal!")
+
+    elif menu == 287:
+        try:
+            valorMax = float(msg)
+            valorMin = load_number(idChat, idUser)
+            marca = load_string(idChat, idUser)
+            aux = []
+            aux.append(marca)
+            aux.append(valorMin)
+            aux.append(valorMax)
+            requerido = get_content('/fs_scrapper/phones_brand_price', aux, {})
+            remove_step_number(idChat, idUser)
+            remove_step_string(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        except:
+            return str("Algo correu mal!")  # TODO CHECK RESPONSE
 
     elif menu == 29:
         aux = []
@@ -924,4 +957,3 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 def problem_rules(idChat, idUser, menu, msg, chatData):
     #TODO
     return ""
-
