@@ -342,7 +342,7 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                 else:
                     chatData["tries"] += 1
                     globals.redis_db.set(idChat, json.dumps(chatData))
-                    send_msg("Desculpe mas não foi possível identificar o que pretende. Tente de novo!")
+                    send_msg(idChat, "Desculpe mas não foi possível identificar o que pretende. Tente de novo!")
         else:
             if confianca > confianca_level:
                 if chatData["cat"] == cat:
