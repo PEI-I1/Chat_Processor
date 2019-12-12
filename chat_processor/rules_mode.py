@@ -350,7 +350,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 28:
         if opcao == 1:
-            #procurar telemóvel por marca
             save_redis(idChat, idUser, 281)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 2:
@@ -358,11 +357,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 285)
             return str("Indique a marca do telemóvel que pretende.\n")
         elif opcao == 3:
-            #procurar telms por marca que estejam em promoção
             save_redis(idChat, idUser, 283)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 4:
-            #procurar telms por marca mais recentes
             save_redis(idChat, idUser, 284)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 5:
@@ -407,7 +404,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 287)
             return str("Indique o valor máximo que pretende pagar.\n")
         except:
-            return str("Algo correu mal!")
+            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
 
     elif menu == 287:
         try:
@@ -424,7 +421,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return requerido
         except:
-            return str("Algo correu mal!")  # TODO CHECK RESPONSE
+            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")  # TODO CHECK RESPONSE
 
     elif menu == 29:
         aux = []
@@ -506,10 +503,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 206:
         if opcao == 1:
-            #TODO tlms em promoção -- DONE
-            aux = {}
-            aux['subject'] = "Telemóveis em Promoção"
-            requerido = get_content('/fs_scrapper/promo_phones', [], aux)
+            requerido = get_content('/fs_scrapper/promo_phones', [], {})
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
@@ -560,14 +554,10 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 207:
         if opcao == 1:
-            #TODO tlms mais recentes -- DONE
-            aux = {}
-            aux['subject'] = "Telemóveis mais Recentes"
-            requerido = get_content('/fs_scrapper/new_phones', [], aux)
+            requerido = get_content('/fs_scrapper/new_phones', [], {})
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
-            #TODO tlms mais recentes por marca -- DONE menu 284 já existente, reaproveitado
             save_redis(idChat, idUser, 284)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 3:
@@ -655,10 +645,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 209:
         if opcao == 1:
-            #TODO pacotes satelite -- DONE
-            aux = {}
-            aux['subject'] = "Pacotes Satélite"
-            requerido = get_content('/fs_scrapper/satelite_packages', [], aux)
+            requerido = get_content('/fs_scrapper/satelite_packages', [], {})
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
@@ -719,10 +706,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 210:
         if opcao == 1:
-            #TODO pacotes fibra -- DONE
-            aux = {}
-            aux['subject'] = "Pacotes Fibra"
-            requerido = get_content('/fs_scrapper/fibra_packages', [], aux)
+            requerido = get_content('/fs_scrapper/fibra_packages', [], {})
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
@@ -823,9 +807,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return requerido
         except:
             return str("Algo correu mal!")  # TODO CHECK RESPONSE
-
-    elif menu == 220:           #TODO temos que alterar este menu !!!!
-            return None
 
     elif menu == 241:
         if opcao == 1:
