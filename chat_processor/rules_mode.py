@@ -2,7 +2,8 @@ import globals #redis_db
 from utils import get_content
 import json
 
-
+###################################################################
+###################################################################
 def load_redis(idChat, idUser):
     aux = globals.redis_db.get(idChat + idUser + '_rules_mode')
 
@@ -20,7 +21,8 @@ def remove_redis(idChat, idUser, chatData):
 def save_redis(idChat, idUser, menu):
     globals.redis_db.set(idChat + idUser + '_rules_mode', menu)
 
-
+###################################################################
+###################################################################
 def save_step_number(idChat, idUser, number):
     globals.redis_db.set(idChat + idUser + '_rules_number', number)
 
@@ -36,6 +38,24 @@ def load_number(idChat, idUser):
 def remove_step_number(idChat, idUser):
     globals.redis_db.delete(idChat + idUser + '_rules_number')
 
+###################################################################
+###################################################################
+def save_step_numberT(idChat, idUser, numberT):
+    globals.redis_db.set(idChat + idUser + '_rules_numberT', numberT)
+
+def load_numberT(idChat, idUser):
+    aux = globals.redis_db.get(idChat + idUser + '_rules_numberT')
+
+    if aux:
+        return int(aux)
+    else:
+        return 0
+
+def remove_step_numberT(idChat, idUser):
+    globals.redis_db.delete(idChat + idUser + '_rules_numberT')
+
+###################################################################
+###################################################################
 def save_step_string(idChat, idUser, string):
     globals.redis_db.set(idChat + idUser + '_rules_string', string)
 
@@ -52,6 +72,8 @@ def load_string(idChat, idUser):
 def remove_step_string(idChat, idUser):
     globals.redis_db.delete(idChat + idUser + '_rules_string')
 
+###################################################################
+###################################################################
 
 def get_response_rules(idChat, idUser, msg, name, chatData):
     menu = load_redis(idChat, idUser)
@@ -524,14 +546,17 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 208:
         if opcao == 1:
-            #TODO tlms numa gama de valores
-            return None
+            #TODO tlms numa gama de valores -- done
+            save_redis(idChat, idUser, 221)
+            return str("Indique o valor mínimo que pretende pagar.\n")
         elif opcao == 2:
-            #TODO tlms numa gama de valores por marca
-            return None
+            #TODO tlms numa gama de valores por marca -- done
+            save_redis(idChat, idUser, 223)
+            return str("Indique o valor mínimo que está disposto a pagar.\n")
         elif opcao == 3:
-            #TODO tlms numa gama de valores em promoção
-            return None
+            #TODO tlms numa gama de valores em promoção -- done
+            save_redis(idChat, idUser, 218) # menu reaproveitado
+            return str("Indique o valor mínimo que está disposto a pagar.\n")
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -539,6 +564,61 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. procurar telemóveis numa gama de valores\n 2. procurar telemóveis por marca numa gama de valores
 3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
+
+    elif menu == 221:
+        try:
+            valorMin = float(msg)
+            save_step_number(idChat, idUser, valorMin)
+            save_redis(idChat, idUser, 222)
+            return str("Indique o valor máximo que pretende pagar.\n") #check
+        except:
+            return str("Algo correu mal!")
+
+    elif menu == 222:
+        try:
+            valorMax = float(msg)
+            valorMin = load_number(idChat, idUser)
+            aux = []
+            aux.append(valorMin)
+            aux.append(valorMax)
+            requerido = get_content('/fs_scrapper/phones_price', aux, {})
+            remove_step_number(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        except:
+            return str("Algo correu mal!")  # TODO CHECK RESPONSE
+
+    elif menu == 223:
+        try:
+            valorMin = float(msg)
+            save_step_number(idChat, idUser, valorMin)
+            save_redis(idChat, idUser, 224)
+            return str("Indique o valor máximo que pretende pagar.\n")
+        except:
+            return str("Algo correu mal!")
+
+    elif menu == 224:
+        try:
+            valorMax = float(msg)
+            save_step_numberT(idChat, idUser, valorMax)
+            save_redis(idChat, idUser, 225)
+            return str("Indique a marca.\n")
+        except:
+            return str("Algo correu mal!")  # TODO CHECK RESPONSE
+
+    elif menu == 225:
+        marca = msg
+        valorMin = load_number(idChat, idUser)
+        valorMax = load_numberT(idChat, idUser)
+        aux = []
+        aux.append(marca)
+        aux.append(valorMin)
+        aux.append(valorMax)
+        requerido = get_content('/fs_scrapper/phones_brand_price', aux, {})
+        remove_step_number(idChat, idUser)
+        remove_step_numberT(idChat, idUser)
+        remove_redis(idChat, idUser, chatData)
+        return requerido
 
     elif menu == 209:
         if opcao == 1:
