@@ -21,7 +21,7 @@ def criar_noccur_dic(palavras):
     for pal in palavras:
         for cat in dicionario:
             for word in cat['words']:
-                if word == clean_msg(pal):
+                if re.search(word, clean_msg(pal)):
                     noccur[cat['request']] = noccur.get(cat['request'], 0) + 1
     return noccur
 
