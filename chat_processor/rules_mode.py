@@ -462,8 +462,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 262)
             return str("Insira a marca do telemóvel que pretende.\n")
         elif opcao == 3:
-            #TODO tlms em promoção em gama de valores
-            return None
+            #TODO tlms em promoção em gama de valores -- DONE
+            save_redis(idChat, idUser, 218)
+            return str("Indique o valor mínimo que está disposto a pagar.\n")
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras")
@@ -471,6 +472,29 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar telemóveis em promoção\n 2. procurar telemóveis por marca com promoção
 3. procurar telemóveis em promoção numa gama de valores\n4. sair''')
+
+    elif menu == 218:
+        try:
+            valorMin = float(msg)
+            save_step_number(idChat, idUser, valorMin)
+            save_redis(idChat, idUser, 219)
+            return str("Indique o valor máximo que pretende pagar.\n")
+        except:
+            return str("Algo correu mal!")
+
+    elif menu == 219:
+        try:
+            valorMax = float(msg)
+            valorMin = load_number(idChat, idUser)
+            aux = []
+            aux.append(valorMin)
+            aux.append(valorMax)
+            requerido = get_content('/fs_scrapper/phones_promo_price', aux, {})
+            remove_step_number(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        except:
+            return str("Algo correu mal!")  # TODO CHECK RESPONSE
 
     elif menu == 262:
         aux = []
