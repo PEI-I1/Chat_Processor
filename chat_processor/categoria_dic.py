@@ -168,12 +168,12 @@ cat = [
 
     },
     {
-        'request': '/fs_scrapper/stores_zone',
+        'request': '/fs_scrapper/stores',
         'service': 'FS_SCRAPER',
-        'words': [r'lojas?',r'zona'],
-        'paramsRequired': {'0':'GPE'},
+        'words': [r'lojas?',r'zona',r'onde',r'est(a|ao)'],
+        'paramsRequired': {},
         'paramsOptional': {},
-        'locationParam': {},
+        'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
         'missingRequiredParamsPhrase' : 'Por favor, diga-nos a zona do país que procura.'
