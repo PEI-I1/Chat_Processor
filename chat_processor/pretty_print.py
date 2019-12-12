@@ -3,6 +3,71 @@ from utils import send_msg
 def bold(text):
     return "<b>" + text + "</b>"
 
+def linhas_apoio(idChat, content):
+    s = 'As linhas de apoio da NOS são:\n'
+    s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"], content))
+    send_msg(idChat, s)
+
+def phones_search(idChat, content):
+    s = 'Os telemóveis que correspondem à procura são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def top_phones(idChat, content):
+    s = 'Os top telemóveis são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def promo_phones(idChat, content):
+    s = 'Os telemóveis em promoção são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def new_phones(idChat, content):
+    s = 'Os novos telemóveis são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def ofer_phones(idChat, content):
+    s = 'Os telemóveis com ofertas são: '
+    s += "\n".join(map(lambda t: bold(t["nome"] + ": ") + "\n" + bold("Preço: " + t["preco"] + " €\n" + bold("Oferta: ") + t["oferta"] + "\n", content))
+    send_msg(idChat, s)
+
+def prest_phones(idChat, content):
+    s = 'Os telemóveis que podem ser comprados às prestações são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def points_phones(idChat, content):
+    s = 'Os telemóveis que podem ser comprados com pontos são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def phones_price(idChat, content):
+    s = 'Os telemóveis entre esses valores são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def phones_brand_price(idChat, content):
+    s = 'Os telemóveis da marca entre esses valores são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def phones_brand_promo(idChat, content):
+    s = 'Os telemóveis da marca em promoção são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def phones_promo_price(idChat, content):
+    s = 'Os telemóveis em promoção entre esses valores são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
+def new_phones_brand(idChat, content):
+    s = 'Os novos telemóveis da marca são: '
+    s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
+    send_msg(idChat, s)
+
 def cinemas(idChat, content):
     s = 'Os cinemas NOS perto de si são:\n'
     s += "\n".join(content["cinemas"])
@@ -105,20 +170,19 @@ def sessions_by_date(idChat, content):
             send_msg(idChat, s)
 
 switcher = {
-    '/fs_scrapper/linhas_apoio': send_msg,
-    '/fs_scrapper/phone_model': send_msg,
-    '/fs_scrapper/brand_phones': send_msg,
-    '/fs_scrapper/top_phones': send_msg,
-    '/fs_scrapper/promo_phones': send_msg,
-    '/fs_scrapper/new_phones': send_msg,
-    '/fs_scrapper/ofer_phones': send_msg,
-    '/fs_scrapper/prest_phones': send_msg,
-    '/fs_scrapper/points_phones': send_msg,
-    '/fs_scrapper/phones_price': send_msg,
-    '/fs_scrapper/phones_brand_price': send_msg,
-    '/fs_scrapper/phones_brand_promo': send_msg,
-    '/fs_scrapper/phones_promo_price': send_msg,
-    '/fs_scrapper/new_phones_brand': send_msg,
+    '/fs_scrapper/linhas_apoio': linhas_apoio,
+    '/fs_scrapper/brand_phones': phones_search,
+    '/fs_scrapper/top_phones': top_phones,
+    '/fs_scrapper/promo_phones': promo_phones,
+    '/fs_scrapper/new_phones': new_phones,
+    '/fs_scrapper/ofer_phones': ofer_phones,
+    '/fs_scrapper/prest_phones': prest_phones,
+    '/fs_scrapper/points_phones': points_phones,
+    '/fs_scrapper/phones_price': phones_price,
+    '/fs_scrapper/phones_brand_price': phones_brand_price,
+    '/fs_scrapper/phones_brand_promo': phones_brand_promo,
+    '/fs_scrapper/phones_promo_price': phones_promo_price,
+    '/fs_scrapper/new_phones_brand': new_phones_brand,
     '/fs_scrapper/all_wtf': send_msg,
     '/fs_scrapper/wtf_name': send_msg,
     '/fs_scrapper/stores_zone': send_msg,

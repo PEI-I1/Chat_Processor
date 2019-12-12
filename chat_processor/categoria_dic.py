@@ -12,26 +12,15 @@ cat = [
         'missingRequiredParamsPhrase' : ''
     },
     {
-        'request': '/fs_scrapper/phone_model',
-        'service': 'FS_SCRAPER',
-        'words': [r'modelos?', r'telemove(l|is)'],
-        'paramsRequired': {'0':'PRODUCT'},
-        'paramsOptional': {},
-        'locationParam': {},
-        'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o modelo de telemóvel que procura.'
-    },
-    {
         'request': '/fs_scrapper/brand_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'marcas?', r'telemove(l|is)'],
-        'paramsRequired': {'0':'ORG'},
-        'paramsOptional': {},
+        'words': [r'modelos?', r'marcas?', r'telemove(l|is)'],
+        'paramsRequired': {},
+        'paramsOptional': {'0':'ORG', '0':'PRODUCT'},
         'locationParam': {},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : 'Por favor, diga-nos a marca de telemóveis que procura.'
+        'needAtLeastOneOptionalParam': True,
+        'missingRequiredParamsPhrase' : ''
     },
     {
         'request': '/fs_scrapper/top_phones',
