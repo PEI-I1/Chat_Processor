@@ -4,7 +4,8 @@ import requests, urllib.parse, unidecode
 
 def merge_dicts(x, y):
     z = x.copy()
-    z.update(y)
+    if y:
+        z.update(y)
     return z
 
 def clean_msg(msg):
