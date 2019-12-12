@@ -53,7 +53,10 @@ def get_response(idChat, idUser, msg, name, location):
             send_msg(idChat, get_response_rules(idChat, idUser, msg, name, chatData))
         elif m == "ver mais":
             c = json.loads(globals.redis_db.get("vermais" + str(idChat)))
-            globals.redis_db.delete("vermais" + str(idChat))
-            pretty_print(idChat, c["cat"], c["content"], True)
+            if c:
+                globals.redis_db.delete("vermais" + str(idChat))
+                pretty_print(idChat, c["cat"], c["content"], True)
+            else:
+                send_msg(idChat, "Não existe lista para ver")
         else:
             get_response_default(idChat, idUser, msg, name, chatData)
