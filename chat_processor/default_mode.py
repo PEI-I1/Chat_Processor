@@ -24,9 +24,9 @@ def criar_noccur_dic(frase):
     '''
     noccur = {}
     for cat in dicionario:
-        for expr in cat['words']:
+        for expr,mod in cat['words']:
             if re.search(expr, frase):
-                noccur[cat['request']] = noccur.get(cat['request'], 0) + 1
+                noccur[cat['request']] = noccur.get(cat['request'], 0) + mod
     return noccur
 
 # com base na dic do noccur calcular qual é a categoria mais provável e a sua confiança

@@ -3,7 +3,8 @@ cat = [
     {
         'request': '/fs_scrapper/linhas_apoio',
         'service': 'FS_SCRAPER',
-        'words': [r'linhas?', r'apoio', 'assunto',r'numero', r'contactos?', r'empresas?', r'aderir', r'informac(ao|oes)', r'servicos', r'chamadas?', r'assistente', r'linhas? de apoio'],
+        'words': [(r'linhas?', 1.0), (r'apoio', 1.0), (r'assunto', 1.0),(r'numero', 1.0), (r'contactos?', 1.0), (r'empresas?', 1.0), (r'aderir', 1.0),
+                  (r'informac(ao|oes)', 1.0), (r'servicos', 1.0), (r'chamadas?', 1.0), (r'assistente', 1.0), (r'linhas? de apoio', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {'subject': 'SUBJECT'},
         'locationParam': {},
@@ -14,7 +15,7 @@ cat = [
     {
         'request': '/fs_scrapper/brand_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'modelos?', r'marcas?', r'telemove(l|is)', r'vida', r'telemove(l|is).+marcas?'],
+        'words': [(r'modelos?', 1.0), (r'marcas?', 1.0), (r'telemove(l|is)', 1.0), (r'vida', 1.0), (r'telemove(l|is).+marcas?', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {'0':'ORG', '0':'PRODUCT'},
         'locationParam': {},
@@ -25,7 +26,7 @@ cat = [
     {
         'request': '/fs_scrapper/top_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'top', r'telemove(l|is)', r'melhor(es)?'],
+        'words': [(r'top', 1.0), (r'telemove(l|is)', 1.0), (r'melhor(es)?', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -36,7 +37,7 @@ cat = [
     {
         'request': '/fs_scrapper/promo_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'promoc(ao|oes)', r'descontos?', r'baratos?', r'telemove(l|is)', r'telemove(l|is).+promoc(ao|oes)'],
+        'words': [(r'promo(cao|coes)?', 1.0), (r'descontos?', 1.0), (r'baratos?', 1.0), (r'telemove(l|is)', 1.0), (r'telemove(l|is).+promo(cao|coes)?', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -47,7 +48,7 @@ cat = [
     {
         'request': '/fs_scrapper/new_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'novidades?',r'novos?',r'telemove(l|is)',r'recentes?', r'telemove(l|is).+novos?', r'telemove(l|is).+recentes?'],
+        'words': [(r'novidades?', 1.0),(r'novos?', 1.0),(r'telemove(l|is)', 1.0),(r'recentes?', 1.0), (r'telemove(l|is).+novos?', 1.0), (r'telemove(l|is).+recentes?', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -58,7 +59,7 @@ cat = [
     {
         'request': '/fs_scrapper/ofer_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'(com )?ofertas?',r'telemove(l|is)', r'extra'],
+        'words': [(r'(com )?ofertas?', 1.0),(r'telemove(l|is)', 1.0), (r'extra', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -69,7 +70,7 @@ cat = [
     {
         'request': '/fs_scrapper/prest_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'prestac(ao|oes)',r'telemove(l|is)', r'pagamentos? a prestac(ao|oes)'],
+        'words': [(r'prestac(ao|oes)', 1.0),(r'telemove(l|is)', 1.0), (r'pagamentos? a prestac(ao|oes)', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -80,7 +81,7 @@ cat = [
     {
         'request': '/fs_scrapper/points_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'pontos?',r'telemove(l|is)'],
+        'words': [(r'pontos?', 1.0),(r'telemove(l|is)', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -91,7 +92,7 @@ cat = [
     {
         'request': '/fs_scrapper/phones_price',
         'service': 'FS_SCRAPER',
-        'words': [r'preco',r'telemove(l|is)', r'preco maximo', r'preco minimo', r'preco entre'],
+        'words': [(r'preco', 1.0),(r'telemove(l|is)', 1.0), (r'preco maximo', 1.0), (r'preco minimo', 1.0), (r'preco entre', 1.0)],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
         'paramsOptional': {},
         'locationParam': {},
@@ -102,7 +103,7 @@ cat = [
     {
         'request': '/fs_scrapper/phones_brand_price',
         'service': 'FS_SCRAPER',
-        'words': [r'marcas?',r'preco',r'telemove(l|is)'],
+        'words': [(r'marcas?', 1.0),(r'preco', 1.0),(r'telemove(l|is)', 1.0)],
         'paramsRequired': {'0':'ORG', '1':'MONEY', '2':'MONEY'},
         'paramsOptional': {},
         'locationParam': {},
@@ -113,7 +114,7 @@ cat = [
     {
         'request': '/fs_scrapper/phones_brand_promo',
         'service': 'FS_SCRAPER',
-        'words': [r'marcas?',r'promoc(ao|oes)',r'descontos?',r'baratos?',r'telemove(l|is)'],
+        'words': [(r'marcas?', 1.0),(r'promoc(ao|oes)', 1.0),(r'descontos?', 1.0),(r'baratos?', 1.0),(r'telemove(l|is)', 1.0)],
         'paramsRequired': {'0':'ORG'},
         'paramsOptional': {},
         'locationParam': {},
@@ -124,7 +125,7 @@ cat = [
     {
         'request': '/fs_scrapper/phones_promo_price',
         'service': 'FS_SCRAPER',
-        'words': [r'promoc(ao|oes)',r'descontos?',r'baratos?',r'preco',r'telemove(l|is)'],
+        'words': [(r'promoc(ao|oes)', 1.0),(r'descontos?', 1.0),(r'baratos?', 1.0),(r'preco', 1.0),(r'telemove(l|is)', 1.0)],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
         'paramsOptional': {},
         'locationParam': {},
@@ -135,7 +136,7 @@ cat = [
     {
         'request': '/fs_scrapper/new_phones_brand',
         'service': 'FS_SCRAPER',
-        'words': [r'marcas?',r'novidades',r'novos?',r'telemove(l|is)',r'recentes?'],
+        'words': [(r'marcas?', 1.0),(r'novidades', 1.0),(r'novos?', 1.0),(r'telemove(l|is)', 1.0),(r'recentes?', 1.0)],
         'paramsRequired': {'0':'ORG'},
         'paramsOptional': {},
         'locationParam': {},
@@ -146,7 +147,7 @@ cat = [
     {
         'request': '/fs_scrapper/all_wtf',
         'service': 'FS_SCRAPER',
-        'words': [r'tarifarios', r'todos', r'telemovel', r'wtf', r'todos (os )?tarifarios'],
+        'words': [(r'tarifarios', 1.0), (r'todos', 1.0), (r'telemovel', 1.0), (r'wtf', 1.0), (r'todos (os )?tarifarios', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -158,7 +159,7 @@ cat = [
     {
         'request': '/fs_scrapper/wtf_name',
         'service': 'FS_SCRAPER',
-        'words': [r'tarifario',r'telemovel',r'wtf'],
+        'words': [(r'tarifario', 1.0),(r'telemovel', 1.0),(r'wtf', 1.0)],
         'paramsRequired': {'0':'TARIFF'},
         'paramsOptional': {},
         'locationParam': {},
@@ -170,7 +171,7 @@ cat = [
     {
         'request': '/fs_scrapper/stores',
         'service': 'FS_SCRAPER',
-        'words': [r'lojas?',r'zona',r'onde',r'est(a|ao)'],
+        'words': [(r'lojas?', 1.0),(r'zona', 1.0),(r'onde', 1.0),(r'est(a|ao)', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -181,7 +182,7 @@ cat = [
     {
         'request': '/fs_scrapper/store_address',
         'service': 'FS_SCRAPER',
-        'words': [r'morada', r'rua', r'lojas?', r'lojas?.+rua', r'lojas?.+morada'],
+        'words': [(r'morada', 1.0), (r'rua', 1.0), (r'lojas?', 1.0), (r'lojas?.+rua', 1.0), (r'lojas?.+morada', 1.0)],
         'paramsRequired': {'0':'ADDRESS'},
         'paramsOptional': {},
         'locationParam': {},
@@ -192,7 +193,7 @@ cat = [
     {
         'request': '/fs_scrapper/specific_package',
         'service': 'FS_SCRAPER',
-        'words': [r'pacote'],
+        'words': [(r'pacote', 1.0)],
         'paramsRequired': {'0':'PRODUCT', '1':'PACKAGE'},
         'paramsOptional': {},
         'locationParam': {},
@@ -203,7 +204,7 @@ cat = [
     {
         'request': '/fs_scrapper/packages',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes'],
+        'words': [(r'pacotes', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -214,7 +215,7 @@ cat = [
     {
         'request': '/fs_scrapper/fiber_packages',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes', r'fibra', r'pacotes.+fibra'],
+        'words': [(r'pacotes', 1.0), (r'fibra', 1.0), (r'pacotes.+fibra', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -225,7 +226,7 @@ cat = [
     {
         'request': '/fs_scrapper/satelite_packages',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes', r'satelite', r'pacotes.+satelite'],
+        'words': [(r'pacotes', 1.0), (r'satelite', 1.0), (r'pacotes.+satelite', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -236,7 +237,8 @@ cat = [
     {
         'request': '/fs_scrapper/packages_service',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes?',r'servicos?',r'TV', r'NET', r'TV+NET', r'TV+VOZ', r'TV+NET+VOZ'],
+        'words': [(r'pacotes?', 1.0),(r'servicos?', 1.0),(r'TV', 1.0), (r'NET', 1.0), (r'TV+NET', 1.0), (r'TV+VOZ', 1.0),
+                  (r'TV+NET+VOZ', 1.0)],
         'paramsRequired': {'0':'PACKAGE'},
         'paramsOptional': {},
         'locationParam': {},
@@ -247,7 +249,7 @@ cat = [
     {
         'request': '/fs_scrapper/packages_price',
         'service': 'FS_SCRAPER',
-        'words': [r'ordenar',r'preco',r'pacotes?'],
+        'words': [(r'ordenar', 1.0),(r'preco', 1.0),(r'pacotes?', 1.0)],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
         'paramsOptional': {},
         'locationParam': {},
@@ -258,7 +260,8 @@ cat = [
     {
         'request': '/fs_scrapper/packages_service_price',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes?', r'servicos?', r'TV', r'NET', r'TV+NET', r'TV+VOZ', r'TV+NET+VOZ', r'ordenar',r'preco'],
+        'words': [(r'pacotes?', 1.0), (r'servicos?', 1.0), (r'TV', 1.0), (r'NET', 1.0), (r'TV+NET', 1.0), (r'TV+VOZ', 1.0),
+                  (r'TV+NET+VOZ', 1.0), (r'ordenar', 1.0),(r'preco', 1.0)],
         'paramsRequired': {'0':'PACKAGE','1':'MONEY', '2':'MONEY'},
         'paramsOptional': {},
         'locationParam': {},
@@ -269,7 +272,7 @@ cat = [
     {
         'request': '/fs_scrapper/fiber_packages_price',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes', r'fibra', r'ordenar',r'preco'],
+        'words': [(r'pacotes', 1.0), (r'fibra', 1.0), (r'ordenar', 1.0),(r'preco', 1.0)],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
         'paramsOptional': {},
         'locationParam': {},
@@ -280,7 +283,7 @@ cat = [
     {
         'request': '/fs_scrapper/satelite_packages_price',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes', r'satelite', r'ordenar',r'preco'],
+        'words': [(r'pacotes', 1.0), (r'satelite', 1.0), (r'ordenar', 1.0),(r'preco', 1.0)],
         'paramsRequired': {'0':'MONEY', '1':'MONEY'},
         'paramsOptional': {},
         'locationParam': {},
@@ -291,7 +294,8 @@ cat = [
     {
         'request': '/fs_scrapper/fiber_packages_service',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes', r'fibra', r'servicos?', r'TV', r'NET', r'TV+NET', r'TV+VOZ', r'TV+NET+VOZ'],
+        'words': [(r'pacotes', 1.0), (r'fibra', 1.0), (r'servicos?', 1.0), (r'TV', 1.0), (r'NET', 1.0), (r'TV+NET', 1.0),
+                  (r'TV+VOZ', 1.0), (r'TV+NET+VOZ', 1.0)],
         'paramsRequired': {'0':'PACKAGE'},
         'paramsOptional': {},
         'locationParam': {},
@@ -302,7 +306,8 @@ cat = [
     {
         'request': '/fs_scrapper/satelite_packages_service',
         'service': 'FS_SCRAPER',
-        'words': [r'pacotes', r'satelite', r'servicos?', r'TV', r'NET', r'TV+NET', r'TV+VOZ', r'TV+NET+VOZ'],
+        'words': [(r'pacotes', 1.0), (r'satelite', 1.0), (r'servicos?', 1.0), (r'TV', 1.0), (r'NET', 1.0), (r'TV+NET', 1.0),
+                  (r'TV+VOZ', 1.0), (r'TV+NET+VOZ', 1.0)],
         'paramsRequired': {'0':'PACKAGE'},
         'paramsOptional': {},
         'locationParam': {},
@@ -314,7 +319,9 @@ cat = [
     {
         'request': '/scrapper/cinemas/search',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'cinema', r'perto', r'proximos?', r'aqui', r'localidade', r'cidade', r'sitio', r'distrito', r'concelho', r'morada', r'cinemas?.+perto', r'cinemas?.+aqui', r'cinemas?.+proximos?'],
+        'words': [(r'cinema', 1.0), (r'perto', 1.0), (r'proximos?', 1.0), (r'aqui', 1.0), (r'localidade', 1.0), (r'cidade', 1.0),
+                  (r'sitio', 1.0), (r'distrito', 1.0), (r'concelho', 1.0), (r'morada', 1.0), (r'cinemas?.+perto', 1.0),
+                  (r'cinemas?.+aqui', 1.0), (r'cinemas?.+proximos?', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -325,7 +332,9 @@ cat = [
     {
         'request': '/scrapper/movies/by_cinema',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'cinemas?', r'perto', r'proximo', r'estou', r'aqui', r'localidade', r'cidade', r'sitio', r'distrito', r'concelho', r'morada', r'filmes?', r'cinemas?.+proximos?', r'filmes? nos? cinemas?'],
+        'words': [(r'cinemas?', 1.0), (r'perto', 1.0), (r'proximo', 1.0), (r'estou', 1.0), (r'aqui', 1.0), (r'localidade', 1.0),
+                  (r'cidade', 1.0), (r'sitio', 1.0), (r'distrito', 1.0), (r'concelho', 1.0), (r'morada', 1.0), (r'filmes?', 1.0),
+                  (r'cinemas?.+proximos?', 1.0), (r'filmes? nos? cinemas?', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -336,7 +345,7 @@ cat = [
     {
         'request': '/scrapper/movies/search',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'filme', r'pelicula', r'video', r'procura', r'consulta', r'filmes?\.(com|de|sobre)'],
+        'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'procura', 1.0), (r'consulta', 1.0), (r'filmes?\.(com|de|sobre)', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {'genre':'GENRE', 'cast':'PERSON', 'producer':'PERSON', 'synopsis':'SYNOPSIS', 'age':'CARDINAL'},
         'locationParam': {},
@@ -347,7 +356,9 @@ cat = [
     {
         'request': '/scrapper/movies/releases',
         'service': 'CINEMA_SCRAPER',
-        'words': ['filme', r'pelicula', r'video', r'estreias?', r'novo', r'estrear', r'lancamento', r'filmes? a sair', r'filmes?.+estrear', r'filmes?.+estreias?', r'filmes?.+novos?'],
+        'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'estreias?', 1.0), (r'novo', 1.0), (r'estrear', 1.0),
+                  (r'lancamento', 1.0), (r'filmes? a sair', 1.0), (r'filmes?.+estrear', 1.0), (r'filmes?.+estreias?', 1.0),
+                  (r'filmes?.+novos?', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -358,8 +369,10 @@ cat = [
     {
         'request': '/scrapper/movies/details',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'filme', r'pelicula', r'video', r'detalhes', r'informac(ao|oes)', r'sobre', r'casting', r'ator', r'produtor', r'realizador', r'tipo', r'genero', r'categoria', r'sinopse', r'historia', r'restricao', r'criancas', r'adultos',
-                  r'sobre o filme', r'informac(ao|oes) do filme'],
+        'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'detalhes', 1.0), (r'informac(ao|oes)', 1.0),
+                  (r'sobre', 1.0), (r'casting', 1.0), (r'ator', 1.0), (r'produtor', 1.0), (r'realizador', 1.0), (r'tipo', 1.0),
+                  (r'genero', 1.0), (r'categoria', 1.0), (r'sinopse', 1.0), (r'historia', 1.0), (r'restricao', 1.0), (r'criancas', 1.0),
+                  (r'adultos', 1.0), (r'sobre o filme', 1.0), (r'informac(ao|oes) do filme', 1.0)],
         'paramsRequired': {'0':'WORK OF ART'},
         'paramsOptional': {},
         'locationParam': {},
@@ -370,7 +383,9 @@ cat = [
     {
         'request': '/scrapper/sessions/by_duration',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'sess(ao|oes)', r'exibic(ao|oes)', r'duracao', r'tempo', r'tamanho', r'demora', r'extensao', r'minutos', r'horas?', r'sess(ao|oes) ate', r'sess(ao|oes) com menos'],
+        'words': [(r'sess(ao|oes)', 1.0), (r'sess(ao|oes)', 1.0), (r'exibic(ao|oes)', 1.0), (r'duracao', 1.0), (r'tempo', 1.0),
+                  (r'tamanho', 1.0), (r'demora', 1.0), (r'extensao', 1.0), (r'minutos', 1.0), (r'horas?', 1.0), (r'sess(ao|oes) ate', 1.0),
+                  (r'sess(ao|oes) com menos', 1.0)],
         'paramsRequired': {'0':'TIME'},
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -381,7 +396,8 @@ cat = [
     {
         'request': '/scrapper/sessions/next_sessions',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'proxim[oa]s', r'agora', r'seguintes?', r'prestes', r'proximas? sess(ao|oes)', r'proximas? exibic(ao|oes)'],
+        'words': [(r'sess(ao|oes)', 1.0), (r'exibic(ao|oes)', 1.0), (r'proxim[oa]s', 1.0), (r'agora', 1.0), (r'seguintes?', 1.0),
+                  (r'prestes', 1.0), (r'proximas? sess(ao|oes)', 1.0), (r'proximas? exibic(ao|oes)', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -392,7 +408,7 @@ cat = [
     {
         'request': '/scrapper/sessions/by_movie',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'filme', r'sess(ao|oes) dos? filmes?'],
+        'words': [(r'sess(ao|oes)', 1.0), (r'exibic(ao|oes)', 1.0), (r'filme', 1.0), (r'sess(ao|oes) dos? filmes?', 1.0)],
         'paramsRequired': {'0':'WORK OF ART'},
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -403,7 +419,8 @@ cat = [
     {
         'request': '/scrapper/sessions/by_date',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'proximas', r'dia', r'horas?', r'inicio', r'fim', r'hoje', r'amanha'],
+        'words': [(r'sess(ao|oes)', 1.0), (r'exibic(ao|oes)', 1.0), (r'proximas', 1.0), (r'dia', 1.0), (r'horas?', 1.0),
+                  (r'inicio', 1.0), (r'fim', 1.0), (r'hoje', 1.0), (r'amanha', 1.0)],
         'paramsRequired': {},
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
