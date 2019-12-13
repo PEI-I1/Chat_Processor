@@ -15,7 +15,7 @@ def limpa_texto(mensagem):
     :return: message after processing
     '''
     mensagem = nltk.word_tokenize(mensagem.lower())
-    mensagem = ' '.join([clean_msg(palavra) for palavra in mensagem if palavra not in nltk.corpus.stopwords.words('portuguese') and not re.match('\p{punct}', palavra)])
+    mensagem = ' '.join([clean_msg(palavra) for palavra in mensagem if not re.match('\p{punct}', palavra)])
     return mensagem
 
 
