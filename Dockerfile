@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.7
 MAINTAINER PEI-i1
 
 RUN apt-get update && apt-get install -y \
@@ -6,11 +6,12 @@ RUN apt-get update && apt-get install -y \
     gfortran \
     libblas-dev \
     liblapack-dev \
-    libhdf5-dev
+    libhdf5-dev \
+    git
 
-COPY ./chat_processor ./chat_processor
-COPY ./requirements.txt .
-COPY ./frequency_words_models ./frequency_words_models
+RUN git clone https://github.com/PEI-I1/Chat_Processor.git
+
+WORKDIR Chat_Processor
 
 RUN pip install -r requirements.txt
 RUN python -m deeppavlov install ner_ontonotes_bert_mult
