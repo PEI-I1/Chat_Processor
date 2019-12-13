@@ -28,7 +28,8 @@ TODO
 ### Deployment
 
 - Build Docker image: `docker build -t chat_processor .`
-- Run Docker container: `docker run -p 5001:5001 -it chat_processor`
+- Create Docker volume for data persistence across containers: `docker volume create chat_processor`
+- Run Docker container: `docker run -p 5001:5001 -it chat_proc -v chat_processor:/root/`
 
 **NOTE:** You need to run redis-server apart (`redis-server &`).
 
