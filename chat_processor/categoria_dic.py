@@ -325,7 +325,7 @@ cat = [
     {
         'request': '/scrapper/movies/by_cinema',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'cinema', r'perto', r'proximo', r'estou', r'aqui', r'localidade', r'cidade', r'sitio', r'distrito', r'concelho', r'morada', r'filmes?'],
+        'words': [r'cinemas?', r'perto', r'proximo', r'estou', r'aqui', r'localidade', r'cidade', r'sitio', r'distrito', r'concelho', r'morada', r'filmes?', r'cinemas?.+proximos?'],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -336,7 +336,7 @@ cat = [
     {
         'request': '/scrapper/movies/search',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'filme', r'pelicula', r'video', r'procura', r'consulta'],
+        'words': [r'filme', r'pelicula', r'video', r'procura', r'consulta', r'filmes?\.(com|de|sobre)'],
         'paramsRequired': {},
         'paramsOptional': {'genre':'GENRE', 'cast':'PERSON', 'producer':'PERSON', 'synopsis':'SYNOPSIS', 'age':'CARDINAL'},
         'locationParam': {},
@@ -347,7 +347,7 @@ cat = [
     {
         'request': '/scrapper/movies/releases',
         'service': 'CINEMA_SCRAPER',
-        'words': ['filme', r'pelicula', r'video', r'estreias?', r'novo', r'estrear', r'lancamento'],
+        'words': ['filme', r'pelicula', r'video', r'estreias?', r'novo', r'estrear', r'lancamento', r'filmes? a sair', r'filmes?.+estrear', r'filmes?.+estreias?', r'filmes?.+novos?'],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {},
@@ -358,7 +358,8 @@ cat = [
     {
         'request': '/scrapper/movies/details',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'filme', r'pelicula', r'video', r'detalhes', r'informac(ao|oes)', r'sobre', r'casting', r'ator', r'produtor', r'realizador', r'tipo', r'genero', r'categoria', r'sinopse', r'historia', r'restricao', r'criancas', r'adultos'],
+        'words': [r'filme', r'pelicula', r'video', r'detalhes', r'informac(ao|oes)', r'sobre', r'casting', r'ator', r'produtor', r'realizador', r'tipo', r'genero', r'categoria', r'sinopse', r'historia', r'restricao', r'criancas', r'adultos',
+                  r'sobre o filme', r'informac(ao|oes) do filme'],
         'paramsRequired': {'0':'WORK OF ART'},
         'paramsOptional': {},
         'locationParam': {},
@@ -369,7 +370,7 @@ cat = [
     {
         'request': '/scrapper/sessions/by_duration',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'duracao', r'tempo', r'tamanho', r'demora', r'extensao', r'minutos', r'horas?'],
+        'words': [r'sess(ao|oes)', r'sess(ao|oes)', r'exibic(ao|oes)', r'duracao', r'tempo', r'tamanho', r'demora', r'extensao', r'minutos', r'horas?', r'sess(ao|oes) ate', r'sess(ao|oes) com menos'],
         'paramsRequired': {'0':'TIME'},
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -380,7 +381,7 @@ cat = [
     {
         'request': '/scrapper/sessions/next_sessions',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'proxim[oa]s', r'agora', r'seguintes?', r'prestes'],
+        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'proxim[oa]s', r'agora', r'seguintes?', r'prestes', r'proximas? sess(ao|oes)', r'proximas? exibic(ao|oes)'],
         'paramsRequired': {},
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
@@ -391,7 +392,7 @@ cat = [
     {
         'request': '/scrapper/sessions/by_movie',
         'service': 'CINEMA_SCRAPER',
-        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'filme'],
+        'words': [r'sess(ao|oes)', r'exibic(ao|oes)', r'filme', r'sess(ao|oes) dos? filmes?'],
         'paramsRequired': {'0':'WORK OF ART'},
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
