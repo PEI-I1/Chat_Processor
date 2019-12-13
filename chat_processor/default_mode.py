@@ -202,7 +202,7 @@ def process_content(idChat, chatData, content):
             #se for uma lista devolve de forma diferente
             if isinstance(content, list) and len(content) > 5:
                 pretty_print(idChat, chatData["cat"], content, False)
-                globals.redis_db.set("vermais" + str(idChat), json.dumps({"cat": chatData["cat"], "content": content}))
+                globals.redis_db.set("vermais" + str(idChat), json.dumps({"cat": chatData["cat"], "content": content[5:]}))
             else:
                 pretty_print(idChat, chatData["cat"], content, True)
         else:
