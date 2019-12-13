@@ -14,7 +14,7 @@ def phones_search(idChat, content):
     send_msg(idChat, s)
 
 def top_phones(idChat, content):
-    s = 'Os top telemóveis são: '
+    s = 'Os top telemóveis são:\n'
     s += "\n".join(map(lambda t: bold(t["nome"]) + " com o preço de " + t["preco"] + " €", content))
     send_msg(idChat, s)
 
@@ -85,11 +85,12 @@ def wtf_name(idChat, content):
     s += bold("Uber Eats: ") + content["uber_eats"]
     send_msg(idChat, s)
 
-def store(idChat, content):
-    s = bold("Nome: ") + content["nome"] + "\n"
-    s += bold("Morada: ") + content["preco"] + "\n"
-    s += bold("Horário: ") + content["horario"]
-    send_msg(idChat, s)
+def stores(idChat, content):
+    for l in content:
+        s = bold("Nome: ") + l["nome"] + "\n"
+        s += bold("Morada: ") + l["morada"] + "\n"
+        s += bold("Horário: ") + l["horario"]
+        send_msg(idChat, s)
 
 def store_address(idChat, content):
     s = bold("Nome: ") + content["nome"] + "\n"
@@ -338,7 +339,7 @@ switcher = {
     '/fs_scrapper/new_phones_brand': new_phones_brand,
     '/fs_scrapper/all_wtf': all_wtf,
     '/fs_scrapper/wtf_name': wtf_name,
-    '/fs_scrapper/stores': store,
+    '/fs_scrapper/stores': stores,
     '/fs_scrapper/store_address': store_address,
     '/fs_scrapper/specific_package': package,
     '/fs_scrapper/packages': packages,
