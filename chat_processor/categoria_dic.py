@@ -14,7 +14,7 @@ cat = [
     {
         'request': '/fs_scrapper/brand_phones',
         'service': 'FS_SCRAPER',
-        'words': [r'modelos?', r'marcas?', r'telemove(l|is)'],
+        'words': [r'modelos?', r'marcas?', r'telemove(l|is)', r'vida'],
         'paramsRequired': {},
         'paramsOptional': {'0':'ORG', '0':'PRODUCT'},
         'locationParam': {},
