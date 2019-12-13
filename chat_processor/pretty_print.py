@@ -89,13 +89,17 @@ def stores(idChat, content):
     for l in content:
         s = bold("Nome: ") + l["nome"] + "\n"
         s += bold("Morada: ") + l["morada"] + "\n"
-        s += bold("Horário: ") + l["horario"]
+        h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
+        h = list(filter(None, h))
+        s += bold("Horário: ") + "\n".join(h)
         send_msg(idChat, s)
 
 def store_address(idChat, content):
     s = bold("Nome: ") + content["nome"] + "\n"
     s += bold("Morada: ") + content["morada"] + "\n"
-    s += bold("Horário: ") + content["horario"] + "\n"
+    h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
+    h = list(filter(None, h))
+    s += bold("Horário: ") + "\n".join(h) + "\n"
     s += bold("Serviços:\n") + "\n".join(content["servicos"])
     send_msg(idChat, s)
 

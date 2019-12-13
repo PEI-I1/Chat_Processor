@@ -20,8 +20,10 @@ TODO
 
 #### Worktrough
 
-- `./install.sh`
+- `python3.6 -m venv env`
 - `source ./env/bin/activate`
+- `pip install -r requirements.txt`
+- `python3.6 -m deeppavlov install ner_ontonotes_bert_mult`
 - `redis-server &`
 - `python3.6 chat_processor/app.py`
 
@@ -29,7 +31,7 @@ TODO
 
 - Build Docker image: `docker build -t chat_processor .`
 - Create Docker volume for data persistence across containers: `docker volume create chat_processor`
-- Run Docker container: `docker run -p 5001:5001 -it chat_proc -v chat_processor:/root/`
+- Run Docker container: `docker run -p 5001:5001 -v chat_processor:/root/ -it chat_processor`
 
 **NOTE:** You need to run redis-server apart (`redis-server &`).
 
