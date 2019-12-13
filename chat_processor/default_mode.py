@@ -8,21 +8,25 @@ from pretty_print import pretty_print
 confianca_level = 0.70
 tries = 5
 
-# remove stopwords e pontuação da mensagem recebida como input
-# retorna uma lista com as palavras
+
 def limpa_texto(mensagem):
+    ''' Remove stopwords and punctuation from the input message
+    :param: message to be cleaned
+    :return: message after processing
+    '''
     mensagem = nltk.word_tokenize(mensagem.lower())
-    mensagem = [palavra for palavra in mensagem if palavra not in nltk.corpus.stopwords.words('portuguese') and not re.match('\p{punct}', palavra)]
+    mensagem = ' '.join([clean_msg(palavra) for palavra in mensagem if palavra not in nltk.corpus.stopwords.words('portuguese') and not re.match('\p{punct}', palavra)])
     return mensagem
 
-# cria um dic 'noccur' com o número de occorências na frase para cada categoria
-def criar_noccur_dic(palavras):
+
+def criar_noccur_dic(frase):
+    ''' Cria um dic 'noccur' com o número de occorências na frase para cada categoria
+    '''
     noccur = {}
-    for pal in palavras:
-        for cat in dicionario:
-            for word in cat['words']:
-                if re.search(word, clean_msg(pal)):
-                    noccur[cat['request']] = noccur.get(cat['request'], 0) + 1
+    for cat in dicionario:
+        for expr in cat['words']:
+            if re.search(expr, frase):
+                noccur[cat['request']] = noccur.get(cat['request'], 0) + 1
     return noccur
 
 # com base na dic do noccur calcular qual é a categoria mais provável e a sua confiança
