@@ -4,11 +4,13 @@ from rules_mode import get_response_rules
 from default_mode import get_response_default
 from pretty_print import pretty_print
 from utils import send_msg
+from ner_by_regex import init_ner_regex
 import globals, json, nltk
 
 def init():
     download_recursos()
     globals.init()
+    init_ner_regex()
 
 def download_recursos():
     try:
