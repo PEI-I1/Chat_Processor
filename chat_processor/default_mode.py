@@ -4,7 +4,7 @@ from utils import *
 import globals, nltk, json, copy
 import regex as re
 from pretty_print import pretty_print
-from detect_entity_by_regex import detect_entities_regex
+from ner_by_regex import detect_entities_regex
 
 confianca_level = 0.70
 tries = 5
