@@ -57,6 +57,19 @@ def send_msg(idChat, msg):
 
     return res
 
+def send_photo(idChat, msg):
+    URL = urls["API_ENDPOINT"] + "/send_photo/" + urllib.parse.quote(str(idChat), safe='')
+
+    print(URL)
+    try:
+        res = requests.post(URL, data=msg.encode("utf-8"))
+        res.raise_for_status()
+        res = res.text
+    except:
+        res = None
+
+    return res
+
 #Faz um pedido ao API_ENDPOINT de forma a perguntar pela localização do utilizador
 def get_loc(idChat):
     URL = urls["API_ENDPOINT"] + "/get_location/" + urllib.parse.quote(str(idChat), safe='')

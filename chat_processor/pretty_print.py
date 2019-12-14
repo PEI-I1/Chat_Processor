@@ -1,4 +1,5 @@
-from utils import send_msg
+from utils import send_msg, send_photo
+import json
 
 def bold(text):
     return "<b>" + text + "</b>"
@@ -250,8 +251,13 @@ def movies_search(idChat, content):
         s += bold("Idade: ") + str(m["Age rating"]) + " anos\n"
         s += bold("Sinopse: ") + m["Synopsis"] + "\n"
         s += bold("Trailer: ") + m["Trailer"] + "\n"
-        s += m["Banner"]
-        send_msg(idChat, s)
+        photo = m["Banner"]
+
+        msg = json.dumps({
+            'photo': photo,
+            'caption': s
+        })
+        send_photo(idChat, msg)
 
 def releases(idChat, content):
     send_msg(idChat, 'As próximas estreias dos cinemas NOS são:')
@@ -260,8 +266,13 @@ def releases(idChat, content):
         s = bold("Título: ") + m["Original title"] + "\n"
         s += bold("Elenco: ") + m["Cast"] + "\n"
         s += bold("Género: ") + m["Genre"] + "\n"
-        s += m["Banner"]
-        send_msg(idChat, s)
+        photo = m["Banner"]
+        
+        msg = json.dumps({
+            'photo': photo,
+            'caption': s
+        })
+        send_photo(idChat, msg)
 
 def movie_details(idChat, content):
     m = content[0]
@@ -275,9 +286,13 @@ def movie_details(idChat, content):
     s += bold("Idade: ") + str(m["Age rating"]) + " anos\n"
     s += bold("Sinopse: ") + m["Synopsis"] + "\n"
     s += bold("Trailer: ") + m["Trailer"] + "\n"
-    s += m["Banner"]
+    photo = m["Banner"]
 
-    send_msg(idChat, s)
+    msg = json.dumps({
+        'photo': photo,
+        'caption': s
+    })
+    send_photo(idChat, msg)
 
 def sessions_by_duration(idChat, content):
     for c in content:
