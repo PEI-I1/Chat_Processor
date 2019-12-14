@@ -52,11 +52,13 @@ def get_response(idChat, idUser, msg, name, location):
             globals.redis_db.set(idChat, json.dumps(chatData))
             send_msg(idChat, get_response_rules(idChat, idUser, msg, name, chatData))
         elif m == "ver mais":
-            c = json.loads(globals.redis_db.get("vermais" + str(idChat)))
-            if c:
+            verMaisAux = globals.redis_db.get("vermais" + str(idChat))
+            if verMaisAux:
+                c = json.loads(verMaisAux)
                 globals.redis_db.delete("vermais" + str(idChat))
                 pretty_print(idChat, c["cat"], c["content"], True)
             else:
-                send_msg(idChat, "Não existe lista para ver")
+                send_msg(idChat, "Não existe lista para ver :/")
+                # send_msg(idChat, "Não existe lista para ver \xF0\x9F\x98\x95") # with smile
         else:
             get_response_default(idChat, idUser, msg, name, chatData)
