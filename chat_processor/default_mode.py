@@ -4,6 +4,7 @@ from utils import *
 import globals, nltk, json, copy
 import regex as re
 from pretty_print import pretty_print
+from ner_by_regex import detect_entities_regex
 
 confianca_level = 0.70
 tries = 5
@@ -319,7 +320,10 @@ def get_response_default(idChat, idUser, msg, name, chatData):
         chatData["status"] == ""
         chatData["cat_change"] = ""
 
+        #detect entities using deepavlov NER model
         params = proc_ents(globals.ner_model([msg]))
+        #detect entities using regex
+        params = params + detect_entities_regex(msg)
         process_params(idChat, idUser, msg, name, chatData, params)
     else:
         cat, confianca = get_categoria_frase(msg)
