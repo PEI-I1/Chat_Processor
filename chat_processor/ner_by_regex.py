@@ -49,11 +49,11 @@ def update():
     phone_brands = list(brands)
     phone_models = list(models)
 
-    #TODO: movies
-
     with open(os.path.dirname(os.path.abspath(__file__)) + '/../municipios_pt.txt') as f:
         aux = f.readlines()
     municipies = [x.strip() for x in aux]
+
+    #TODO: movies
 
 def init_ner_regex():
     #Atualiza ao iniciar
@@ -79,7 +79,7 @@ def detect_address(msg):
     for a in address_starts_with:
         ad = re.search(r'^\s*' + clean_msg(a) + r'.*$', msg)
         if ad:
-            ents.append({'entity': ad.group(0), 'type': 'ADDRESS'})
+            ents.append({'entity': ad.group(0), 'type': 'FAC'})
 
     return ents
 

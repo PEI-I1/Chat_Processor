@@ -58,7 +58,7 @@ def get_response(idChat, idUser, msg, name, location):
             if verMaisAux:
                 c = json.loads(verMaisAux)
                 info_left = len(c["content"]) > 5
-                pretty_print(idChat, c["cat"], c["content"][:5], info_left)
+                pretty_print(idChat, c["cat"], c["content"][:5], not info_left)
                 if info_left:
                     c["content"] = c["content"][5:]
                     globals.redis_db.set("vermais" + str(idChat), json.dumps(c))

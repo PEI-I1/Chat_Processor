@@ -211,6 +211,15 @@ def process_content(idChat, chatData, content):
     else:
         send_msg(idChat, "Não foi possível obter a resposta...")
 
+def detect_params(msg):
+    #detect entities using deepavlov NER model
+    params = proc_ents(globals.ner_model([msg]))
+    print(params)
+    #detect entities using regex
+    params = params + detect_entities_regex(msg)
+    print(params)
+    return params
+
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
@@ -320,17 +329,14 @@ def get_response_default(idChat, idUser, msg, name, chatData):
         chatData["status"] == ""
         chatData["cat_change"] = ""
 
-        #detect entities using deepavlov NER model
-        params = proc_ents(globals.ner_model([msg]))
-        #detect entities using regex
-        params = params + detect_entities_regex(msg)
+        params = detect_params(msg)
         process_params(idChat, idUser, msg, name, chatData, params)
     else:
         cat, confianca = get_categoria_frase(msg)
         print(cat)
         print(confianca)
         if msg != "":
-            params = proc_ents(globals.ner_model([msg]))
+            params = detect_params(msg)
         else:
             params = []
 

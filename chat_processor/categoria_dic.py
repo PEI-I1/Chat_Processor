@@ -183,7 +183,7 @@ cat = [
         'request': '/fs_scrapper/store_address',
         'service': 'FS_SCRAPER',
         'words': [(r'morada', 1.0), (r'rua', 1.0), (r'lojas?', 1.0), (r'lojas?.+rua', 1.5), (r'lojas?.+morada', 1.5)],
-        'paramsRequired': {'0':'ADDRESS'},
+        'paramsRequired': {'0':'FAC'},
         'paramsOptional': {},
         'locationParam': {},
         'canRequestWithoutParams': False,

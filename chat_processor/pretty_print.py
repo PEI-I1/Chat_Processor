@@ -1,5 +1,5 @@
 from utils import send_msg, send_photo
-import json
+import json, re
 
 def bold(text):
     return "<b>" + text + "</b>"
@@ -92,7 +92,7 @@ def stores(idChat, content):
         s += bold("Morada: ") + l["morada"] + "\n"
         h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
         h = list(filter(None, h))
-        s += bold("Horário: ") + "\n".join(h)
+        s += bold("Horário: ") + "\n               ".join(h)
         send_msg(idChat, s)
 
 def store_address(idChat, content):
@@ -100,8 +100,8 @@ def store_address(idChat, content):
     s += bold("Morada: ") + content["morada"] + "\n"
     h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
     h = list(filter(None, h))
-    s += bold("Horário: ") + "\n".join(h) + "\n"
-    s += bold("Serviços:\n") + "\n".join(content["servicos"])
+    s += bold("Horário: ") + "\n               ".join(h) + "\n"
+    s += bold("Serviços: ") + "\n                ".join(content["servicos"])
     send_msg(idChat, s)
 
 def package(idChat, content):
