@@ -16,9 +16,10 @@ packages_types =  ["Pacotes Fibra", "Pacotes Satélite"]
 packages_services = ["VOZ", "TV", "NET", "TV+NET", "TV+VOZ", "NET+VOZ", "TV+NET+VOZ"]
 movies_genres = ["Ação", "Aventura", "Cinema de arte", "Chanchada", "Comédia", "Comédia romântica", "Comédia dramática", "Comédia de ação", "Dança", "Documentário", "Docuficção", "Drama", "Espionagem", "Escolar", "Faroeste", "Western", "Fantasia científica", "Ficção científica", "Filmes de guerra", "Fantasia", "Guerra", "Musical", "Filme policial", "Romance", "Seriado", "Suspense", "Terror"]
 address_starts_with = ["Alameda", "Azinhaga", "Calçada", "Caminho", "Estrada", "Calçadinha", "Rua", "Avenida", "Travessa", "Praça", "Largo", "Praceta", "Beco", "Marquês", "Parque", "Pátio", "Rotunda"]
+detect_functions = []
 
 def update():
-    global subjects, tariffs, packages, phone_models, phone_brands, municipies, movies
+    global subjects, tariffs, packages, phone_models, phone_brands, municipies, movies, detect_functions
 
     aux = get_content("/fs_scrapper/linhas_apoio", [], {})
     subjects = list(map(lambda l: l["categoria"], aux)) if aux != None else aux
@@ -28,7 +29,7 @@ def update():
     tariffs = list(map(lambda t: t["nome"], aux)) if aux != None else aux
 
     aux = get_content("/fs_scrapper/packages", [], {})
-    packages = list(map(lambda p: p["nome"], aux)) if aux != None else aux
+    packages = list(set(map(lambda p: p["nome"], aux))) if aux != None else aux
 
     aux = get_content("/fs_scrapper/phones_price", ["0.0","1000000.0"], {})
     aux = list(map(lambda p: p["nome"], aux)) if aux != None else aux
@@ -54,6 +55,20 @@ def update():
     municipies = [x.strip() for x in aux]
 
     #TODO: movies
+
+    detect_functions = [
+        partial(detect, subjects, 'SUBJECT'),
+        partial(detect, tariffs, 'TARIFF'),
+        partial(detect, packages, 'PACKAGE'),
+        partial(detect, packages_types, 'PACKAGE_TYPE'),
+        partial(detect, packages_services, 'PACKAGE_SERVICE'),
+        partial(detect, movies_genres, 'MOVIE_GENRE'),
+        detect_address,
+        partial(detect, phone_brands, 'ORG'),
+        partial(detect, phone_models, 'PRODUCT'),
+        partial(detect, municipies, 'GPE'),
+        partial(detect, movies, 'WORK OF ART')
+    ]
 
 def init_ner_regex():
     #Atualiza ao iniciar
@@ -83,18 +98,6 @@ def detect_address(msg):
 
     return ents
 
-detect_functions = [
-    partial(detect, subjects, 'SUBJECT'),
-    partial(detect, tariffs, 'TARIFF'),
-    partial(detect, packages_types, 'PACKAGE_TYPE'),
-    partial(detect, packages_services, 'PACKAGE_SERVICE'),
-    partial(detect, movies_genres, 'MOVIE_GENRE'),
-    detect_address,
-    partial(detect, phone_brands, 'ORG'),
-    partial(detect, phone_models, 'PRODUCT'),
-    partial(detect, municipies, 'GPE'),
-    partial(detect, movies, 'WORK OF ART')
-]
 def detect_entities_regex(msg):
     entities = []
 

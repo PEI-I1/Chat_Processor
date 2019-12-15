@@ -6,7 +6,7 @@ cat = [
         'words': [(r'linhas?', 1.0), (r'apoio', 1.0), (r'assunto', 1.0),(r'numero', 1.0), (r'contactos?', 1.0), (r'empresas?', 1.0), (r'aderir', 1.0),
                   (r'informac(ao|oes)', 1.0), (r'servicos', 1.0), (r'chamadas?', 1.0), (r'assistente', 1.0), (r'linhas? de apoio', 2.0)],
         'paramsRequired': {},
-        'paramsOptional': {'subject': 'SUBJECT'},
+        'paramsOptional': {'assunto': 'SUBJECT'},
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False,

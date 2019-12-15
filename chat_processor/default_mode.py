@@ -214,10 +214,8 @@ def process_content(idChat, chatData, content):
 def detect_params(msg):
     #detect entities using deepavlov NER model
     params = proc_ents(globals.ner_model([msg]))
-    print(params)
     #detect entities using regex
     params = params + detect_entities_regex(msg)
-    print(params)
     return params
 
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
