@@ -17,6 +17,14 @@ def phones(idChat, content):
         s += bold("Preço: ") + content["preco"] + " €\n"
         if 'oferta' in p:
             s += bold("Oferta: ") + content["oferta"] + "\n"
+        if 'tags' in p:
+            for t in p['tags']:
+                if 'oferta' in t:
+                    s += bold("Oferta: ") + t + "\n"
+        if 'pontos' in p:
+            s += bold("Comprar com pontos: ") + content["pontos"] + "\n"
+        if 'pretacoes' in p:
+            s += bold("Comprar às prestações: ") + content["pretacoes"] + "\n"
         s += bold("Link para comprar: ") + content["link"]
         send_msg(idChat, s)
 

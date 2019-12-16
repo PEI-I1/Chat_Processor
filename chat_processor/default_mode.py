@@ -223,7 +223,7 @@ def detect_params(msg):
     #detect entities using regex
     params = params + detect_entities_regex(msg)
     #remove duplicates
-    params = list({p['entity'] + p['type']:p for p in params}.values())
+    params = list({json.dumps(p):p for p in params}.values())
     return params
 
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
