@@ -17,6 +17,7 @@ packages_services = ["VOZ", "TV", "NET", "TV+NET", "TV+VOZ", "NET+VOZ", "TV+NET+
 movies_genres = ["Ação", "Aventura", "Cinema de arte", "Chanchada", "Comédia", "Comédia romântica", "Comédia dramática", "Comédia de ação", "Dança", "Documentário", "Docuficção", "Drama", "Espionagem", "Escolar", "Faroeste", "Western", "Fantasia científica", "Ficção científica", "Filmes de guerra", "Fantasia", "Guerra", "Musical", "Filme policial", "Romance", "Seriado", "Suspense", "Terror"]
 address_starts_with = ["Alameda", "Azinhaga", "Calçada", "Caminho", "Estrada", "Calçadinha", "Rua", "Avenida", "Travessa", "Praça", "Largo", "Praceta", "Beco", "Marquês", "Parque", "Pátio", "Rotunda"]
 detect_functions = []
+phones_booleans = [("sim", "Sim"), ("nao", "Não"), (r"promo(cao|coes)?", "promo"), ("novos?", "new"), ("recentes?", "new"), ("descontos?", "promo"), ("ofertas?", "ofer"), ("prestac(ao|oes)", "prest"), ("pontos?", "points")]
 
 def update():
     global subjects, tariffs, packages, phone_models, phone_brands, municipies, movies, detect_functions
@@ -67,7 +68,8 @@ def update():
         partial(detect, phone_brands, 'ORG'),
         partial(detect, phone_models, 'PRODUCT'),
         partial(detect, municipies, 'GPE'),
-        partial(detect, movies, 'WORK OF ART')
+        partial(detect, movies, 'WORK OF ART'),
+        detect_phones_boolean
     ]
 
 def init_ner_regex():
@@ -95,6 +97,16 @@ def detect_address(msg):
         ad = re.search(r'^\s*' + clean_msg(a) + r'.*$', msg)
         if ad:
             ents.append({'entity': ad.group(0), 'type': 'FAC'})
+
+    return ents
+
+def detect_phones_boolean(msg):
+    ents = []
+    
+    for (rg, v) in phones_booleans:
+        pb = re.search(r'^\s*' + rg + r'.*$', msg)
+        if pb:
+            ents.append({'entity': v, 'type': 'PHONES_BOOLEAN'})
 
     return ents
 

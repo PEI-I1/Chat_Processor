@@ -191,9 +191,15 @@ def convert_params_CC(msg_params, entry):
 def get_city(entry, msg_params):
     loc = None
 
+    if '|' in entry['locationParam']['search_term']:
+        types = entry['locationParam']['search_term'].split('|')
+    else:
+        types = [entry['locationParam']['search_term']]
+
     for p in msg_params:
-        if p['type'] == entry['locationParam']['search_term']:
-            loc = p['entity']
+        for t in types:
+            if p['type'] == t:
+                loc = p['entity']
 
     return loc
 
