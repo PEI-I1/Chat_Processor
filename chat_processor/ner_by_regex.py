@@ -1,4 +1,5 @@
-import re, os
+import os, nltk
+import regex as re
 from utils import clean_msg, get_content
 from functools import partial
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -23,7 +24,16 @@ def update():
     global subjects, tariffs, packages, phone_models, phone_brands, municipies, movies, detect_functions
 
     aux = get_content("/fs_scrapper/linhas_apoio", [], {})
-    subjects = list(map(lambda l: l["categoria"], aux)) if aux != None else aux
+    subs = set()
+    if aux:
+        for s in aux:
+            subs.add(s["categoria"])
+            words = s["categoria"].split()
+            for w in words:
+                wl = w.lower()
+                if w not in nltk.corpus.stopwords.words('portuguese') and not re.match('\p{punct}', w) and wl != "apoio":
+                    subs.add(w.title())
+    subjects = list(subs)
 
     #TODO: add NOS tariffs
     aux = get_content("/fs_scrapper/wtf", [], {})
