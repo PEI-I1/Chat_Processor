@@ -13,38 +13,38 @@ def phones(idChat, content):
     send_msg(idChat, 'Os telemóveis que correspondem à procura são:')
 
     for p in content:
-        s = bold("Nome: ") + content["nome"] + "\n"
-        s += bold("Preço: ") + content["preco"] + " €\n"
+        s = bold("Nome: ") + p["nome"] + "\n"
+        s += bold("Preço: ") + p["preco"] + " €\n"
         if 'oferta' in p:
-            s += bold("Oferta: ") + content["oferta"] + "\n"
+            s += bold("Oferta: ") + p["oferta"] + "\n"
         if 'tags' in p:
             for t in p['tags']:
                 if 'oferta' in t:
                     s += bold("Oferta: ") + t + "\n"
         if 'pontos' in p:
-            s += bold("Comprar com pontos: ") + content["pontos"] + "\n"
+            s += bold("Comprar com pontos: ") + p["pontos"] + "\n"
         if 'pretacoes' in p:
-            s += bold("Comprar às prestações: ") + content["pretacoes"] + "\n"
-        s += bold("Link para comprar: ") + content["link"]
+            s += bold("Comprar às prestações: ") + p["pretacoes"] + "\n"
+        s += bold("Link para comprar: ") + p["link"]
         send_msg(idChat, s)
 
 def wtf(idChat, content):
     send_msg(idChat, 'Os pacotes WTF que correspondem à procura são:')
 
     for t in content:
-        s = bold("Nome: ") + content["nome"] + "\n"
-        s += bold("Preço: ") + content["preco"] + "\n"
+        s = bold("Nome: ") + t["nome"] + "\n"
+        s += bold("Preço: ") + t["preco"] + "\n"
         if "preco_total" in t:
-            s += bold("Preço/mês: ") + content["preco_total"] + " €\n"
-        s += bold("Net: ") + content["net"] + "\n"
-        s += bold("SMS: ") + content["sms"] + "\n"
-        s += bold("Chamadas: ") + content["minutos"] + "\n"
+            s += bold("Preço/mês: ") + t["preco_total"] + " €\n"
+        s += bold("Net: ") + t["net"] + "\n"
+        s += bold("SMS: ") + t["sms"] + "\n"
+        s += bold("Chamadas: ") + t["minutos"] + "\n"
         if "cinema" in t:
-            s += bold("Cinemas: ") + content["cinema"] + "\n"
+            s += bold("Cinemas: ") + t["cinema"] + "\n"
         if "uber" in t:
-            s += bold("Uber: ") + content["uber"] + "\n"
+            s += bold("Uber: ") + t["uber"] + "\n"
         if "uber_eats" in t:
-            s += bold("Uber Eats: ") + content["uber_eats"]
+            s += bold("Uber Eats: ") + t["uber_eats"]
         send_msg(idChat, s)
 
 def stores(idChat, content):
