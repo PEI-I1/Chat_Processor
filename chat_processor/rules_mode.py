@@ -239,7 +239,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 23:
         if opcao == 1:
-            save_redis(idChat, idUser, 29)
+            save_redis(idChat, idUser, 27)
             #TODO coordenadas ou zona indicada por user
             return None
         elif opcao == 2:
@@ -251,7 +251,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 24:
         if opcao == 1:
-            save_redis(idChat, idUser, 202)
+            save_redis(idChat, idUser, 241)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
 7. sair''')
@@ -272,7 +272,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 2:
-            save_redis(idChat, idUser, 203)
+            save_redis(idChat, idUser, 251)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
         elif opcao == 3:
@@ -286,22 +286,22 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         #TODO
         return None
 
-    elif menu == 29:
+    elif menu == 27:
         #TODO
         return None
 
-    elif menu == 202:
+    elif menu == 241:
         if opcao == 1:
-            save_redis(idChat,idUser,241)
+            save_redis(idChat, idUser, 242)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone
 6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
         elif opcao == 2:
-            save_redis(idChat, idUser, 242)
+            save_redis(idChat, idUser, 243)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
         elif opcao == 3:
-            save_redis(idChat, idUser, 243)
+            save_redis(idChat, idUser, 244)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
         elif opcao == 4:
@@ -317,7 +317,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return requerido
         elif opcao == 6:
-            save_redis(idChat, idUser, 244)
+            save_redis(idChat, idUser, 245)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
         elif opcao == 7:
@@ -328,33 +328,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
 7. sair\n''')
 
-    elif menu == 203:
-        if opcao == 1:
-            aux = {}
-            aux['nome'] = 'WTF 1GB'
-            requerido = get_content('/fs_scrapper/wtf_name', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
-        elif opcao == 2:
-            aux = {}
-            aux['nome'] = 'WTF 5GB'
-            requerido = get_content('/fs_scrapper/wtf_name', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
-        elif opcao == 3:
-            aux = {}
-            aux['nome'] = 'WTF 10GB'
-            requerido = get_content('/fs_scrapper/wtf_name', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
-        elif opcao == 4:
-            remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
-        else:
-            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
-
-    elif menu == 241:
+    elif menu == 242:
         if opcao == 1:
             aux = {}
             aux['subject'] = "Pacotes com televisão"
@@ -405,7 +379,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone
 6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
 
-    elif menu == 242:
+    elif menu == 243:
         if opcao == 1:
             aux = {}
             aux['subject'] = "Empresas"
@@ -437,7 +411,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
 
-    elif menu == 243:
+    elif menu == 244:
         if opcao == 1:
             aux = {}
             aux['subject'] = "Reparação de equipamentos"
@@ -457,7 +431,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
 
-    elif menu == 244:
+    elif menu == 245:
         if opcao == 1:
             aux = {}
             aux['subject'] = "Video intérprete"
@@ -476,6 +450,33 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
+
+    elif menu == 251:
+        if opcao == 1:
+            aux = {}
+            aux['nome'] = 'WTF 1GB'
+            requerido = get_content('/fs_scrapper/wtf_name', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 2:
+            aux = {}
+            aux['nome'] = 'WTF 5GB'
+            requerido = get_content('/fs_scrapper/wtf_name', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 3:
+            aux = {}
+            aux['nome'] = 'WTF 10GB'
+            requerido = get_content('/fs_scrapper/wtf_name', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
+
 
 
 def problem_rules(idChat, idUser, menu, msg, chatData):
