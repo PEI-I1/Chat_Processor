@@ -73,46 +73,31 @@ def proc_ents(inp):
 
     return ret
 
-# lista os params opcionais que faltam
-def lista_params_opcionais(missing_optional_params):
-    lista = []
-    frase = []
-    resposta = []
 
-    for (k,v) in missing_optional_params.items():
-        if k is 'date':
-            lista.append('data')
-        elif k is 'start_time':
-            lista.append('hora de início')
-        elif k is 'end_time':
-            lista.append('hora de fim')
-        elif k is 'time':
-            lista.append('duração')
-        elif k is 'genre':
-            lista.append('gênero')
-        elif k is 'cast':
-            lista.append('elenco')
-        elif k is 'producer':
-            lista.append('realizador')
-        elif k is 'synopsis':
-            lista.append('sinopse')
-        elif k is 'age':
-            lista.append('idade')
-        elif v['type'] is 'SUBJECT':
-                lista.append('assunto')
+def pretty_print_param_key(param_key):
+    param_key_string = ""
 
-    for i in range(0,len(lista)):
-        if i < len(lista)-2:
-            palavra = lista[i] + ', '
-        elif i == len(lista)-2:
-            palavra = lista[i] + ' e '
-        else:
-            palavra = lista[i] + '.'
-        frase.append(palavra)
+    if param_key == 'top':
+        param_key_string =  "Deseja filtrar apenas os telemóveis mais procurados?"
+    elif param_key == 'new':
+        param_key_string =  "Deseja filtrar apenas os telemóveis mais recentes?"
+    elif param_key == 'promo':
+        param_key_string =  "Deseja filtrar apenas os telemóveis com promoção?"
+    elif param_key == 'ofer':
+        param_key_string =  "Deseja filtrar apenas os telemóveis que trazem ofertas?"
+    elif param_key == 'prest':
+        param_key_string =  "Deseja filtrar apenas os telemóveis que se podem pagar com prestações?"
+    elif param_key == 'points':
+        param_key_string =  "Deseja filtrar apenas os telemóveis que se podem pagar com pontos?"
+    elif param_key == 'brand':
+        param_key_string =  "Por favor, introduza uma marca/modelo para filtrar. Caso não queira, responda 'não'"
+    elif param_key == 'min':
+        param_key_string =  "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'nao'"
+    elif param_key == 'max':
+        param_key_string =  "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'nao'"
 
-    frase = ''.join(frase)
-    resposta = "Por favor, diga informações acerca de um destes parâmetros para adicionar à pesquisa: " + frase
-    return resposta
+    return param_key_string
+
 
 # recolhe os params necessarios (params) apartir da DB (db_params) e da frase (msg_params)
 def compare_params(params, msg_params, db_params):
@@ -327,7 +312,12 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                     msg = "Precisamos de informação sobre:\n"+param_value
                 elif len(missing_optional_params):
                     param_key, param_value = list(missing_optional_params.items())[0]
-                    msg = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
+
+                    print("[LOG] " + param_key)
+                    msg = pretty_print_param_key(param_key)
+
+                    if not msg:
+                        msg = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
                 send_msg(idChat, msg)
             else:
                 chatData["paramsStatus"] = "done"
@@ -370,7 +360,12 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                 elif chatData["paramsMissingOptional"] != {}:
                     param_key, param_value = list(chatData["paramsMissingOptional"].items())[0]
                     # TODO: traduzir o termo (param_key) para PT
-                    msg = "Pode-nos dizer algo acerca de:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
+                    # msg = "Pode-nos dizer algo acerca de:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
+                    print("[LOG] " + param_key)
+                    msg = pretty_print_param_key(str(param_key))
+
+                    if msg is "":
+                        msg = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
                     send_msg(idChat, msg)
 
         if chatData["paramsStatus"] == "done":
