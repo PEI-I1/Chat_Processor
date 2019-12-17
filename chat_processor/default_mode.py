@@ -72,7 +72,7 @@ def proc_ents(inp):
 
     return ret
 
-# devolve uma string com o texto correto para pedir ao user a param_key
+# devolve uma string com o texto correto para pedir ao user a param_key (param opcional)
 def pretty_print_param_key(param_key):
     param_key_string = ""
 
@@ -104,6 +104,8 @@ def pretty_print_param_key(param_key):
         param_key_string = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
     elif param_key == 'service':
         param_key_string = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
+    else:
+        param_key_string = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
 
     return param_key_string
 
@@ -233,10 +235,11 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
     else:
         # new problem. save obtained params
         if chatData["paramsStatus"] == "new":
-            # process msg params, save
-            required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, entry)
             # TODO: tratar do caso em que é preciso pelo menos um params
             # needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
+
+            # process msg params, save
+            required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, entry)
             # adicionar ao redis
             add_new_params(chatData['paramsRequired'], required_params)
             add_new_params(chatData['paramsOptional'], optional_params)
@@ -252,15 +255,12 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                 print("[LOG] Missing optional "+str(chatData['paramsMissingOptional']))
                 if len(missing_required_params):
                     param_key, param_value = list(missing_required_params.items())[0]
+                    print("[LOG] Asking Required param (param_value): " + param_value)
                     msg = "Precisamos de informação sobre:\n"+param_value
                 elif len(missing_optional_params):
                     param_key, param_value = list(missing_optional_params.items())[0]
-
-                    print("[LOG] " + param_key)
+                    print("[LOG] Asking param_key: " + param_key)
                     msg = pretty_print_param_key(param_key)
-
-                    if not msg:
-                        msg = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
                 send_msg(idChat, msg)
             else:
                 chatData["paramsStatus"] = "done"
@@ -298,34 +298,26 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                     #           e nunca se pedem muitos params
                     # send_msg(idChat, entry['missingRequiredParamsPhrase'])
                     param_key, param_value = list(chatData["paramsMissingRequired"].items())[0]
+                    print("[LOG] Asking Required param (param_value): " + param_value)
                     msg = "Precisamos de informação acerca de:\n"+param_value
-                    send_msg(idChat, msg)
                 elif chatData["paramsMissingOptional"] != {}:
                     param_key, param_value = list(chatData["paramsMissingOptional"].items())[0]
-                    # TODO: traduzir o termo (param_key) para PT
-                    # msg = "Pode-nos dizer algo acerca de:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
-                    print("[LOG] " + param_key)
+                    print("[LOG] Asking Optional param (param_key): " + param_key)
                     msg = pretty_print_param_key(str(param_key))
-
-                    if msg is "":
-                        msg = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
-                    send_msg(idChat, msg)
-
+                send_msg(idChat, msg)
+        # devolve resposta (todos os params foram obtidos)
         if chatData["paramsStatus"] == "done":
-            print("[DEBUG] all done. sending response")
+            print("[LOG] All info collected. Sending response")
             querystrings = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
             process_content(idChat, chatData, get_content(detected_request, chatData["paramsRequired"], querystrings))
             globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):
-    #Mudar categoria???
     if chatData["status"] == "mudar categoria?":
-        mc = clean_msg(msg)
+        muda_categoria = clean_msg(msg)
 
-        if mc == "sim":
+        if muda_categoria == "sim":
             chatData["cat"] = chatData["cat_change"]
-
-        entry = get_entry(chatData["cat"])
 
         chatData["status"] == ""
         chatData["cat_change"] = ""
