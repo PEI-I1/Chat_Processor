@@ -312,16 +312,16 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             # adicionar ao redis
             add_new_params(chatData['paramsRequired'], required_params)
             add_new_params(chatData['paramsOptional'], optional_params)
-            print("[LOG] Valid required "+str(required_params))
-            print("[LOG] Valid optional "+str(optional_params))
+            print("[LOG] Valid required "+str(chatData['paramsRequired']))
+            print("[LOG] Valid optional "+str(chatData['paramsOptional']))
             # altera status e guarda (se faltam params pergunta logo um deles)
             if len(missing_required_params) or len(missing_optional_params):
                 chatData["paramsStatus"] = "missing"
                 chatData["paramsMissingRequired"] = missing_required_params
                 chatData["paramsMissingOptional"] = missing_optional_params
                 globals.redis_db.set(idChat, json.dumps(chatData))
-                print("[LOG] Missing required "+str(missing_required_params))
-                print("[LOG] Missing optional "+str(missing_optional_params))
+                print("[LOG] Missing required "+str(chatData['paramsMissingRequired']))
+                print("[LOG] Missing optional "+str(chatData['paramsMissingOptional']))
                 if len(missing_required_params):
                     param_key, param_value = list(missing_required_params.items())[0]
                     msg = "Precisamos de informação sobre:\n"+param_value
@@ -343,15 +343,19 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                 del chatData["paramsMissingRequired"][first_key]
                 globals.redis_db.set(idChat, json.dumps(chatData))
             elif len(chatData["paramsMissingOptional"]):
-                print(chatData["paramsMissingOptional"])
                 first_key, first_value = list(chatData["paramsMissingOptional"].items())[0]
                 # first_value = chatData["paramsMissingOptional"][first_key] # TODO: remove
                 # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
                 # remover do missing o que foi detetado
-                chatData["paramsOptional"][first_key] = msg
+                if 'nao' not in msg:
+                    chatData["paramsOptional"][first_key] = msg
                 del chatData["paramsMissingOptional"][first_key]
                 globals.redis_db.set(idChat, json.dumps(chatData))
 
+            print("[LOG] Valid required "+str(chatData['paramsRequired']))
+            print("[LOG] Valid optional "+str(chatData['paramsOptional']))
+            print("[LOG] Missing required "+str(chatData['paramsMissingRequired']))
+            print("[LOG] Missing optional "+str(chatData['paramsMissingOptional']))
             if chatData["paramsMissingRequired"] == {} and chatData["paramsMissingOptional"] == {}:
                 chatData["paramsStatus"] = "done"
             # perguntar params obrigatórios em falta
@@ -360,11 +364,11 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                     # FIXME: nao esta como devia, mas pelo menos tem mensagens personalizadas
                     #           e nunca se pedem muitos params
                     # send_msg(idChat, entry['missingRequiredParamsPhrase'])
-                    param_key, param_value = list(missing_required_params.items())[0]
+                    param_key, param_value = list(chatData["paramsMissingRequired"].items())[0]
                     msg = "Precisamos de informação acerca de:\n"+param_value
                     send_msg(idChat, msg)
                 elif chatData["paramsMissingOptional"] != {}:
-                    param_key, param_value = list(missing_optional_params.items())[0]
+                    param_key, param_value = list(chatData["paramsMissingOptional"].items())[0]
                     # TODO: traduzir o termo (param_key) para PT
                     msg = "Pode-nos dizer algo acerca de:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
                     send_msg(idChat, msg)
