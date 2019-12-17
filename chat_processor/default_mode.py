@@ -21,8 +21,7 @@ def limpa_texto(mensagem):
 
 
 def criar_noccur_dic(frase):
-    ''' Cria um dic 'noccur' com o número de occorências na frase para cada categoria
-    '''
+    ''' Cria um dic 'noccur' com o número de occorências na frase para cada categoria'''
     noccur = {}
     for cat in dicionario:
         for expr,mod in cat['words']:
@@ -73,7 +72,7 @@ def proc_ents(inp):
 
     return ret
 
-
+# devolve uma string com o texto correto para pedir ao user a param_key
 def pretty_print_param_key(param_key):
     param_key_string = ""
 
@@ -98,70 +97,14 @@ def pretty_print_param_key(param_key):
 
     return param_key_string
 
+# adiciona elementos da new_list á old_list (chatData) se eles ainda nao existirem
+def add_new_params(old_list, new_list):
+    for (k,v) in new_list.items():
+        if not k in old_list:
+            old_list.update({k:v})
 
-# recolhe os params necessarios (params) apartir da DB (db_params) e da frase (msg_params)
-def compare_params(params, msg_params, db_params):
-    required_params = copy.deepcopy(db_params)
-    size = len(msg_params)
-
-    for (n, t) in params.items():
-        if required_params.get(n,None) == None:
-            found = None
-            i = 0
-
-            while i < size and found == None:
-                if msg_params[i]["type"] == t:
-                    found = {n:{"type":t,"entity":msg_params[i]["entity"]}}
-                i+=1
-
-            if found == None:
-                found = {n:{"type":t}}
-
-            required_params.update(found)
-
-    return required_params
-
-# devolve os params válidos e os params em falta
-def separate_params(params):
-    valid_params = {}
-    missing_params = {}
-
-    for (n,value) in params.items():
-        # se tiver entity está validado, senao esta em falta
-        if "entity" in value:
-            valid_params[n] = value
-        else:
-            missing_params[n] = value
-
-    return valid_params, missing_params
-
-def add_new_params(l, new_l):
-    for (k,v) in new_l.items():
-        if not k in l:
-            l.update({k:v})
-
-# converte a estrutura dos parametros para a forma aceite pelo get_content
-def convert_valid_params(valid_required_params,valid_optional_params):
-    valid_required_params_array = []
-    valid_optional_params_dict = {}
-
-    for (n,value) in valid_required_params.items():
-        valid_required_params_array[n] = value["entity"]
-    for (n,value) in valid_optional_params.items():
-        valid_optional_params_dict[n] = value["entity"]
-
-    return valid_required_params_array, valid_optional_params_dict
-
-def validAndMissingParams(msg_params, chatData, entry):
-    # obrigatórios
-    required_params = compare_params(entry['paramsRequired'], msg_params, chatData['paramsRequired'])
-    valid_required_params, missing_required_params = separate_params(required_params)
-    # opcionais
-    optional_params = compare_params(entry['paramsOptional'], msg_params, chatData['paramsOptional'])
-    valid_optional_params, missing_optional_params = separate_params(optional_params)
-
-    return valid_required_params, missing_required_params, valid_optional_params, missing_optional_params
-
+# quando um pedido é detetado, é feito o primeiro reconhecimento dos params
+# e retorna-se a lista de parametros (obrigatorios/opcionais) (obtidos/em falta)
 def detect_new_params(msg_params, entry):
     size = len(msg_params)
 
@@ -194,16 +137,6 @@ def detect_new_params(msg_params, entry):
             optional_missing_params.update({key:ent_type})
 
     return required_params, required_missing_params, optional_params, optional_missing_params
-
-def convert_params_CC(msg_params, entry):
-    # obrigatórios
-    required_params = compare_params(entry['paramsRequired'], msg_params, {})
-    valid_required_params, missing_required_params = separate_params(required_params)
-    # opcionais
-    optional_params = compare_params(entry['paramsOptional'], msg_params, {})
-    valid_optional_params, missing_optional_params = separate_params(optional_params)
-
-    return valid_required_params, valid_optional_params
 
 def get_city(entry, msg_params):
     loc = None
@@ -370,7 +303,6 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
 
         if chatData["paramsStatus"] == "done":
             print("[DEBUG] all done. sending response")
-            # valid_required_params_array, valid_optional_params_dict = convert_valid_params(chatData["paramsRequired"],chatData["paramsOptional"])
             querystrings = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
             process_content(idChat, chatData, get_content(detected_request, chatData["paramsRequired"], querystrings))
             globals.redis_db.delete(idChat)
@@ -384,9 +316,6 @@ def get_response_default(idChat, idUser, msg, name, chatData):
             chatData["cat"] = chatData["cat_change"]
 
         entry = get_entry(chatData["cat"])
-        # valid_req_params, valid_opt_params = convert_params_CC(chatData["paramsRequired"], entry)
-        # chatData['paramsRequired'] = valid_req_params
-        # chatData['paramsOptional'] = valid_opt_params
 
         chatData["status"] == ""
         chatData["cat_change"] = ""
