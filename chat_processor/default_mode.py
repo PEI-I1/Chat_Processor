@@ -89,11 +89,21 @@ def pretty_print_param_key(param_key):
     elif param_key == 'points':
         param_key_string =  "Deseja filtrar apenas os telemóveis que se podem pagar com pontos?"
     elif param_key == 'brand':
-        param_key_string =  "Por favor, introduza uma marca/modelo para filtrar. Caso não queira, responda 'não'"
+        param_key_string =  "Deseja filtrar por marca? Se sim indique qual, caso contrário responda 'não'"
     elif param_key == 'min':
-        param_key_string =  "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'nao'"
+        param_key_string =  "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'não'."
     elif param_key == 'max':
-        param_key_string =  "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'nao'"
+        param_key_string =  "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'não'."
+    elif param_key == 'assunto':
+        param_key_string =  "Por favor indique qual linha de apoio que quer. Caso não saiba, responda 'não' para ver todas as opções."
+    elif param_key == 'nome':
+        param_key_string = "Por favor indique qual o nome do tarifário que deseja. Caso não saiba, responda 'não' para ver todas as opções."
+    elif param_key == 'type':
+        param_key_string = "Caso queira filtrar pelo tipo de pacote indique se quer 'Pacotes Fibra' ou 'Pacotes Satélite'. Caso não queira, responda 'não'."
+    elif param_key == 'name':
+        param_key_string = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
+    elif param_key == 'service':
+        param_key_string = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
 
     return param_key_string
 
