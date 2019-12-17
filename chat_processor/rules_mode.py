@@ -23,29 +23,12 @@ def save_redis(idChat, idUser, menu):
     globals.redis_db.set(str(idChat) + str(idUser) + '_rules_mode', menu)
 
 
-def save_step_number(idChat, idUser, number):
-    globals.redis_db.set(str(idChat) + str(idUser) + '_rules_number', number)
+def save_number(idChat, idUser, code, number):
+    globals.redis_db.set(str(idChat) + str(idUser) + code, number)
 
 
-def load_number(idChat, idUser):
-    aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_number')
-
-    if aux:
-        return int(aux)
-    else:
-        return 0
-
-
-def remove_step_number(idChat, idUser):
-    globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_number')
-
-
-def save_step_numberT(idChat, idUser, numberT):
-    globals.redis_db.set(str(idChat) + str(idUser) + '_rules_numberT', numberT)
-
-
-def load_numberT(idChat, idUser):
-    aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_numberT')
+def load_number(idChat, idUser, code):
+    aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
         return int(aux)
@@ -53,16 +36,33 @@ def load_numberT(idChat, idUser):
         return 0
 
 
-def remove_step_numberT(idChat, idUser):
-    globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_numberT')
+def remove_number(idChat, idUser, code):
+    globals.redis_db.delete(str(idChat) + str(idUser) + code)
 
 
-def save_step_string(idChat, idUser, string):
-    globals.redis_db.set(str(idChat) + str(idUser) + '_rules_string', string)
+def save_float(idChat, idUser, code, number):
+    globals.redis_db.set(str(idChat) + str(idUser) + code, number)
 
 
-def load_string(idChat, idUser):
-    aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_string')
+def load_float(idChat, idUser, code):
+    aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
+
+    if aux:
+        return float(aux)
+    else:
+        return 0.0
+
+
+def remove_float(idChat, idUser, code):
+    globals.redis_db.delete(str(idChat) + str(idUser) + code)
+
+
+def save_string(idChat, idUser, code, string):
+    globals.redis_db.set(str(idChat) + str(idUser) + code, string)
+
+
+def load_string(idChat, idUser, code):
+    aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
         return aux
@@ -70,25 +70,27 @@ def load_string(idChat, idUser):
         return None
 
 
-def remove_step_string(idChat, idUser):
-    globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_string')
+def remove_string(idChat, idUser, code):
+    globals.redis_db.delete(str(idChat) + str(idUser) + code)
 
 
-def printservicos():
-    return str("Escolha uma das seguintes opções:\n 1. TV\n 2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n")
+def final_packages(idChat, idUser):
+    aux =  {}
+    tipo = load_string(idChat, idUser, '_package_type')
+    servico = load_string(idChat, idUser, '_package_service')
+    preco = load_string(idChat, idUser, '_package_price')
 
+    if tipo and tipo != 'all':
+        aux['type'] = tipo
 
-def mapservico(valor):
-    if valor == 1:
-        return str("TV")
-    elif valor == 2:
-        return str("NET")
-    elif valor == 3:
-        return str("TV+NET")
-    elif valor == 4:
-        return str("TV+VOZ")
-    else:
-        return str("TV+NET+VOZ")
+    if servico and servico != 'all':
+        aux['service'] = servico
+
+    if preco and preco != 'all':
+        aux['min'] = load_float(idChat, idUser, '_min_value')
+        aux['max'] = load_float(idChat, idUser, '_max_value')
+
+    return get_content('/fs_scrapper/packages', [], aux)
 
 
 def get_response_rules(idChat, idUser, msg, name, chatData):
@@ -117,7 +119,7 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
 
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
 
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
@@ -183,7 +185,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
         elif opcao == 10:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. procurar cinemas\n2. procurar filmes em sessão\n3. procurar filmes por parametro
@@ -204,13 +206,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 3:
         save_redis(idChat, idUser, 22)
-        #TODO menu dos telemóveis, ir por passos
+        #TODO menu dos telemóveis, ir por passos como fiz para os pacotes (ex: 1º perguntar se quer marca específica, depois perguntar se quer novos lançamentos, etc)
         return None
 
     elif menu == 4:
         save_redis(idChat, idUser, 23)
         return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. lojas por zona\n2. sair''')
+1. indicar uma zona para procura de lojas\n2. lojas perto da sua localização atual\n3. sair''')
 
     elif menu == 5:
         save_redis(idChat, idUser, 24)
@@ -224,11 +226,11 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
         elif opcao == 2:
             save_redis(idChat, idUser, 26)
-            #TODO menu dos pacotes, ir por passos
-            return None
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. indicar nome de um pacote\n2. fazer pesquisa sobre pacotes\n3. sair''')
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. tarifários WTF\n2. pacotes\n3. sair''')
@@ -239,15 +241,17 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 23:
         if opcao == 1:
-            save_redis(idChat, idUser, 27)
-            #TODO coordenadas ou zona indicada por user
-            return None
+            save_redis(idChat, idUser, 231)
+            return str("Indique uma zona ou morada para a qual procura lojas NOS.")
         elif opcao == 2:
+            save_redis(idChat, idUser, 232)
+            return str("Precisamos do seu consentimento para aceder à sua localização atual. Se consentir, por favor digite 1. Caso contrário, digite qualquer outra tecla.")
+        elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. lojas por zona\n2. sair''')
+1. indicar uma zona para procura de lojas\n2. lojas perto da sua localização atual\n3. sair''')
 
     elif menu == 24:
         if opcao == 1:
@@ -261,7 +265,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return requerido
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. linha de apoio de acordo com o assunto\n2. todas as linhas de apoio\n3. sair''')
@@ -277,18 +281,45 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
 
     elif menu == 26:
-        #TODO
-        return None
+        if opcao == 1:
+            save_redis(idChat, idUser, 261)
+            return str('''Indique o nome do pacote pretendido.''')
+        elif opcao == 2:
+            save_redis(idChat, idUser, 262)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. pacotes fibra\n2. pacotes satélite\n3. todos os tipos de pacotes\n4. sair''')
+        elif opcao == 3:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. indicar nome de um pacote\n2. fazer pesquisa sobre pacotes\n3. sair''')
 
-    elif menu == 27:
-        #TODO
-        return None
+    elif menu == 231:
+        aux = {}
+        aux['search_term'] = msg
+        requerido = get_content('/fs_scrapper/stores', [], aux)
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
+    elif menu == 232:
+        if opcao == 1:
+            #TODO confirmar que basta fazer isto para aceder à localização !!!!!!!!
+            aux = {}
+            aux['lat'] = float(chatData['locationParam']['lat'])
+            aux['lon'] = float(chatData['locationParam']['lon'])
+            requerido = get_content('/fs_scrapper/stores', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return None
+        else:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
 
     elif menu == 241:
         if opcao == 1:
@@ -322,7 +353,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
@@ -373,7 +404,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return requerido
         elif opcao == 8:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone
@@ -406,7 +437,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return requerido
         elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
@@ -426,7 +457,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return requerido
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
@@ -446,7 +477,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return requerido
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
@@ -472,11 +503,126 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return requerido
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras")
+            return str("Saiu do modo de regras.")
         else:
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
 
+    elif menu == 261:
+        aux = {}
+        aux['name'] = msg
+        requerido = get_content('/fs_scrapper/packages', [], aux)
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
+    elif menu == 262:
+        if opcao == 1:
+            save_string(idChat, idUser, '_package_type', 'fibra')
+            save_redis(idChat, idUser, 263)
+            return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
+1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. sair''')
+        elif opcao == 2:
+            save_string(idChat, idUser, '_package_type', 'satelite')
+            save_redis(idChat, idUser, 263)
+            return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
+1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. sair''')
+        elif opcao == 3:
+            save_string(idChat, idUser, '_package_type', 'all')
+            save_redis(idChat, idUser, 263)
+            return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
+1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. sair''')
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. pacotes fibra\n2. pacotes satélite\n3. todos os tipos de pacotes\n4. sair''')
+
+    elif menu == 263:
+        if opcao == 1:
+            save_string(idChat, idUser, '_package_service', 'TV')
+            save_redis(idChat, idUser, 264)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+        elif opcao == 2:
+            save_string(idChat, idUser, '_package_service', 'NET')
+            save_redis(idChat, idUser, 264)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+        elif opcao == 3:
+            save_string(idChat, idUser, '_package_service', 'TV+NET')
+            save_redis(idChat, idUser, 264)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+        elif opcao == 4:
+            save_string(idChat, idUser, '_package_service', 'TV+VOZ')
+            save_redis(idChat, idUser, 264)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+        elif opcao == 5:
+            save_string(idChat, idUser, '_package_service', 'TV+NET+VOZ')
+            save_redis(idChat, idUser, 264)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+        elif opcao == 6:
+            save_string(idChat, idUser, '_package_service', 'all')
+            save_redis(idChat, idUser, 264)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+        elif opcao == 7:
+            remove_string(idChat, idUser, '_package_type')
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
+        else:
+            return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
+1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. indiferenciado\n7. sair''')
+
+    elif menu == 264:
+        if opcao == 1:
+            save_string(idChat, idUser, '_package_price', 'defined')
+            save_redis(idChat, idUser, 265)
+            return str("Indique o valor mínimo que procura.")
+        elif opcao == 2:
+            save_string(idChat, idUser, '_package_price', 'all')
+            required = final_packages(idChat, idUser)
+            remove_string(idChat, idUser, '_package_type')
+            remove_string(idChat, idUser, '_package_service')
+            remove_string(idChat, idUser, '_package_price')
+            remove_redis(idChat, idUser, chatData)
+            return required
+        elif opcao == 3:
+            remove_string(idChat, idUser, '_package_type')
+            remove_string(idChat, idUser, '_package_service')
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+
+    elif menu == 265:
+        try:
+            valorMin = regexPrice(msg)
+            save_float(idChat, idUser, '_min_value', valorMin)
+            save_redis(idChat, idUser, 266)
+            return str("Indique o valor máximo que procura.\n")
+        except:
+            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
+
+    elif menu == 266:
+        try:
+            valorMax = regexPrice(msg)
+            save_float(idChat, idUser, '_max_value', valorMax)
+            save_redis(idChat, idUser, 267)
+            required = final_packages(idChat, idUser)
+            remove_string(idChat, idUser, '_package_type')
+            remove_string(idChat, idUser, '_package_service')
+            remove_string(idChat, idUser, '_package_price')
+            remove_float(idChat, idUser, '_min_value')
+            remove_float(idChat, idUser, '_max_value')
+            remove_redis(idChat, idUser, chatData)
+            return required
+        except:
+            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
 
 
 def problem_rules(idChat, idUser, menu, msg, chatData):
