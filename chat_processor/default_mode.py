@@ -98,8 +98,7 @@ def lista_params_opcionais(missing_optional_params):
             lista.append('sinopse')
         elif k is 'age':
             lista.append('idade')
-        else:
-            if v['type'] is 'SUBJECT':
+        elif v['type'] is 'SUBJECT':
                 lista.append('assunto')
 
     for i in range(0,len(lista)):
@@ -177,6 +176,39 @@ def validAndMissingParams(msg_params, chatData, entry):
     valid_optional_params, missing_optional_params = separate_params(optional_params)
 
     return valid_required_params, missing_required_params, valid_optional_params, missing_optional_params
+
+def detect_new_params(msg_params, entry):
+    size = len(msg_params)
+
+    required_params = {}
+    required_missing_params = {}
+    for (key, ent_type) in entry["paramsRequired"].items():
+        i = 0
+        found = None
+        while i < size and found == None:
+            if msg_params[i]["type"] == ent_type:
+                found = {key:msg_params[i]["entity"]}
+            i += 1
+        if found:
+            required_params.update(found)
+        else:
+            required_missing_params.update({key:ent_type})
+
+    optional_params = {}
+    optional_missing_params = {}
+    for (key, ent_type) in entry["paramsOptional"].items():
+        i = 0
+        found = None
+        while i < size and found == None:
+            if msg_params[i]["type"] == ent_type:
+                found = {key:msg_params[i]["entity"]}
+            i += 1
+        if found:
+            optional_params.update(found)
+        else:
+            optional_missing_params.update({key:ent_type})
+
+    return required_params, required_missing_params, optional_params, optional_missing_params
 
 def convert_params_CC(msg_params, entry):
     # obrigatórios
@@ -271,52 +303,77 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             send_msg(idChat, "Não foi possível perceber onde se encontra!")
             globals.redis_db.delete(idChat)
     else:
-        valid_required_params, missing_required_params, valid_optional_params, missing_optional_params = validAndMissingParams(msg_params, chatData, entry)
-        # converter
-        valid_required_params_array, valid_optional_params_dict = convert_valid_params(valid_required_params,valid_optional_params)
-        # adicionar bd
-        add_new_params(chatData['paramsRequired'], valid_required_params)
-        add_new_params(chatData['paramsOptional'], valid_optional_params)
-        print(valid_required_params)
-        print(valid_optional_params)
-        print(missing_required_params)
-        print(missing_optional_params)
-
-        # quando falta params obrigatório
-        #   -> perguntar ao utilizador os parametros que faltam
-        if len(missing_required_params):
-            # FIXME: funciona para todos os nossos casos (só há um caso com 2params obrigatorios)
-            #           pode ser melhorada qd coisas mais importantes estiverem resolvidas
-            send_msg(idChat, entry['missingRequiredParamsPhrase'])
-            globals.redis_db.set(idChat, json.dumps(chatData))
-        # se faltarem params optionais
-        elif len(missing_optional_params):
-            # se precisarmos de um param optional e não existir nenhum (/scrapper/movies/search')
-            if len(valid_optional_params) == 0 and needAtLeastOneOptionalParam is True:
-                # FIXME: funciona para o unico caso que temos
-                #         pode ser melhorada mais tarde
-                send_msg(idChat, "Por favor, diga informações acerca de um destes parãmetros para fazer a pesquisa: gênero, elenco, realizador, sinopse ou idade")
+        # new problem. save obtained params
+        if chatData["paramsStatus"] == "new":
+            # process msg params, save
+            required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, entry)
+            # TODO: tratar do caso em que é preciso pelo menos um params
+            # needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
+            # adicionar ao redis
+            add_new_params(chatData['paramsRequired'], required_params)
+            add_new_params(chatData['paramsOptional'], optional_params)
+            print("[LOG] Valid required "+str(required_params))
+            print("[LOG] Valid optional "+str(optional_params))
+            # altera status e guarda (se faltam params pergunta logo um deles)
+            if len(missing_required_params) or len(missing_optional_params):
+                chatData["paramsStatus"] = "missing"
+                chatData["paramsMissingRequired"] = missing_required_params
+                chatData["paramsMissingOptional"] = missing_optional_params
                 globals.redis_db.set(idChat, json.dumps(chatData))
+                print("[LOG] Missing required "+str(missing_required_params))
+                print("[LOG] Missing optional "+str(missing_optional_params))
+                if len(missing_required_params):
+                    param_key, param_value = list(missing_required_params.items())[0]
+                    msg = "Precisamos de informação sobre:\n"+param_value
+                elif len(missing_optional_params):
+                    param_key, param_value = list(missing_optional_params.items())[0]
+                    msg = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
+                send_msg(idChat, msg)
             else:
-                # processar resposta do user e devolver o conteudo pedido
-                if chatData["status"] == "waitingMoreOptionalParams":
-                    if clean_msg(msg) == "nao":
-                        pass
-                    else:
-                        pass
-                    # NOTE: acho que o if else é inutil really...
-                    #       se nao houver params eles nao sao processados e nao
-                    querystrings = merge_dicts(valid_optional_params_dict, chatData['locationParam'])
-                    process_content(idChat, chatData, get_content(detected_request, valid_required_params_array, querystrings))
-                    globals.redis_db.delete(idChat)
-                # listar todos os params opcionais e esperar resposta
-                else:
-                  chatData["status"] = "waitingMoreOptionalParams"
-                  globals.redis_db.set(idChat, json.dumps(chatData))
-                  process_content(idChat, chatData, lista_params_opcionais(missing_optional_params))
-        else: # nao faltam params opcionais
-            querystrings = merge_dicts(valid_optional_params_dict, chatData['locationParam'])
-            process_content(idChat, chatData, get_content(detected_request, valid_required_params_array, querystrings))
+                chatData["paramsStatus"] = "done"
+        elif chatData["paramsStatus"] == "missing":
+            print("[DEBUG] adding param given by user")
+            # save param given by user
+            if len(chatData["paramsMissingRequired"]):
+                first_key, first_value = list(chatData["paramsMissingRequired"].items())[0]
+                # first_value = chatData["paramsMissingRequired"][first_key] # TODO: remove
+                # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
+                # remover do missing o que foi detetado
+                chatData["paramsRequired"][first_key] = msg
+                del chatData["paramsMissingRequired"][first_key]
+                globals.redis_db.set(idChat, json.dumps(chatData))
+            elif len(chatData["paramsMissingOptional"]):
+                print(chatData["paramsMissingOptional"])
+                first_key, first_value = list(chatData["paramsMissingOptional"].items())[0]
+                # first_value = chatData["paramsMissingOptional"][first_key] # TODO: remove
+                # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
+                # remover do missing o que foi detetado
+                chatData["paramsOptional"][first_key] = msg
+                del chatData["paramsMissingOptional"][first_key]
+                globals.redis_db.set(idChat, json.dumps(chatData))
+
+            if chatData["paramsMissingRequired"] == {} and chatData["paramsMissingOptional"] == {}:
+                chatData["paramsStatus"] = "done"
+            # perguntar params obrigatórios em falta
+            else:
+                if chatData["paramsMissingRequired"] != {}:
+                    # FIXME: nao esta como devia, mas pelo menos tem mensagens personalizadas
+                    #           e nunca se pedem muitos params
+                    # send_msg(idChat, entry['missingRequiredParamsPhrase'])
+                    param_key, param_value = list(missing_required_params.items())[0]
+                    msg = "Precisamos de informação acerca de:\n"+param_value
+                    send_msg(idChat, msg)
+                elif chatData["paramsMissingOptional"] != {}:
+                    param_key, param_value = list(missing_optional_params.items())[0]
+                    # TODO: traduzir o termo (param_key) para PT
+                    msg = "Pode-nos dizer algo acerca de:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
+                    send_msg(idChat, msg)
+
+        if chatData["paramsStatus"] == "done":
+            print("[DEBUG] all done. sending response")
+            # valid_required_params_array, valid_optional_params_dict = convert_valid_params(chatData["paramsRequired"],chatData["paramsOptional"])
+            querystrings = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
+            process_content(idChat, chatData, get_content(detected_request, chatData["paramsRequired"], querystrings))
             globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):
@@ -328,9 +385,9 @@ def get_response_default(idChat, idUser, msg, name, chatData):
             chatData["cat"] = chatData["cat_change"]
 
         entry = get_entry(chatData["cat"])
-        valid_req_params, valid_opt_params = convert_params_CC(chatData["paramsRequired"], entry)
-        chatData['paramsRequired'] = valid_req_params
-        chatData['paramsOptional'] = valid_opt_params
+        # valid_req_params, valid_opt_params = convert_params_CC(chatData["paramsRequired"], entry)
+        # chatData['paramsRequired'] = valid_req_params
+        # chatData['paramsOptional'] = valid_opt_params
 
         chatData["status"] == ""
         chatData["cat_change"] = ""
