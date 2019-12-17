@@ -6,7 +6,7 @@ def bold(text):
 
 def linhas_apoio(idChat, content):
     s = 'As linhas de apoio da NOS são:\n'
-    s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"], content))
+    s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"] + "\n" + l["descriçao"], content))
     send_msg(idChat, s)
 
 def phones(idChat, content):
@@ -77,7 +77,7 @@ def packages(idChat, content):
         if "netMovel" in p and p["netMovel"]:
             s += bold("Net Móvel: ") + p["netMovel"] + "\n"
         if "preco" in p:
-            s += bold("Preço: ") + aux["preco"] + " €"
+            s += bold("Preço: ") + p["preco"] + " €"
         send_msg(idChat, s)
 
         fids = ["Fidelizacao_24Meses", "Fidelizacao_12Meses", "Fidelizacao_6Meses"]
@@ -88,7 +88,7 @@ def packages(idChat, content):
                 s = "Com " + bold(aux["Fidelizacao"]) + " de fidelização:\n"
                 s += bold("Preço: ") + aux["preco"] + " €\n"
                 s += bold("Preço de Adesão: ") + aux["precoAdesao"] + " €\n"
-                s += bold("Vantagens:\n") + "\n".join(aux["vantagens"])
+                s += bold("Vantagens:\n") + "\n".join(aux["Vantagens"])
                 send_msg(idChat, s)
 
         if "Sem_Fidelizacao" in p:
@@ -97,7 +97,7 @@ def packages(idChat, content):
             s = "Sem fidelização:\n"
             s += bold("Preço: ") + aux["preco"] + " €\n"
             s += bold("Preço de Adesão: ") + aux["precoAdesao"] + " €\n"
-            s += bold("Vantagens:\n") + "\n".join(aux["vantagens"])
+            s += bold("Vantagens:\n") + "\n".join(aux["Vantagens"])
             send_msg(idChat, s)
 
 def cinemas(idChat, content):
