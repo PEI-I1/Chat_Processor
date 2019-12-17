@@ -38,7 +38,9 @@ def get_response(idChat, idUser, msg, name, location):
     if not chatData:
         chatData = {"msgs": [], "status": "", "tries": 0,
                     "cat": "", "cat_change": "",
-                    "paramsRequired": {}, "paramsOptional":{}, "locationParam": None}
+                    "paramsStatus": "new", "locationParam": None,
+                    "paramsRequired": {}, "paramsOptional":{},
+                    "paramsMissingRequired": {}, "paramsMissingOptional": {}}
 
     if location:
         chatData["status"] = ""

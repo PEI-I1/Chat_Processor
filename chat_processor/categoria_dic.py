@@ -119,7 +119,7 @@ cat = [
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o Filme que procura.'
     },
     {
         'request': '/scrapper/sessions/by_duration',
@@ -132,7 +132,7 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos a duração que pretende.'
     },
     {
         'request': '/scrapper/sessions/next_sessions',
@@ -155,7 +155,7 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
-        'missingRequiredParamsPhrase' : ''
+        'missingRequiredParamsPhrase' : 'Por favor, diga-nos o Filme que pretende.'
     },
     {
         'request': '/scrapper/sessions/by_date',
