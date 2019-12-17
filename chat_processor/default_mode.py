@@ -308,8 +308,9 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
         # devolve resposta (todos os params foram obtidos)
         if chatData["paramsStatus"] == "done":
             print("[LOG] All info collected. Sending response")
-            querystrings = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
-            process_content(idChat, chatData, get_content(detected_request, chatData["paramsRequired"], querystrings))
+            querystrings_aux = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
+            querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
+            process_content(idChat, chatData, get_content(detected_request, [], querystrings))
             globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):

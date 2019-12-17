@@ -107,13 +107,13 @@ def get_content(cat, params, querystrings):
             aux.append(urllib.parse.quote(k, safe='') + "=" + urllib.parse.quote(str(v), safe=''))
         URL += "&".join(aux)
 
-    print(URL)
+    print("[LOG] get_content from: "+URL)
     try:
         res = requests.get(URL)
         res.raise_for_status()
         res = res.json()
         try:
-            # O fs_scraper devolve o resultado no campo 'response'
+            # os scrappers devolvem o resultado no campo 'response'
             res = res.get('response', res)
         except:
             pass
