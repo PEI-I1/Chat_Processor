@@ -118,10 +118,31 @@ def pretty_question_optional_param(param_key):
         pretty_response = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
     elif param_key == 'service':
         pretty_response = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
+    # TODO: fazer para as keys dos cinemas
     else: # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
         pretty_response = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
 
     return pretty_response
+
+# traduz um param em ingles para PT, para poder ser introduzido em mensagens
+def localizeToPT(param):
+    param_pt = ""
+
+    if param == 'genre':
+        param_pt =  "género"
+    elif param == 'cast':
+        param_pt =  "elenco"
+    elif param == 'producer':
+        param_pt =  "produtor"
+    elif param == 'synopsis':
+        param_pt =  "sinopse"
+    elif param == 'age':
+        param_pt =  "restrição de idade"
+    # TODO: fazer para params do FS_scraper
+    else: # caso a key nao exista (nao traduz, mas avisa)
+        param_pt = param+" (pedimos desculpa pelo inglês)"
+
+    return param_pt
 
 # adiciona elementos da new_list á old_list (chatData) se eles ainda nao existirem
 def add_new_params(old_list, new_list):
@@ -249,9 +270,6 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
     else:
         # new problem. save obtained params
         if chatData["paramsStatus"] == "new":
-            # TODO: tratar do caso em que é preciso pelo menos um params
-            # needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
-
             # process msg params, save
             required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, entry)
             # adicionar ao redis
@@ -259,6 +277,10 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             add_new_params(chatData['paramsOptional'], optional_params)
             print("[LOG] Valid required "+str(chatData['paramsRequired']))
             print("[LOG] Valid optional "+str(chatData['paramsOptional']))
+
+            # TODO: tratar do caso em que é preciso pelo menos um params
+            # needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
+
             # altera status e guarda (se faltam params pergunta logo um deles)
             if len(missing_required_params) or len(missing_optional_params):
                 chatData["paramsStatus"] = "missing"
