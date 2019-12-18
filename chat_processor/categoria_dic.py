@@ -8,7 +8,7 @@ cat = [
         'paramsOptional': {'assunto': 'SUBJECT'},
         'locationParam': {},
         'canRequestWithoutParams': True,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/fs_scrapper/phones',
@@ -18,7 +18,7 @@ cat = [
         'paramsOptional': {'top':'PHONES_BOOLEAN', 'new':'PHONES_BOOLEAN', 'promo':'PHONES_BOOLEAN', 'ofer':'PHONES_BOOLEAN', 'prest':'PHONES_BOOLEAN', 'points':'PHONES_BOOLEAN', 'brand':'ORG|PRODUCT', 'min':'MONEY', 'max':'MONEY'},
         'locationParam': {},
         'canRequestWithoutParams': True,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/fs_scrapper/wtf',
@@ -28,7 +28,7 @@ cat = [
         'paramsOptional': {'nome':'TARIFF'},
         'locationParam': {},
         'canRequestWithoutParams': True,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
 
     },
     {
@@ -39,7 +39,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE|FAC', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/fs_scrapper/packages',
@@ -49,7 +49,7 @@ cat = [
         'paramsOptional': {'type':'PACKAGE_TYPE', 'name':'PACKAGE', 'service':'PACKAGE_SERVICE', 'min':'MONEY', 'max':'MONEY'},
         'locationParam': {},
         'canRequestWithoutParams': True,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     # CINEMAS
     {
@@ -62,7 +62,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/scrapper/movies/by_cinema',
@@ -74,7 +74,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/scrapper/movies/search',
@@ -84,7 +84,7 @@ cat = [
         'paramsOptional': {'genre':'MOVIE_GENRE', 'cast':'PERSON', 'producer':'PERSON', 'synopsis':'SYNOPSIS', 'age':'CARDINAL'},
         'locationParam': {},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': True,
+        'needAtLeastOneOptionalParam': True
     },
     {
         'request': '/scrapper/movies/releases',
@@ -96,7 +96,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {},
         'canRequestWithoutParams': True,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/scrapper/movies/details',
@@ -109,7 +109,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/scrapper/sessions/by_duration',
@@ -121,7 +121,7 @@ cat = [
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/scrapper/sessions/next_sessions',
@@ -132,7 +132,7 @@ cat = [
         'paramsOptional': {},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/scrapper/sessions/by_movie',
@@ -142,7 +142,7 @@ cat = [
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
     },
     {
         'request': '/scrapper/sessions/by_date',
@@ -153,6 +153,17 @@ cat = [
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
-        'needAtLeastOneOptionalParam': False,
+        'needAtLeastOneOptionalParam': False
+    },
+    # RS
+    {
+        'request': '/solver',
+        'service': 'RS',
+        'words': [(r'problemas?', 1.0), (r'avarias?', 1.0)],
+        'paramsRequired': {},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': True,
+        'needAtLeastOneOptionalParam': False
     }
 ]

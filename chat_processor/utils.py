@@ -43,6 +43,20 @@ def get_service(request):
 
     return urls[found_service]
 
+#Faz um pedido ao solver para passar para a resolução de problemas
+def get_solver(idChat, msg):
+    URL = urls["RS"] + "/solver"
+
+    print(URL)
+    try:
+        res = requests.post(URL, json={"idChat": idChat, "msg": msg})
+        res.raise_for_status()
+        res = res.text
+    except:
+        res = None
+
+    return res
+
 #Faz um pedido ao API_ENDPOINT de forma a enviar uma msg ao utilizador
 def send_msg(idChat, msg):
     URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
