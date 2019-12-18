@@ -72,42 +72,56 @@ def proc_ents(inp):
 
     return ret
 
-# devolve uma string com o texto correto para pedir ao user a param_key (param opcional)
-def pretty_print_param_key(param_key):
-    param_key_string = ""
+
+# devolve uma string com a questao apropriada para pedir ao user um param obrigatorio (param_key)
+def pretty_question_required_param(param_key):
+    pretty_response = ""
+
+    if param_key == 'movie':
+        pretty_response =  "Por favor, indique o filme que procura."
+    elif param_key == 'duration':
+        pretty_response =  "Por favor, indique a duração que pretende."
+    else: # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
+        pretty_response = "Pedimos desculpa, mas poderia-nos dizer algo sobre: "+param_key
+
+    return pretty_response
+
+# devolve uma string com a questao apropriada para pedir ao user um param opcional (param_key)
+def pretty_question_optional_param(param_key):
+    pretty_response = ""
 
     if param_key == 'top':
-        param_key_string =  "Deseja filtrar apenas os telemóveis mais procurados?"
+        pretty_response =  "Deseja filtrar apenas os telemóveis mais procurados?"
     elif param_key == 'new':
-        param_key_string =  "Deseja filtrar apenas os telemóveis mais recentes?"
+        pretty_response =  "Deseja filtrar apenas os telemóveis mais recentes?"
     elif param_key == 'promo':
-        param_key_string =  "Deseja filtrar apenas os telemóveis com promoção?"
+        pretty_response =  "Deseja filtrar apenas os telemóveis com promoção?"
     elif param_key == 'ofer':
-        param_key_string =  "Deseja filtrar apenas os telemóveis que trazem ofertas?"
+        pretty_response =  "Deseja filtrar apenas os telemóveis que trazem ofertas?"
     elif param_key == 'prest':
-        param_key_string =  "Deseja filtrar apenas os telemóveis que se podem pagar com prestações?"
+        pretty_response =  "Deseja filtrar apenas os telemóveis que se podem pagar com prestações?"
     elif param_key == 'points':
-        param_key_string =  "Deseja filtrar apenas os telemóveis que se podem pagar com pontos?"
+        pretty_response =  "Deseja filtrar apenas os telemóveis que se podem pagar com pontos?"
     elif param_key == 'brand':
-        param_key_string =  "Deseja filtrar por marca? Se sim indique qual, caso contrário responda 'não'"
+        pretty_response =  "Deseja filtrar por marca? Se sim indique qual, caso contrário responda 'não'"
     elif param_key == 'min':
-        param_key_string =  "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'não'."
+        pretty_response =  "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'não'."
     elif param_key == 'max':
-        param_key_string =  "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'não'."
+        pretty_response =  "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'não'."
     elif param_key == 'assunto':
-        param_key_string =  "Por favor indique qual linha de apoio que quer. Caso não saiba, responda 'não' para ver todas as opções."
+        pretty_response =  "Por favor indique qual linha de apoio que quer. Caso não saiba, responda 'não' para ver todas as opções."
     elif param_key == 'nome':
-        param_key_string = "Por favor indique qual o nome do tarifário que deseja. Caso não saiba, responda 'não' para ver todas as opções."
+        pretty_response = "Por favor indique qual o nome do tarifário que deseja. Caso não saiba, responda 'não' para ver todas as opções."
     elif param_key == 'type':
-        param_key_string = "Caso queira filtrar pelo tipo de pacote indique se quer 'Pacotes Fibra' ou 'Pacotes Satélite'. Caso não queira, responda 'não'."
+        pretty_response = "Caso queira filtrar pelo tipo de pacote indique se quer 'Pacotes Fibra' ou 'Pacotes Satélite'. Caso não queira, responda 'não'."
     elif param_key == 'name':
-        param_key_string = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
+        pretty_response = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
     elif param_key == 'service':
-        param_key_string = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
-    else:
-        param_key_string = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
+        pretty_response = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
+    else: # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
+        pretty_response = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
 
-    return param_key_string
+    return pretty_response
 
 # adiciona elementos da new_list á old_list (chatData) se eles ainda nao existirem
 def add_new_params(old_list, new_list):
@@ -255,12 +269,17 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                 print("[LOG] Missing optional "+str(chatData['paramsMissingOptional']))
                 if len(missing_required_params):
                     param_key, param_value = list(missing_required_params.items())[0]
-                    print("[LOG] Asking Required param (param_value): " + param_value)
-                    msg = "Precisamos de informação sobre:\n"+param_value
+                    if isinstance(param_key, int):
+                        print("[LOG] Asking Required param (param_value): " + param_value)
+                        param = param_value
+                    else:
+                        print("[LOG] Asking Required param (param_key): " + param_key)
+                        param = param_key
+                    msg = pretty_question_required_param(param)
                 elif len(missing_optional_params):
                     param_key, param_value = list(missing_optional_params.items())[0]
                     print("[LOG] Asking param_key: " + param_key)
-                    msg = pretty_print_param_key(param_key)
+                    msg = pretty_question_optional_param(param_key)
                 send_msg(idChat, msg)
             else:
                 chatData["paramsStatus"] = "done"
@@ -294,16 +313,18 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             # perguntar params obrigatórios em falta
             else:
                 if chatData["paramsMissingRequired"] != {}:
-                    # FIXME: nao esta como devia, mas pelo menos tem mensagens personalizadas
-                    #           e nunca se pedem muitos params
-                    # send_msg(idChat, entry['missingRequiredParamsPhrase'])
                     param_key, param_value = list(chatData["paramsMissingRequired"].items())[0]
-                    print("[LOG] Asking Required param (param_value): " + param_value)
-                    msg = "Precisamos de informação acerca de:\n"+param_value
+                    if isinstance(param_key, int):
+                        print("[LOG] Asking Required param (param_value): " + param_value)
+                        param = param_value
+                    else:
+                        print("[LOG] Asking Required param (param_key): " + param_key)
+                        param = param_key
+                    msg = pretty_question_required_param(param)
                 elif chatData["paramsMissingOptional"] != {}:
                     param_key, param_value = list(chatData["paramsMissingOptional"].items())[0]
                     print("[LOG] Asking Optional param (param_key): " + param_key)
-                    msg = pretty_print_param_key(str(param_key))
+                    msg = pretty_question_optional_param(str(param_key))
                 send_msg(idChat, msg)
         # devolve resposta (todos os params foram obtidos)
         if chatData["paramsStatus"] == "done":
