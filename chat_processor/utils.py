@@ -113,7 +113,7 @@ def get_content(cat, params, querystrings):
         res.raise_for_status()
         res = res.json()
         try:
-            # os scrappers devolvem o resultado no campo 'response'
+            # O fs_scraper devolve o resultado no campo 'response'
             res = res.get('response', res)
         except:
             pass
