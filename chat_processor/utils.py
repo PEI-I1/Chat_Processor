@@ -112,11 +112,6 @@ def get_content(cat, params, querystrings):
         res = requests.get(URL)
         res.raise_for_status()
         res = res.json()
-        try:
-            # O fs_scraper devolve o resultado no campo 'response'
-            res = res.get('response', res)
-        except:
-            pass
     except:
         res = None
 
