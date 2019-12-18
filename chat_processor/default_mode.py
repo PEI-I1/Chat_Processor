@@ -235,6 +235,11 @@ def detect_params(msg):
     params = list({json.dumps(p):p for p in params}.values())
     return params
 
+def modo_problemas(idChat, msg, chatData):
+    chatData["status"] = "modo problemas"
+    globals.redis_db.set(idChat, json.dumps(chatData))
+    send_msg(idChat, get_solver(idChat, msg))
+
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
@@ -386,8 +391,11 @@ def get_response_default(idChat, idUser, msg, name, chatData):
         chatData["status"] == ""
         chatData["cat_change"] = ""
 
-        params = detect_params(msg)
-        process_params(idChat, idUser, msg, name, chatData, params)
+        if chatData["cat"] == "/solver":
+            modo_problemas(idChat, msg, chatData)
+        else:
+            params = detect_params(msg)
+            process_params(idChat, idUser, msg, name, chatData, params)
     else:
         cat, confianca = get_categoria_frase(msg)
         print(cat)
@@ -400,8 +408,11 @@ def get_response_default(idChat, idUser, msg, name, chatData):
         if chatData["cat"] == "":
             if confianca > confianca_level:
                 chatData["cat"] = cat
-                globals.redis_db.set(idChat, json.dumps(chatData))
-                process_params(idChat, idUser, msg, name, chatData, params)
+                if cat == "/solver":
+                    modo_problemas(idChat, msg, chatData)
+                else:
+                    globals.redis_db.set(idChat, json.dumps(chatData))
+                    process_params(idChat, idUser, msg, name, chatData, params)
             else:
                 if chatData["tries"] == tries - 1:
                     send_msg(idChat, "Desculpe mas não foi possível identificar o que pretende.")

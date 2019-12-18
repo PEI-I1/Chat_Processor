@@ -154,5 +154,16 @@ cat = [
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': False,
+    },
+    # RS
+    {
+        'request': '/solver',
+        'service': 'RS',
+        'words': [(r'problemas?', 1.0), (r'avarias?', 1.0)],
+        'paramsRequired': {},
+        'paramsOptional': {},
+        'locationParam': {},
+        'canRequestWithoutParams': True,
+        'needAtLeastOneOptionalParam': False,
     }
 ]
