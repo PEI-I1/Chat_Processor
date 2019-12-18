@@ -235,6 +235,11 @@ def detect_params(msg):
     params = list({json.dumps(p):p for p in params}.values())
     return params
 
+def modo_problemas(idChat, msg, chatData):
+    chatData["status"] = "modo problemas"
+    globals.redis_db.set(idChat, json.dumps(chatData))
+    send_msg(idChat, get_solver(idChat, msg))
+
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
@@ -327,7 +332,6 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             # save param given by user
             if len(chatData["paramsMissingRequired"]):
                 first_key, first_value = list(chatData["paramsMissingRequired"].items())[0]
-                # first_value = chatData["paramsMissingRequired"][first_key] # TODO: remove
                 # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
                 # remover do missing o que foi detetado
                 chatData["paramsRequired"][first_key] = msg
@@ -335,7 +339,6 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                 globals.redis_db.set(idChat, json.dumps(chatData))
             elif len(chatData["paramsMissingOptional"]):
                 first_key, first_value = list(chatData["paramsMissingOptional"].items())[0]
-                # first_value = chatData["paramsMissingOptional"][first_key] # TODO: remove
                 # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
                 # remover do missing o que foi detetado
                 if 'nao' != clean_msg(msg):
@@ -380,14 +383,23 @@ def get_response_default(idChat, idUser, msg, name, chatData):
     if chatData["status"] == "mudar categoria?":
         muda_categoria = clean_msg(msg)
 
+        # se o user quiser mudar, altera-se a categoria e marca-se como new para os params
         if muda_categoria == "sim":
             chatData["cat"] = chatData["cat_change"]
+            chatData["paramsStatus"] = "new"
+        # se o user nao quiser mudar, trata-se a ultima mensagem (antes de perguntar se queria mudar de pedido)
+        else:
+            msg = chatData["cat_change_last_msg"]
 
-        chatData["status"] == ""
+        chatData["status"] = ""
         chatData["cat_change"] = ""
+        chatData["cat_change_last_msg"] = ""
 
-        params = detect_params(msg)
-        process_params(idChat, idUser, msg, name, chatData, params)
+        if chatData["cat"] == "/solver":
+            modo_problemas(idChat, msg, chatData)
+        else:
+            params = detect_params(msg)
+            process_params(idChat, idUser, msg, name, chatData, params)
     else:
         cat, confianca = get_categoria_frase(msg)
         print(cat)
@@ -400,8 +412,11 @@ def get_response_default(idChat, idUser, msg, name, chatData):
         if chatData["cat"] == "":
             if confianca > confianca_level:
                 chatData["cat"] = cat
-                globals.redis_db.set(idChat, json.dumps(chatData))
-                process_params(idChat, idUser, msg, name, chatData, params)
+                if cat == "/solver":
+                    modo_problemas(idChat, msg, chatData)
+                else:
+                    globals.redis_db.set(idChat, json.dumps(chatData))
+                    process_params(idChat, idUser, msg, name, chatData, params)
             else:
                 if chatData["tries"] == tries - 1:
                     send_msg(idChat, "Desculpe mas não foi possível identificar o que pretende.")
@@ -424,7 +439,7 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                     process_params(idChat, idUser, msg, name, chatData, params)
                 else:
                     chatData["cat_change"] = cat
-                    chatData["paramsRequired"] = params
+                    chatData["cat_change_last_msg"] = msg
                     chatData["status"] = "mudar categoria?"
                     globals.redis_db.set(idChat, json.dumps(chatData))
                     #TODO: em vez da cat (path) aparecer um texto da cat

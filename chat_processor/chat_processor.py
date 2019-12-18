@@ -37,7 +37,7 @@ def get_response(idChat, idUser, msg, name, location):
 
     if not chatData:
         chatData = {"msgs": [], "status": "", "tries": 0,
-                    "cat": "", "cat_change": "",
+                    "cat": "", "cat_change": "", "cat_change_last_msg": "",
                     "paramsStatus": "new", "locationParam": None,
                     "paramsRequired": {}, "paramsOptional":{},
                     "paramsMissingRequired": {}, "paramsMissingOptional": {}}
@@ -49,6 +49,9 @@ def get_response(idChat, idUser, msg, name, location):
     if chatData["status"] == "modo regras":
         globals.redis_db.set(idChat, json.dumps(chatData))
         send_msg(idChat, get_response_rules(idChat, idUser, msg, name, chatData))
+    elif chatData["status"] == "modo problemas":
+        globals.redis_db.set(idChat, json.dumps(chatData))
+        send_msg(idChat, get_solver(idChat, msg))
     else:
         m = msg.lower()
         if m == "modo de regras":
