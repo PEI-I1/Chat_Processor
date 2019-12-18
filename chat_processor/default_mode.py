@@ -90,6 +90,7 @@ def pretty_question_required_param(param_key):
 def pretty_question_optional_param(param_key):
     pretty_response = ""
 
+    # FS_scrapper params
     if param_key == 'top':
         pretty_response =  "Deseja filtrar apenas os telemóveis mais procurados?"
     elif param_key == 'new':
@@ -118,9 +119,20 @@ def pretty_question_optional_param(param_key):
         pretty_response = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
     elif param_key == 'service':
         pretty_response = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
-    # TODO: fazer para as keys dos cinemas
-    else: # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
-        pretty_response = "Pode-nos dizer algo sobre:\n"+param_key+"\n(Responda 'nao' caso nao saiba)"
+    # Cinemas params
+    elif param_key == 'genre':
+        pretty_response = "Deseja filtrar pelo género? Se sim indique qual, caso contrário responda 'não'."
+    elif param_key == 'cast':
+        pretty_response = "Deseja filtrar pelo elenco? Se sim indique os atores procura, caso contrário responda 'não'."
+    elif param_key == 'producer':
+        pretty_response = "Deseja filtrar pelo produtor? Se sim indique qual, caso contrário responda 'não'."
+    elif param_key == 'synopsis':
+        pretty_response = "Deseja filtrar pela sinopse? Se sim diga parte da sinopse, caso contrário responda 'não'."
+    elif param_key == 'age':
+        pretty_response = "Deseja filtrar pela restrição de idade? Se sim indique qual, caso contrário responda 'não'."
+     # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
+    else:
+        pretty_response = "Pode-nos dizer algo sobre: "+param_key+"\n(Responda 'nao' caso nao saiba)"
 
     return pretty_response
 
@@ -227,7 +239,6 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
     location_params = entry['locationParam']
-    needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
 
     # quanto o pedido nao recebe params > devolve resposta
     if not entry['paramsRequired'] and not entry['paramsOptional'] and not location_params:
@@ -278,8 +289,13 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             print("[LOG] Valid required "+str(chatData['paramsRequired']))
             print("[LOG] Valid optional "+str(chatData['paramsOptional']))
 
-            # TODO: tratar do caso em que é preciso pelo menos um params
-            # needAtLeastOneOptionalParam = entry['needAtLeastOneOptionalParam']
+            # se for preciso pelo menos um param, envia um aviso ao user (e diz já a lista de params que terá)
+            if entry['needAtLeastOneOptionalParam'] and len(chatData['paramsOptional']) == 0:
+                print("[LOG] NeedAtLeastOneParam !!! ")
+                warning_msg = "Esta busca precisará no minimo de um destes campos:\n"
+                for param in missing_optional_params:
+                    warning_msg += '-> '+localizeToPT(param)+'\n'
+                send_msg(idChat, warning_msg)
 
             # altera status e guarda (se faltam params pergunta logo um deles)
             if len(missing_required_params) or len(missing_optional_params):
@@ -305,6 +321,7 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                 send_msg(idChat, msg)
             else:
                 chatData["paramsStatus"] = "done"
+        # processing problem by asking and saving missing params
         elif chatData["paramsStatus"] == "missing":
             print("[DEBUG] adding param given by user")
             # save param given by user
@@ -321,7 +338,7 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                 # first_value = chatData["paramsMissingOptional"][first_key] # TODO: remove
                 # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
                 # remover do missing o que foi detetado
-                if 'nao' not in msg:
+                if 'nao' != clean_msg(msg):
                     chatData["paramsOptional"][first_key] = msg
                 del chatData["paramsMissingOptional"][first_key]
                 globals.redis_db.set(idChat, json.dumps(chatData))
@@ -348,12 +365,15 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
                     print("[LOG] Asking Optional param (param_key): " + param_key)
                     msg = pretty_question_optional_param(str(param_key))
                 send_msg(idChat, msg)
-        # devolve resposta (todos os params foram obtidos)
+        # devolve resposta (todos os params foram obtidos), ou retorna falha (qd necessario minimo um param)
         if chatData["paramsStatus"] == "done":
-            print("[LOG] All info collected. Sending response")
-            querystrings_aux = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
-            querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
-            process_content(idChat, chatData, get_content(detected_request, [], querystrings))
+            if entry['needAtLeastOneOptionalParam'] and len(chatData['paramsOptional']) == 0:
+                send_msg(idChat, "Pedimos desculpa, mas sem preencher nenhum dos campos não podemos efetuar a sua pesquisa :(")
+            else:
+                print("[LOG] All info collected. Sending response")
+                querystrings_aux = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
+                querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
+                process_content(idChat, chatData, get_content(detected_request, [], querystrings))
             globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):
