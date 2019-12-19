@@ -143,7 +143,14 @@ def detect_new_params(msg_params, entry):
         found = None
         while i < size and found == None:
             if msg_params[i]["type"] == ent_type:
-                found = {key:msg_params[i]["entity"]}
+                # TODO: falta outro if para tratar do caso de intervalos de tempo/dinheiro
+                # if para separar os varios para diferentes PHONES_BOOLEAN
+                if msg_params[i]["type"] == "PHONES_BOOLEAN":
+                    if msg_params[i]["entity"] == key:
+                        # found = {key:msg_params[i]["entity"]}
+                        found = {key:"yes"}
+                else:
+                    found = {key:msg_params[i]["entity"]}
             i += 1
         if found:
             optional_params.update(found)

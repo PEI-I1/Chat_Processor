@@ -38,13 +38,13 @@ def update():
 
     #TODO: add NOS tariffs
     aux = get_content("/fs_scrapper/wtf", [], {})
-    tariffs = list(map(lambda t: t["nome"], aux)) if aux != None else aux
+    tariffs = extract_and_flatten(aux, ["nome"])
 
     aux = get_content("/fs_scrapper/packages", [], {})
-    packages = list(set(map(lambda p: p["nome"], aux))) if aux != None else aux
+    packages = extract_and_flatten(aux, ["nome"])
 
     aux = get_content("/fs_scrapper/phones", [], {"min": "0", "max": "10000000"})
-    aux = list(map(lambda p: p["nome"], aux)) if aux != None else aux
+    aux = extract_and_flatten(aux, ["nome"])
 
     brands = set()
     models = set()
@@ -67,8 +67,9 @@ def update():
         aux = f.readlines()
     municipies = [x.strip() for x in aux]
 
-    #TODO: movies
-
+    movie_info = get_content("/scrapper/movies/search", [], {"synopsis": " "})
+    movies = extract_and_flatten(movie_info, ["Portuguese title", "Original title"])
+    
     detect_functions = [
         partial(detect, subjects, 'SUBJECT'),
         partial(detect, tariffs, 'TARIFF'),
@@ -83,8 +84,24 @@ def update():
         detect_phones_boolean
     ]
 
-#Update possible entities values and create a background task to update this values
+
+def extract_and_flatten(src, poi):
+    ''' Extract all relevant information from each item in source
+    and flatten result
+    :param: source dictionary
+    :param: parameters of interest
+    :return: flat list
+    '''
+    ufl = list(map(lambda p: [p[spoi] for spoi in poi], src)) if src else src
+    fl = [item for inner_list in ufl for item in inner_list]
+    return fl
+
+    
+
 def init_ner_regex():
+    ''' Update entities values and create a background task 
+    to update this values
+    '''
     #Atualiza ao iniciar
     update()
     #Depois atualiza de x em x tempo
@@ -93,9 +110,11 @@ def init_ner_regex():
     job = scheduler.add_job(update, IntervalTrigger(hours=1), [])
     atexit.register(scheduler.shutdown)
 
-#Detects the entities of type t of a clean message (without accents and without uppercases)
-#where the possible entities values list are 'words'
+
 def detect(words, t, msg):
+    ''' Detects the entities of type t of a clean message (w/o accents & capitals)
+    where the possible entities values list are 'words'
+    '''
     ents = []
     
     for w in words:
@@ -104,8 +123,10 @@ def detect(words, t, msg):
 
     return ents
 
-#Detects the entities of type FAC (address) of a message
+
 def detect_address(msg):
+    '''Detects the entities of type FAC (address) of a message
+    '''
     ents = []
     
     for a in address_starts_with:
@@ -115,8 +136,10 @@ def detect_address(msg):
 
     return ents
 
-#Detects the entities of type PHONES_BOOLEAN of a clean message (without accents and without uppercases)
+
 def detect_phones_boolean(msg):
+    '''Detects the entities of type PHONES_BOOLEAN of a clean message (w/o accents & capitals)
+    '''
     ents = []
     
     for (rg, v) in phones_booleans:
@@ -126,8 +149,10 @@ def detect_phones_boolean(msg):
 
     return ents
 
-#Detects de entities of a message
+
 def detect_entities_regex(msg):
+    '''Detects de entities of a message
+    '''
     entities = detect_address(msg)
 
     msg = clean_msg(msg)
