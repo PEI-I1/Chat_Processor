@@ -419,7 +419,6 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                     send_msg(idChat, "Desculpe mas não foi possível identificar o que pretende.")
                     send_msg(idChat, "Pode tentar o modo de regras ao escrever 'modo de regras'.")
                     send_msg(idChat, "Ou pode se quiser ligar para uma das seguintes linhas de apoio:")
-                    #TODO: tentar melhorar as linhas de apoio por forma a tentar mostrar apenas o de um assunto
                     linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
                     if linhas_apoio:
                         pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
@@ -439,7 +438,8 @@ def get_response_default(idChat, idUser, msg, name, chatData):
                     chatData["cat_change_last_msg"] = msg
                     chatData["status"] = "mudar categoria?"
                     globals.redis_db.set(idChat, json.dumps(chatData))
-                    #TODO: em vez da cat (path) aparecer um texto da cat
-                    send_msg(idChat, "Pretende mudar de categoria de '" + chatData["cat"] + "' para '" + cat + "'? Responda por favor 'sim' ou 'não'")
+                    entry1 = get_entry(chatData["cat"])
+                    entry2 = get_entry(cat)
+                    send_msg(idChat, "Pretende mudar de categoria de '" + entry1["prettyPrint"] + "' para '" + entry2["prettyPrint"] + "'? Responda por favor 'sim' ou 'não'")
             else:
                 process_params(idChat, idUser, msg, name, chatData, params)

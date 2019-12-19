@@ -41,7 +41,7 @@ def update():
     tariffs = extract_and_flatten(aux, ["nome"])
 
     aux = get_content("/fs_scrapper/packages", [], {})
-    packages = extract_and_flatten(aux, ["nome"])
+    packages = list(set(extract_and_flatten(aux, ["nome"])))
 
     aux = get_content("/fs_scrapper/phones", [], {"min": "0", "max": "10000000"})
     aux = extract_and_flatten(aux, ["nome"])
@@ -69,7 +69,7 @@ def update():
 
     movie_info = get_content("/scrapper/movies/search", [], {"synopsis": " "})
     movies = extract_and_flatten(movie_info, ["Portuguese title", "Original title"])
-    
+
     detect_functions = [
         partial(detect, subjects, 'SUBJECT'),
         partial(detect, tariffs, 'TARIFF'),
