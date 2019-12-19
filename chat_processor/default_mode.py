@@ -130,6 +130,12 @@ def pretty_question_optional_param(param_key):
         pretty_response = "Deseja filtrar pela sinopse? Se sim diga parte da sinopse, caso contrário responda 'não'."
     elif param_key == 'age':
         pretty_response = "Deseja filtrar pela restrição de idade? Se sim indique qual, caso contrário responda 'não'."
+    elif param_key == 'date':
+        pretty_response = "Deseja filtrar por data? Se sim indique qual, caso contrário responda 'não'."
+    elif param_key == 'start_time':
+        pretty_response = "Deseja filtrar por hora de inicio? Se sim indique qual, caso contrário responda 'não'."
+    elif param_key == 'end_time':
+        pretty_response = "Deseja filtrar por hora de fim? Se sim indique qual, caso contrário responda 'não'."
      # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
     else:
         pretty_response = "Pode-nos dizer algo sobre: "+param_key+"\n(Responda 'nao' caso nao saiba)"
