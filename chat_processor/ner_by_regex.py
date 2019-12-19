@@ -104,7 +104,7 @@ def detect(words, t, msg):
 
     return ents
 
-#Detects the entities of type FAC (address) of a clean message (without accents and without uppercases)
+#Detects the entities of type FAC (address) of a message
 def detect_address(msg):
     ents = []
     
