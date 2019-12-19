@@ -138,16 +138,24 @@ def detect_new_params(msg_params, entry):
 
     optional_params = {}
     optional_missing_params = {}
+    skip_one = False # use to skip the first value of a interval, and get the second value when first was already detected
     for (key, ent_type) in entry["paramsOptional"].items():
         i = 0
         found = None
         while i < size and found == None:
             if msg_params[i]["type"] == ent_type:
-                # TODO: falta outro if para tratar do caso de intervalos de tempo/dinheiro
-                # if para separar os varios para diferentes PHONES_BOOLEAN
-                if msg_params[i]["type"] == "PHONES_BOOLEAN":
+                # if para tratar casos com intervalos de TIME/MONEY
+                if msg_params[i]["type"] == "TIME" or  msg_params[i]["type"] == "MONEY":
+                    pass # temporario ate se fazer a funçao de parse de datas/horas
+                    # # FIXME: resolver casos em que só temos fim/max TIME/MONEY
+                    # if skip_one:
+                    #     skip_one = False
+                    # else:
+                    #     skip_one = True
+                    #     found = {key:msg_params[i]["entity"]}
+                # if para separar os varios diferentes PHONES_BOOLEAN
+                elif msg_params[i]["type"] == "PHONES_BOOLEAN":
                     if msg_params[i]["entity"] == key:
-                        # found = {key:msg_params[i]["entity"]}
                         found = {key:"yes"}
                 else:
                     found = {key:msg_params[i]["entity"]}
