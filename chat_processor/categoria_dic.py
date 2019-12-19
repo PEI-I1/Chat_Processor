@@ -79,7 +79,7 @@ cat = [
     {
         'request': '/scrapper/movies/search',
         'service': 'CINEMA_SCRAPER',
-        'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'procura', 1.0), (r'consulta', 1.0), (r'filmes?\.(com|de|sobre)', 2.0)],
+        'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'procurar?', 1.0), (r'consultar?', 1.0), (r'filmes?\.(com|de|sobre)', 2.0)],
         'paramsRequired': {},
         'paramsOptional': {'genre':'MOVIE_GENRE', 'cast':'PERSON', 'producer':'PERSON', 'synopsis':'SYNOPSIS', 'age':'CARDINAL'},
         'locationParam': {},
