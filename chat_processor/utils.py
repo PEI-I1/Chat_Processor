@@ -3,12 +3,21 @@ from config import urls
 import requests, urllib.parse, unidecode
 
 def merge_dicts(x, y):
+    '''Merge two dictionaries
+    :param: a dictionary
+    :param: another dictionary
+    :return: merged dictionary
+    '''
     z = x.copy()
     if y:
         z.update(y)
     return z
 
 def clean_msg(msg):
+    '''Cleans a message, removing accents and uppercases
+    :param: text/message to clean
+    :return: clean message
+    '''
     #mensagem toda em letras pequenas
     msg = msg.lower()
 
@@ -17,8 +26,12 @@ def clean_msg(msg):
 
     return msg
 
-#Dado uma funcionalidade devolve a entrada da mesma no dicionário
 def get_entry(request):
+    '''For a given category/functionality returns its entry
+    in categories/functionalities dictionary (categoria_dict)
+    :param: name/path of category/functionality
+    :return: category/functionality entry
+    '''
     size = len(dicionario)
     i = 0
     found_value = None
@@ -30,8 +43,12 @@ def get_entry(request):
 
     return found_value
 
-#Dado uma funcionalidade devolve o URL
 def get_service(request):
+    '''For a given category/functionality returns its URL
+    in categories/functionalities dictionary (categoria_dict)
+    :param: name/path of category/functionality
+    :return: category/functionality URL
+    '''
     size = len(dicionario)
     i = 0
     found_service = None
@@ -43,8 +60,13 @@ def get_service(request):
 
     return urls[found_service]
 
-#Faz um pedido ao solver para passar para a resolução de problemas
 def get_solver(idChat, msg):
+    '''Makes a request to Problems Resolution module in order to 
+    answer a user message
+    :param: id chat
+    :param: user message
+    :return: Problems Resolution module response or None
+    '''
     URL = urls["RS"] + "/solver"
 
     print(URL)
@@ -57,8 +79,12 @@ def get_solver(idChat, msg):
 
     return res
 
-#Faz um pedido ao API_ENDPOINT de forma a enviar uma msg ao utilizador
 def send_msg(idChat, msg):
+    '''Makes a request to API Endpoint in order do send a message to user
+    :param: id chat
+    :param: message to send to user
+    :return: API Endpoint response or None
+    '''
     URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
 
     print(URL)
@@ -72,6 +98,11 @@ def send_msg(idChat, msg):
     return res
 
 def send_photo(idChat, msg):
+    '''Makes a request to API Endpoint in order do send a photo with captions to user
+    :param: id chat
+    :param: photo and captions to send to user
+    :return: API Endpoint response or None
+    '''
     URL = urls["API_ENDPOINT"] + "/send_photo/" + urllib.parse.quote(str(idChat), safe='')
 
     print(URL)
@@ -84,8 +115,11 @@ def send_photo(idChat, msg):
 
     return res
 
-#Faz um pedido ao API_ENDPOINT de forma a perguntar pela localização do utilizador
 def get_loc(idChat):
+    '''Makes a request to API Endpoint in order to request user GPS location
+    :param: id chat
+    :return: API Endpoint response or None
+    '''
     URL = urls["API_ENDPOINT"] + "/get_location/" + urllib.parse.quote(str(idChat), safe='')
 
     print(URL)
@@ -98,12 +132,14 @@ def get_loc(idChat):
 
     return res
 
-#Faz um pedido a um URL, devolvendo a informação
-# recebe como parâmetros:
-#  - cat: a funcionalidade/categoria
-#  - params: os parâmetros que vão no caminho (por ordem de aparição no caminho) (lista)
-#  - querystrings: os parâmetros que vão nas querystrings (um dicionário chave valor)
 def get_content(cat, params, querystrings):
+    '''Makes a request to an URL (depending on category/functionality) in order to obtain
+    information from that category/functionality
+    :param: category/functionality
+    :param: list of parameters that goes in path (in order of ocorrence in path)
+    :param: a dictionary of query string parameters 
+    :return: Category/Functionality response or None
+    '''
     URL = get_service(cat)
     URL += cat
 

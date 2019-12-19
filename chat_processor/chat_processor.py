@@ -8,11 +8,16 @@ from ner_by_regex import init_ner_regex
 import globals, json, nltk
 
 def init():
+    ''' Init. Download necessary resources, init global variables
+    (redis connection and deeppavlov model) and init NER by regex.
+    '''
     download_recursos()
     globals.init()
     init_ner_regex()
 
 def download_recursos():
+    ''' Download necessary resources for NLTK
+    '''
     try:
         nltk.data.find('tokenizers/punkt')
     except LookupError:
@@ -32,6 +37,13 @@ def download_recursos():
         nltk.download('nonbreaking_prefixes', quiet=True)
 
 def get_response(idChat, idUser, msg, name, location):
+    ''' For a given user message answer him
+    :param: id chat
+    :param: id user
+    :param: user message
+    :param: user name
+    :param: user location
+    '''
     chatDataAux = globals.redis_db.get(idChat)
     chatData = json.loads(chatDataAux) if chatDataAux else None
 

@@ -9,7 +9,6 @@ from ner_by_regex import detect_entities_regex
 confianca_level = 0.70
 tries = 5
 
-
 def limpa_texto(mensagem):
     ''' Remove stopwords and punctuation from the input message
     :param: message to be cleaned
@@ -19,9 +18,11 @@ def limpa_texto(mensagem):
     mensagem = ' '.join([clean_msg(palavra) for palavra in mensagem if not re.match('\p{punct}', palavra)])
     return mensagem
 
-
 def criar_noccur_dic(frase):
-    ''' Cria um dic 'noccur' com o número de occorências na frase para cada categoria'''
+    ''' Creates a dictionary 'noccur' with the number of ocurrences for each category/functionality in phrase
+    :param: phrase
+    :return: dictionary
+    '''
     noccur = {}
     for cat in dicionario:
         for expr,mod in cat['words']:
@@ -29,9 +30,11 @@ def criar_noccur_dic(frase):
                 noccur[cat['request']] = noccur.get(cat['request'], 0) + mod
     return noccur
 
-# com base na dic do noccur calcular qual é a categoria mais provável e a sua confiança
-# confiança = noccur da categoria que aparece mais / número de ocorrência de todas as categorias
 def calcula_confianca(noccur):
+    '''For a given noccur calculates the most likely category/functionality and its confidence
+    :param: dictionary (noccur)
+    :return: category/functionality and confidence
+    '''
     if len(noccur):
         #total = sum(noccur.values())
         cat_maior = max(noccur, key=noccur.get)
@@ -42,13 +45,21 @@ def calcula_confianca(noccur):
     return cat_maior,confianca
 
 def get_categoria_frase(inp):
+    '''For a given user message obtains its category/functionality and confidence
+    :param: user message
+    :return: category/functionality and confidence
+    '''
     inp = spell_check_ss(inp)
     palavras = limpa_texto(inp)
     noccur = criar_noccur_dic(palavras)
     return calcula_confianca(noccur)
 
-
 def proc_ents(inp):
+    '''For the given answer of deeppavlov model constructs an list with the entities
+    in a appropriate structure
+    :param: answer given by the deeeppavlov model
+    :return: a list with the entities (value and type)
+    '''
     words = inp[0][0]
     ents = inp[1][0]
 
@@ -72,9 +83,11 @@ def proc_ents(inp):
 
     return ret
 
-
-# devolve uma string com a questao apropriada para pedir ao user um param obrigatorio (param_key)
 def pretty_question_required_param(param_key):
+    '''For a given required param returns a string with the appropriate question
+    :param: required parameter
+    :return: string with question to user
+    '''
     pretty_response = ""
 
     if param_key == 'movie':
@@ -86,8 +99,11 @@ def pretty_question_required_param(param_key):
 
     return pretty_response
 
-# devolve uma string com a questao apropriada para pedir ao user um param opcional (param_key)
 def pretty_question_optional_param(param_key):
+    '''For a given optional param returns a string with the appropriate question
+    :param: optional parameter
+    :return: string with question to user
+    '''
     pretty_response = ""
 
     # FS_scrapper params
@@ -142,8 +158,11 @@ def pretty_question_optional_param(param_key):
 
     return pretty_response
 
-# traduz um param em ingles para PT, para poder ser introduzido em mensagens
 def localizeToPT(param):
+    '''Translate a parameter in english to portuguese in order to put in messages sended to user
+    :param: parameter to translate
+    :return: translated parameter
+    '''
     param_pt = ""
 
     if param == 'genre':
@@ -162,15 +181,21 @@ def localizeToPT(param):
 
     return param_pt
 
-# adiciona elementos da new_list á old_list (chatData) se eles ainda nao existirem
 def add_new_params(old_list, new_list):
+    '''Add elements of a source list to a destination list if element not exists in the destination list
+    :param: destination list
+    :param: source list
+    :return: updated destination list'''
     for (k,v) in new_list.items():
         if not k in old_list:
             old_list.update({k:v})
 
-# quando um pedido é detetado, é feito o primeiro reconhecimento dos params
-# e retorna-se a lista de parametros (obrigatorios/opcionais) (obtidos/em falta)
 def detect_new_params(msg_params, entry):
+    ''' Initial recognition of params, detects missing params
+    :param: parameters detected in user message
+    :param: entry in categoria_dict of category/functionality
+    :return: detected required parameters, missing required parameters, detected optional parameters, missing optional parameters
+    '''
     size = len(msg_params)
 
     required_params = {}
@@ -204,6 +229,11 @@ def detect_new_params(msg_params, entry):
     return required_params, required_missing_params, optional_params, optional_missing_params
 
 def get_city(entry, msg_params):
+    ''' Obtain the detected parameters in user message that matches with search_term
+    :param: entry in categoria_dict of category/functionality
+    :param: parameters detected in user message
+    :return: address or city that user sended in message
+    '''
     loc = None
 
     if '|' in entry['locationParam']['search_term']:
@@ -219,6 +249,12 @@ def get_city(entry, msg_params):
     return loc
 
 def process_content(idChat, chatData, content):
+    '''Pretty print of content, sending messages to user and when content
+    are lists only send first 5 elements
+    :param: id chat
+    :param: user chat state
+    :param: content that will be send to user
+    '''
     if content != None:
         if content:
             #se for uma lista devolve de forma diferente
@@ -233,6 +269,10 @@ def process_content(idChat, chatData, content):
         send_msg(idChat, "Não foi possível obter a resposta...")
 
 def detect_params(msg):
+    '''Detect parameters(entities) in user message
+    :param: user message
+    :return: list with detected parameters
+    '''
     #detect entities using deepavlov NER model
     params = proc_ents(globals.ner_model([msg]))
     #detect entities using regex
@@ -247,6 +287,16 @@ def modo_problemas(idChat, msg, chatData):
     send_msg(idChat, get_solver(idChat, msg))
 
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
+    '''Process parameters, question users when parameters are missing. When
+    have all paremeters get content from the other modules. Finally send the
+    content to user, sending messages
+    :param: id chat
+    :param: id user
+    :param: user message
+    :param: user name
+    :param: user chat state
+    :param: detected parameters in message
+    '''
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
     location_params = entry['locationParam']
@@ -386,6 +436,16 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):
+    '''Intro of message in default mode. If intro changed category/functionality request him 
+    in order to know if wants to change. If after x tries was not possible to detect the
+    category/functionality requests if user wants to use rules mode or if wants to call
+    to support lines. On other cases the flow is passed to process_params
+    :param: id chat
+    :param: id user
+    :param: user message
+    :param: user name
+    :param: user chat state
+    '''
     if chatData["status"] == "mudar categoria?":
         muda_categoria = clean_msg(msg)
 
