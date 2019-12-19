@@ -5,6 +5,7 @@ import globals, nltk, json, copy
 import regex as re
 from pretty_print import pretty_print
 from ner_by_regex import detect_entities_regex
+from pretty_params import optional_params as pp_opt, required_params as pp_req, param_en_to_pt
 
 confianca_level = 0.70
 tries = 5
@@ -88,98 +89,21 @@ def pretty_question_required_param(param_key):
     :param: required parameter
     :return: string with question to user
     '''
-    pretty_response = ""
-
-    if param_key == 'movie':
-        pretty_response =  "Por favor, indique o filme que procura."
-    elif param_key == 'duration':
-        pretty_response =  "Por favor, indique a duração que pretende."
-    else: # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
-        pretty_response = "Pedimos desculpa, mas poderia-nos dizer algo sobre: "+param_key
-
-    return pretty_response
+    return pp_req.get(param_key, "Pedimos desculpa, mas poderia-nos dizer algo sobre: " + param_key)
 
 def pretty_question_optional_param(param_key):
     '''For a given optional param returns a string with the appropriate question
     :param: optional parameter
     :return: string with question to user
     '''
-    pretty_response = ""
-
-    # FS_scrapper params
-    if param_key == 'top':
-        pretty_response =  "Deseja filtrar apenas os telemóveis mais procurados?"
-    elif param_key == 'new':
-        pretty_response =  "Deseja filtrar apenas os telemóveis mais recentes?"
-    elif param_key == 'promo':
-        pretty_response =  "Deseja filtrar apenas os telemóveis com promoção?"
-    elif param_key == 'ofer':
-        pretty_response =  "Deseja filtrar apenas os telemóveis que trazem ofertas?"
-    elif param_key == 'prest':
-        pretty_response =  "Deseja filtrar apenas os telemóveis que se podem pagar com prestações?"
-    elif param_key == 'points':
-        pretty_response =  "Deseja filtrar apenas os telemóveis que se podem pagar com pontos?"
-    elif param_key == 'brand':
-        pretty_response =  "Deseja filtrar por marca? Se sim indique qual, caso contrário responda 'não'"
-    elif param_key == 'min':
-        pretty_response =  "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'não'."
-    elif param_key == 'max':
-        pretty_response =  "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'não'."
-    elif param_key == 'assunto':
-        pretty_response =  "Por favor indique qual linha de apoio que quer. Caso não saiba, responda 'não' para ver todas as opções."
-    elif param_key == 'nome':
-        pretty_response = "Por favor indique qual o nome do tarifário que deseja. Caso não saiba, responda 'não' para ver todas as opções."
-    elif param_key == 'type':
-        pretty_response = "Caso queira filtrar pelo tipo de pacote indique se quer 'Pacotes Fibra' ou 'Pacotes Satélite'. Caso não queira, responda 'não'."
-    elif param_key == 'name':
-        pretty_response = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'service':
-        pretty_response = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
-    # Cinemas params
-    elif param_key == 'genre':
-        pretty_response = "Deseja filtrar pelo género? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'cast':
-        pretty_response = "Deseja filtrar pelo elenco? Se sim indique os atores procura, caso contrário responda 'não'."
-    elif param_key == 'producer':
-        pretty_response = "Deseja filtrar pelo produtor? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'synopsis':
-        pretty_response = "Deseja filtrar pela sinopse? Se sim diga parte da sinopse, caso contrário responda 'não'."
-    elif param_key == 'age':
-        pretty_response = "Deseja filtrar pela restrição de idade? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'date':
-        pretty_response = "Deseja filtrar por data? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'start_time':
-        pretty_response = "Deseja filtrar por hora de inicio? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'end_time':
-        pretty_response = "Deseja filtrar por hora de fim? Se sim indique qual, caso contrário responda 'não'."
-     # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
-    else:
-        pretty_response = "Pode-nos dizer algo sobre: "+param_key+"\n(Responda 'nao' caso nao saiba)"
-
-    return pretty_response
+    return pp_opt.get(param_key, "Pode-nos dizer algo sobre: "+param_key+"\n(Responda 'não' caso não saiba)")
 
 def localizeToPT(param):
     '''Translate a parameter in english to portuguese in order to put in messages sended to user
     :param: parameter to translate
     :return: translated parameter
     '''
-    param_pt = ""
-
-    if param == 'genre':
-        param_pt =  "género"
-    elif param == 'cast':
-        param_pt =  "elenco"
-    elif param == 'producer':
-        param_pt =  "produtor"
-    elif param == 'synopsis':
-        param_pt =  "sinopse"
-    elif param == 'age':
-        param_pt =  "restrição de idade"
-    # TODO: fazer para params do FS_scraper
-    else: # caso a key nao exista (nao traduz, mas avisa)
-        param_pt = param+" (pedimos desculpa pelo inglês)"
-
-    return param_pt
+    return param_en_to_pt.get(param, param+" (pedimos desculpa pelo inglês)")
 
 def add_new_params(old_list, new_list):
     '''Add elements of a source list to a destination list if element not exists in the destination list
