@@ -1,5 +1,5 @@
 import globals #redis_db
-from utils import get_content
+from utils import get_content, get_loc
 from regex_rules_mode import regexPrice
 import json
 
@@ -245,7 +245,8 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str("Indique uma zona ou morada para a qual procura lojas NOS.")
         elif opcao == 2:
             save_redis(idChat, idUser, 232)
-            return str("Precisamos do seu consentimento para aceder à sua localização atual. Se consentir, por favor digite 1. Caso contrário, digite qualquer outra tecla.")
+            get_loc(idChat)
+            return str("Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.")
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
@@ -309,14 +310,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         return requerido
 
     elif menu == 232:
-        if opcao == 1:
-            #TODO confirmar que basta fazer isto para aceder à localização !!!!!!!!
+        if 'locationParam' in chatData:
             aux = {}
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
             requerido = get_content('/fs_scrapper/stores', [], aux)
             remove_redis(idChat, idUser, chatData)
-            return None
+            return requerido
         else:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
