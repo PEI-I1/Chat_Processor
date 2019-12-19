@@ -67,7 +67,10 @@ def update():
     municipies = [x.strip() for x in aux]
 
     #TODO: movies
-
+    movie_info = get_content("/scrapper/movies/search", [], {"synopsis": " "})
+    #movie_titles = list(map(lambda p: p["Portuguese title"], release_info)) if release_info else release_info
+    movies = extract_and_flatten(movie_info, ["Portuguese title", "Original title"])
+    
     detect_functions = [
         partial(detect, subjects, 'SUBJECT'),
         partial(detect, tariffs, 'TARIFF'),
@@ -82,6 +85,18 @@ def update():
         detect_phones_boolean
     ]
 
+def extract_and_flatten(src, poi):
+    ''' Extract all relevant information from each item in source
+    and flatten result
+    :param: source dictionary
+    :param: parameters of interest
+    :return: flat list
+    '''
+    ufl = list(map(lambda p: [p[spoi] for spoi in poi], src)) if src else src
+    fl = [item for inner_list in ufl for item in inner_list]
+    return fl
+
+    
 def init_ner_regex():
     #Atualiza ao iniciar
     update()
