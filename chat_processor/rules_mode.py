@@ -1,6 +1,6 @@
 import globals #redis_db
 from utils import get_content
-from regexRulesMode import regexPrice
+from regex_rules_mode import regexPrice
 import json
 
 

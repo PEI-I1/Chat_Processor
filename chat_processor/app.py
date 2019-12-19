@@ -4,6 +4,7 @@ from chat_processor import get_response, init as initCP
 from spell_checker import init as initSC
 
 app = Flask(__name__)
+#init necessary components Chat Processor and Spell Checker
 initCP()
 initSC()
 

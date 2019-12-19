@@ -5,10 +5,10 @@ import globals, nltk, json, copy
 import regex as re
 from pretty_print import pretty_print
 from ner_by_regex import detect_entities_regex
+from pretty_params import optional_params as pp_opt, required_params as pp_req, param_en_to_pt
 
 confianca_level = 0.70
 tries = 5
-
 
 def limpa_texto(mensagem):
     ''' Remove stopwords and punctuation from the input message
@@ -19,9 +19,11 @@ def limpa_texto(mensagem):
     mensagem = ' '.join([clean_msg(palavra) for palavra in mensagem if not re.match('\p{punct}', palavra)])
     return mensagem
 
-
 def criar_noccur_dic(frase):
-    ''' Cria um dic 'noccur' com o número de occorências na frase para cada categoria'''
+    ''' Creates a dictionary 'noccur' with the number of ocurrences for each category/functionality in phrase
+    :param: phrase
+    :return: dictionary
+    '''
     noccur = {}
     for cat in dicionario:
         for expr,mod in cat['words']:
@@ -29,9 +31,11 @@ def criar_noccur_dic(frase):
                 noccur[cat['request']] = noccur.get(cat['request'], 0) + mod
     return noccur
 
-# com base na dic do noccur calcular qual é a categoria mais provável e a sua confiança
-# confiança = noccur da categoria que aparece mais / número de ocorrência de todas as categorias
 def calcula_confianca(noccur):
+    '''For a given noccur calculates the most likely category/functionality and its confidence
+    :param: dictionary (noccur)
+    :return: category/functionality and confidence
+    '''
     if len(noccur):
         #total = sum(noccur.values())
         cat_maior = max(noccur, key=noccur.get)
@@ -42,13 +46,21 @@ def calcula_confianca(noccur):
     return cat_maior,confianca
 
 def get_categoria_frase(inp):
+    '''For a given user message obtains its category/functionality and confidence
+    :param: user message
+    :return: category/functionality and confidence
+    '''
     inp = spell_check_ss(inp)
     palavras = limpa_texto(inp)
     noccur = criar_noccur_dic(palavras)
     return calcula_confianca(noccur)
 
-
 def proc_ents(inp):
+    '''For the given answer of deeppavlov model constructs an list with the entities
+    in a appropriate structure
+    :param: answer given by the deeeppavlov model
+    :return: a list with the entities (value and type)
+    '''
     words = inp[0][0]
     ents = inp[1][0]
 
@@ -72,105 +84,42 @@ def proc_ents(inp):
 
     return ret
 
-
-# devolve uma string com a questao apropriada para pedir ao user um param obrigatorio (param_key)
 def pretty_question_required_param(param_key):
-    pretty_response = ""
+    '''For a given required param returns a string with the appropriate question
+    :param: required parameter
+    :return: string with question to user
+    '''
+    return pp_req.get(param_key, "Pedimos desculpa, mas poderia-nos dizer algo sobre: " + param_key)
 
-    if param_key == 'movie':
-        pretty_response =  "Por favor, indique o filme que procura."
-    elif param_key == 'duration':
-        pretty_response =  "Por favor, indique a duração que pretende."
-    else: # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
-        pretty_response = "Pedimos desculpa, mas poderia-nos dizer algo sobre: "+param_key
-
-    return pretty_response
-
-# devolve uma string com a questao apropriada para pedir ao user um param opcional (param_key)
 def pretty_question_optional_param(param_key):
-    pretty_response = ""
+    '''For a given optional param returns a string with the appropriate question
+    :param: optional parameter
+    :return: string with question to user
+    '''
+    return pp_opt.get(param_key, "Pode-nos dizer algo sobre: "+param_key+"\n(Responda 'não' caso não saiba)")
 
-    # FS_scrapper params
-    if param_key == 'top':
-        pretty_response =  "Deseja filtrar apenas os telemóveis mais procurados?"
-    elif param_key == 'new':
-        pretty_response =  "Deseja filtrar apenas os telemóveis mais recentes?"
-    elif param_key == 'promo':
-        pretty_response =  "Deseja filtrar apenas os telemóveis com promoção?"
-    elif param_key == 'ofer':
-        pretty_response =  "Deseja filtrar apenas os telemóveis que trazem ofertas?"
-    elif param_key == 'prest':
-        pretty_response =  "Deseja filtrar apenas os telemóveis que se podem pagar com prestações?"
-    elif param_key == 'points':
-        pretty_response =  "Deseja filtrar apenas os telemóveis que se podem pagar com pontos?"
-    elif param_key == 'brand':
-        pretty_response =  "Deseja filtrar por marca? Se sim indique qual, caso contrário responda 'não'"
-    elif param_key == 'min':
-        pretty_response =  "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'não'."
-    elif param_key == 'max':
-        pretty_response =  "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'não'."
-    elif param_key == 'assunto':
-        pretty_response =  "Por favor indique qual linha de apoio que quer. Caso não saiba, responda 'não' para ver todas as opções."
-    elif param_key == 'nome':
-        pretty_response = "Por favor indique qual o nome do tarifário que deseja. Caso não saiba, responda 'não' para ver todas as opções."
-    elif param_key == 'type':
-        pretty_response = "Caso queira filtrar pelo tipo de pacote indique se quer 'Pacotes Fibra' ou 'Pacotes Satélite'. Caso não queira, responda 'não'."
-    elif param_key == 'name':
-        pretty_response = "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'service':
-        pretty_response = "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'."
-    # Cinemas params
-    elif param_key == 'genre':
-        pretty_response = "Deseja filtrar pelo género? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'cast':
-        pretty_response = "Deseja filtrar pelo elenco? Se sim indique os atores procura, caso contrário responda 'não'."
-    elif param_key == 'producer':
-        pretty_response = "Deseja filtrar pelo produtor? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'synopsis':
-        pretty_response = "Deseja filtrar pela sinopse? Se sim diga parte da sinopse, caso contrário responda 'não'."
-    elif param_key == 'age':
-        pretty_response = "Deseja filtrar pela restrição de idade? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'date':
-        pretty_response = "Deseja filtrar por data? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'start_time':
-        pretty_response = "Deseja filtrar por hora de inicio? Se sim indique qual, caso contrário responda 'não'."
-    elif param_key == 'end_time':
-        pretty_response = "Deseja filtrar por hora de fim? Se sim indique qual, caso contrário responda 'não'."
-     # caso a key nao exista (nao é uma boa questão, mas melhor que nada)
-    else:
-        pretty_response = "Pode-nos dizer algo sobre: "+param_key+"\n(Responda 'nao' caso nao saiba)"
-
-    return pretty_response
-
-# traduz um param em ingles para PT, para poder ser introduzido em mensagens
 def localizeToPT(param):
-    param_pt = ""
+    '''Translate a parameter in english to portuguese in order to put in messages sended to user
+    :param: parameter to translate
+    :return: translated parameter
+    '''
+    return param_en_to_pt.get(param, param+" (pedimos desculpa pelo inglês)")
 
-    if param == 'genre':
-        param_pt =  "género"
-    elif param == 'cast':
-        param_pt =  "elenco"
-    elif param == 'producer':
-        param_pt =  "produtor"
-    elif param == 'synopsis':
-        param_pt =  "sinopse"
-    elif param == 'age':
-        param_pt =  "restrição de idade"
-    # TODO: fazer para params do FS_scraper
-    else: # caso a key nao exista (nao traduz, mas avisa)
-        param_pt = param+" (pedimos desculpa pelo inglês)"
-
-    return param_pt
-
-# adiciona elementos da new_list á old_list (chatData) se eles ainda nao existirem
 def add_new_params(old_list, new_list):
+    '''Add elements of a source list to a destination list if element not exists in the destination list
+    :param: destination list
+    :param: source list
+    :return: updated destination list'''
     for (k,v) in new_list.items():
         if not k in old_list:
             old_list.update({k:v})
 
-# quando um pedido é detetado, é feito o primeiro reconhecimento dos params
-# e retorna-se a lista de parametros (obrigatorios/opcionais) (obtidos/em falta)
 def detect_new_params(msg_params, entry):
+    ''' Initial recognition of params, detects missing params
+    :param: parameters detected in user message
+    :param: entry in categoria_dict of category/functionality
+    :return: detected required parameters, missing required parameters, detected optional parameters, missing optional parameters
+    '''
     size = len(msg_params)
 
     required_params = {}
@@ -219,6 +168,11 @@ def detect_new_params(msg_params, entry):
     return required_params, required_missing_params, optional_params, optional_missing_params
 
 def get_city(entry, msg_params):
+    ''' Obtain the detected parameters in user message that matches with search_term
+    :param: entry in categoria_dict of category/functionality
+    :param: parameters detected in user message
+    :return: address or city that user sended in message
+    '''
     loc = None
 
     if '|' in entry['locationParam']['search_term']:
@@ -234,6 +188,12 @@ def get_city(entry, msg_params):
     return loc
 
 def process_content(idChat, chatData, content):
+    '''Pretty print of content, sending messages to user and when content
+    are lists only send first 5 elements
+    :param: id chat
+    :param: user chat state
+    :param: content that will be send to user
+    '''
     if content != None:
         if content:
             #se for uma lista devolve de forma diferente
@@ -248,6 +208,10 @@ def process_content(idChat, chatData, content):
         send_msg(idChat, "Não foi possível obter a resposta...")
 
 def detect_params(msg):
+    '''Detect parameters(entities) in user message
+    :param: user message
+    :return: list with detected parameters
+    '''
     #detect entities using deepavlov NER model
     params = proc_ents(globals.ner_model([msg]))
     #detect entities using regex
@@ -262,6 +226,16 @@ def modo_problemas(idChat, msg, chatData):
     send_msg(idChat, get_solver(idChat, msg))
 
 def process_params(idChat, idUser, msg, name, chatData, msg_params):
+    '''Process parameters, question users when parameters are missing. When
+    have all paremeters get content from the other modules. Finally send the
+    content to user, sending messages
+    :param: id chat
+    :param: id user
+    :param: user message
+    :param: user name
+    :param: user chat state
+    :param: detected parameters in message
+    '''
     detected_request = chatData["cat"]
     entry = get_entry(detected_request)
     location_params = entry['locationParam']
@@ -401,6 +375,16 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
             globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):
+    '''Intro of message in default mode. If intro changed category/functionality request him 
+    in order to know if wants to change. If after x tries was not possible to detect the
+    category/functionality requests if user wants to use rules mode or if wants to call
+    to support lines. On other cases the flow is passed to process_params
+    :param: id chat
+    :param: id user
+    :param: user message
+    :param: user name
+    :param: user chat state
+    '''
     if chatData["status"] == "mudar categoria?":
         muda_categoria = clean_msg(msg)
 
