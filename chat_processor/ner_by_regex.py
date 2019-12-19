@@ -20,6 +20,7 @@ address_starts_with = ["Al\.", "Alameda", "Az\.", "Azinhaga", "Cc.", "Calçada",
 detect_functions = []
 phones_booleans = [("sim", "Sim"), ("nao", "Não"), (r"promo(cao|coes)?", "promo"), ("novos?", "new"), ("recentes?", "new"), ("descontos?", "promo"), ("ofertas?", "ofer"), ("prestac(ao|oes)", "prest"), ("pontos?", "points")]
 
+#Update possible entities values
 def update():
     global subjects, tariffs, packages, phone_models, phone_brands, municipies, movies, detect_functions
 
@@ -82,6 +83,7 @@ def update():
         detect_phones_boolean
     ]
 
+#Update possible entities values and create a background task to update this values
 def init_ner_regex():
     #Atualiza ao iniciar
     update()
@@ -91,6 +93,8 @@ def init_ner_regex():
     job = scheduler.add_job(update, IntervalTrigger(hours=1), [])
     atexit.register(scheduler.shutdown)
 
+#Detects the entities of type t of a clean message (without accents and without uppercases)
+#where the possible entities values list are 'words'
 def detect(words, t, msg):
     ents = []
     
@@ -100,26 +104,29 @@ def detect(words, t, msg):
 
     return ents
 
+#Detects the entities of type FAC (address) of a clean message (without accents and without uppercases)
 def detect_address(msg):
     ents = []
     
     for a in address_starts_with:
-        ad = re.search(r'^(\s*' + a + r'.*)$', msg, re.IGNORECASE)
+        ad = re.search(r'^\s*(' + a + r'.*)$', msg, re.IGNORECASE)
         if ad:
             ents.append({'entity': ad.group(1), 'type': 'FAC'})
 
     return ents
 
+#Detects the entities of type PHONES_BOOLEAN of a clean message (without accents and without uppercases)
 def detect_phones_boolean(msg):
     ents = []
     
     for (rg, v) in phones_booleans:
-        pb = re.search(r'^\s*' + rg + r'.*$', msg)
+        pb = re.search(r'\b' + rg + r'\b', msg)
         if pb:
             ents.append({'entity': v, 'type': 'PHONES_BOOLEAN'})
 
     return ents
 
+#Detects de entities of a message
 def detect_entities_regex(msg):
     entities = detect_address(msg)
 
