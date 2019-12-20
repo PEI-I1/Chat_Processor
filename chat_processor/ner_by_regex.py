@@ -92,7 +92,7 @@ def extract_and_flatten(src, poi):
     :param: parameters of interest
     :return: flat list
     '''
-    ufl = list(map(lambda p: [p[spoi] for spoi in poi], src)) if src else src
+    ufl = list(map(lambda p: [p[spoi] for spoi in poi], src)) if src else []
     fl = [item for inner_list in ufl for item in inner_list]
     return fl
 
