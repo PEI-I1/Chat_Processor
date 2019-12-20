@@ -93,6 +93,32 @@ def final_packages(idChat, idUser):
     return get_content('/fs_scrapper/packages', [], aux)
 
 
+def final_phones(idChat, idUser):
+    aux = {}
+    promo = load_string(idChat, idUser, '_phones_Promo_')
+    newPhones = load_string(idChat, idUser, '_new_phones_')
+    brand = load_string(idChat, idUser, '_phones_brand_')
+    points = load_string(idChat, idUser, '_points_')
+    prest = load_string(idChat, idUser, '_prest_')
+    priceLimit = load_string(idChat, idUser, '_priceLimit_')
+
+    if priceLimit and priceLimit == 'defined':
+        aux['min'] = load_float(idChat, idUser, '_min_value')
+        aux['max'] = load_float(idChat, idUser, '_max_value')
+    if brand and brand != 'all':
+        aux['brand'] = brand
+    if promo and promo != 'all':
+        aux['promo'] = promo
+    if points and points != 'all':
+        aux['points'] = points
+    if prest and prest != 'all':
+        aux['prest'] = prest
+    if newPhones and newPhones != 'all':
+        aux['new'] = newPhones
+
+    return get_content('/fs_scrapper/phones', [], aux)
+
+
 def get_response_rules(idChat, idUser, msg, name, chatData):
     menu = load_redis(idChat, idUser)
 
@@ -244,7 +270,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         elif opcao == 2:
             save_redis(idChat, idUser, 222)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Telemóveis de uma marca.\n2. Todos os telemóveis\n3. Sair''')
+1. Telemóveis de uma marca.\n2. Todos os telemóveis\n3. sair''')
         elif opcao == 3:
             aux = {}
             aux['top'] = True
@@ -255,8 +281,10 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
         else:
+            save_redis(idChat, idUser, 22)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Procurar por um modelo específico.\n2. Fazer pesquisa sobre telemóveis.\n3. Top telemóveis mais vistos nos últimos dias.\n4. Sair''')
+1. Procurar por um modelo específico.\n2. Fazer pesquisa sobre telemóveis.\n
+3. Top telemóveis mais vistos nos últimos dias.\n4. sair''')
 
     elif menu == 221:
         aux = {}
@@ -270,7 +298,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
            save_redis(idChat, idUser, 223)
            return str("Indique a marca que pretende")
         elif opcao == 2:
-            save_string(idChat, idUser,'_phones_brand','all')
+            save_string(idChat, idUser, '_phones_brand_', 'all')
             save_redis(idChat, idUser, 224)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Lançamentos recentes.\n2. Todos os telemóveis\n3. sair''')
@@ -283,80 +311,140 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 1. Telemóveis de uma marca\n2. Todos os telemóveis\n3. sair''')
 
     elif menu == 223:
-        save_string(idChat, idUser, 'phones_brand', msg)
+        save_string(idChat, idUser, '_phones_brand_', msg)
         save_redis(idChat, idUser, 224)
         return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Lançamentos recentes.\n2. Todos os telemóveis\3. sair''')
 
     elif menu == 224:
         if opcao == 1:
-            save_string(idChat, idUser, '_new_phones', 'defined')
+            save_string(idChat, idUser, '_new_phones_', 'defined')
             save_redis(idChat, idUser, 225)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Telemóveis em Promoção.\n2. Todos os Telemóveis\n3. sair''')
         elif opcao == 2:
             save_redis(idChat, idUser, 225)
-            save_string(idChat, idUser,'_new_phones', 'all')
+            save_string(idChat, idUser, '_new_phones_', 'all')
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Telemóveis em Promoção.\n2. Todos os Telemóveis\n3. sair''')
         elif opcao == 3:
-            remove_string(idChat, idUser, '_phones_brand')
+            remove_string(idChat, idUser, '_phones_brand_')
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
         else:
+            save_redis(idChat, idUser, 224)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
 1. Lançamentos recentes.\n2. Todos os telemóveis\n3. sair''')
 
     elif menu == 225:
         if opcao == 1:
-            aux = {}
-            aux['promo']
-            requerido = get_content('/fs_scrapper/phones', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
-        elif opcao == 2:
-            save_redis(idChat, idUser,226)
-            save_string(idChat, idUser, '_todosPromo_','all')
+            save_string(idChat, idUser, '_phones_Promo_', 'defined')
+            save_redis(idChat, idUser, 226)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Definir intervalo de preço.\n2. Qualquer preço''')
+1. Definir intervalo de preço.\n2. Qualquer preço.\n3. sair''')
+        elif opcao == 2:
+            save_redis(idChat, idUser, 226)
+            save_string(idChat, idUser, '_phones_Promo_', 'all')
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Definir intervalo de preço.\n2. Qualquer preço.\n3. sair''')
         elif opcao == 3:
-            remove_string(idChat, idUser, '_phones_brand')
-            remove_string(idChat, idUser, '_new_phones')
+            remove_string(idChat, idUser, '_phones_brand_')
+            remove_string(idChat, idUser, '_new_phones_')
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
         else:
+            save_redis(idChat, idUser, 225)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Telemóveis em Promoção.\n2. Todos os Telemóveis''')
+1. Telemóveis em Promoção.\n2. Todos os Telemóveis.\n3. sair''')
 
     elif menu == 226:
         if opcao == 1:
             save_redis(idChat, idUser, 227)
+            save_string(idChat, idUser, '_priceLimit_', 'defined')
             return str('''Indique o valor mínimo''')
         elif opcao == 2:
             save_redis(idChat, idUser, 228)
-            save_string(idChat, idUser, '_todosPreco_', 'all')
+            save_string(idChat, idUser, '_priceLimit_', 'all')
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.''')
+1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.\n3. Sair.''')
+        elif opcao == 3:
+            remove_string(idChat, idUser, '_phones_brand_')
+            remove_string(idChat, idUser, '_new_phones_')
+            remove_string(idChat, idUser, '_priceLimit_')
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
         else:
+            save_redis(idChat, idUser, 226)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Definir intervalo de preço.\n2. Qualquer preço''')
+1. Definir intervalo de preço.\n2. Qualquer preço\n3. sair''')
+
+    elif menu == 227:
+        try:
+            valorMin = regexPrice(msg)
+            save_float(idChat, idUser, '_min_value_', valorMin)
+            save_redis(idChat, idUser, 270)
+            return str("Indique o valor máximo que procura.\n")
+        except:
+            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
+
+    elif menu == 270:
+        try:
+            valorMax = regexPrice(msg)
+            save_float(idChat, idUser, '_max_value_', valorMax)
+            requerido = final_phones(idChat, idUser)
+            remove_string(idChat, idUser, '_priceLimit_')
+            remove_string(idChat, idUser, '_new_phones_')
+            remove_string(idChat, idUser, '_phones_brand_')
+            remove_string(idChat, idUser, '_phones_Promo_')
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        except:
+            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
 
     elif menu == 228:
         if opcao == 1:
-            aux = {}
-            aux['points']
-            requerido = get_content('/fs_scrapper/phones', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            save_redis(idChat, idUser, 229)
+            save_string(idChat, idUser, '_points_', 'defined')
         elif opcao == 2:
             save_redis(idChat, idUser, 229)
-            save_string(idChat, idUser, '_todosPontos_', 'all')
+            save_string(idChat, idUser, '_points_', 'all')
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento a prestações.\n2. Qualquer opção de pagamento.''')
+1. Possibilidade de pagamento a prestações.\n2. Qualquer opção de pagamento.\n3. sair''')
+        elif opcao == 3:
+            remove_string(idChat, idUser, '_phones_brand_')
+            remove_string(idChat, idUser, '_new_phones_')
+            remove_string(idChat, idUser, '_priceLimit_')
+            remove_string(idChat, idUser, '_phones_Promo_')
+            remove_string(idChat, idUser, '_points_')
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
         else:
+            save_redis(idChat, idUser, 228)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.''')
+1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.\n3. sair''')
 
+    elif menu == 229:
+        if opcao == 1:
+            save_string(idChat, idUser, '_prest_', 'defined')
+            requerido = final_phones(idChat, idUser)
+            return requerido
+        elif opcao == 2:
+            save_string(idChat, idUser, '_prest_', 'all')
+            requerido = final_phones(idChat, idUser)
+            return requerido
+        elif opcao == 3:
+            remove_string(idChat, idUser, '_phones_brand_')
+            remove_string(idChat, idUser, '_new_phones_')
+            remove_string(idChat, idUser, '_priceLimit_')
+            remove_string(idChat, idUser, '_phones_Promo_')
+            remove_string(idChat, idUser, '_points_')
+            remove_string(idChat, idUser, '_prest_')
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
+        else:
+            save_redis(idChat, idUser, 229)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Possibilidade de pagamento a prestações.\n2. Qualquer opção de pagamento.\n3. sair''')
 
     elif menu == 23:
         if opcao == 1:
@@ -731,7 +819,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         try:
             valorMax = regexPrice(msg)
             save_float(idChat, idUser, '_max_value', valorMax)
-            save_redis(idChat, idUser, 267)
             required = final_packages(idChat, idUser)
             remove_string(idChat, idUser, '_package_type')
             remove_string(idChat, idUser, '_package_service')
