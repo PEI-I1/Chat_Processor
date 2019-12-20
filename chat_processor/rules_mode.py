@@ -207,7 +207,8 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 3:
         save_redis(idChat, idUser, 22)
         #TODO menu dos telemóveis, ir por passos como fiz para os pacotes (ex: 1º perguntar se quer marca específica, depois perguntar se quer novos lançamentos, etc)
-        return None
+        return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Procurar por um modelo específico.\n2. Fazer pesquisa sobre telemóveis.\n3. Top telemóveis mais vistos nos últimos dias.\n4. Sair''')
 
     elif menu == 4:
         save_redis(idChat, idUser, 23)
@@ -237,7 +238,115 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 22:
         #TODO
-        return None
+        if opcao == 1:
+            save_redis(idChat, idUser, 221)
+            return str("Indique o nome do modelo que pretende.")
+        elif opcao == 2:
+            save_redis(idChat, idUser, 222)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Telemóveis de uma marca.\n 2. Todos os telemóveis''')
+        elif opcao == 3:
+            aux = {}
+            aux['ofer']
+            requerido = get_content('/fs_scrapper/phones', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
+            return str("Saiu do modo de regras.")
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Telemóveis de uma marca\n2. Todos os telemóveis\n3. sair''')
+
+    elif menu == 221:
+        aux = {}
+        aux['brand'] = msg
+        requerido = get_content('/fs_scrapper/phones', [], aux)
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
+    elif menu == 222:
+        if opcao == 1:
+           save_redis(idChat, idUser, 223)
+           return str("Indique a marca que pretende")
+        elif opcao == 2:
+            save_string(idChat, idUser,'_todosMarca_','all')
+            save_redis(idChat, idUser, 224)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Lançamentos recentes.\n2. Todos os telemóveis''')
+        else:
+            save_redis(idChat, idUser, 224)
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Telemóveis de uma marca\n2. Todos os telemóveis\n3. sair''')
+
+    elif menu == 223:
+        aux = {}
+        aux['brand'] = msg
+        requerido = get_content('/fs_scrapper/phones', [], aux)
+        remove_redis(idChat, idUser, chatData)
+        return requerido
+
+    elif menu == 224:
+        if opcao == 1:
+            aux = {}
+            aux['new']
+            requerido = get_content('/fs_scrapper/phones', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 2:
+            save_redis(idChat, idUser, 225)
+            save_string(idChat, idUser,'_todosRecentes_', 'all')
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Telemóveis em Promoção.\n2. Todos os Telemóveis''')
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Lançamentos recentes.\n2. Todos os telemóveis''')
+
+    elif menu == 225:
+        if opcao == 1:
+            aux = {}
+            aux['promo']
+            requerido = get_content('/fs_scrapper/phones', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 2:
+            save_redis(idChat, idUser,226)
+            save_string(idChat, idUser, '_todosPromo_','all')
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Definir intervalo de preço.\n2. Qualquer preço''')
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Telemóveis em Promoção.\n2. Todos os Telemóveis''')
+
+    elif menu == 226:
+        if opcao == 1:
+            save_redis(idChat, idUser, 227)
+            return str('''Indique o valor mínimo''')
+        elif opcao == 2:
+            save_redis(idChat, idUser, 228)
+            save_string(idChat, idUser, '_todosPreco_', 'all')
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.''')
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Definir intervalo de preço.\n2. Qualquer preço''')
+
+    elif menu == 228:
+        if opcao == 1:
+            aux = {}
+            aux['points']
+            requerido = get_content('/fs_scrapper/phones', [], aux)
+            remove_redis(idChat, idUser, chatData)
+            return requerido
+        elif opcao == 2:
+            save_redis(idChat, idUser, 229)
+            save_string(idChat, idUser, '_todosPontos_', 'all')
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Possibilidade de pagamento a prestações.\n2. Qualquer opção de pagamento.''')
+        else:
+            return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.''')
+
 
     elif menu == 23:
         if opcao == 1:
