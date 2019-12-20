@@ -75,31 +75,36 @@ def remove_string(idChat, idUser, code):
 
 
 def final_movies_options(idChat, idUser):
-        pass
 	#_movie_genre
 	#_movie_cast
 	#_movie_producer
 	#_movie_synopsis
 	#_movie_age
 	#TODO
+	return ''
+
 
 def final_movies_duration(idChat, idUser):
-        pass
 	#_search_term
 	#loc
 	#TODO
+	return ''
+
 
 def final_movies_loc(idChat, idUser):
-        pass
 	#TODO
+	return ''
+
 
 def final_movies_semloc(idChat, idUser):
-        pass
 	#TODO
+	return ''
+
 
 def final_movies_sessoes(idChat, idUser):
-        pass
 	#TODO
+	return ''
+
 
 def final_packages(idChat, idUser):
 	aux =  {}
@@ -120,7 +125,6 @@ def final_packages(idChat, idUser):
 	return get_content('/fs_scrapper/packages', [], aux)
 
 
-#TODO falta o menu a perguntar se quer telemóveis com ofertas
 def final_phones(idChat, idUser):
 	aux = {}
 	promo = load_string(idChat, idUser, '_phones_Promo_')
@@ -129,10 +133,11 @@ def final_phones(idChat, idUser):
 	points = load_string(idChat, idUser, '_points_')
 	prest = load_string(idChat, idUser, '_prest_')
 	priceLimit = load_string(idChat, idUser, '_priceLimit_')
+	ofer = load_string(idChat, idUser, '_phones_ofer')
 
 	if priceLimit:
-		aux['min'] = load_float(idChat, idUser, '_min_value')
-		aux['max'] = load_float(idChat, idUser, '_max_value')
+		aux['min'] = load_float(idChat, idUser, '_min_value_')
+		aux['max'] = load_float(idChat, idUser, '_max_value_')
 	if brand:
 		aux['brand'] = brand
 	if promo:
@@ -143,6 +148,8 @@ def final_phones(idChat, idUser):
 		aux['prest'] = True
 	if newPhones:
 		aux['new'] = True
+	if ofer:
+		aux['ofer'] = True
 
 	return get_content('/fs_scrapper/phones', [], aux)
 
@@ -591,7 +598,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 2:
 			save_redis(idChat, idUser, 222)
 			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Telemóveis de uma marca.\n2. Todos os telemóveis\n3. sair''')
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
 		elif opcao == 3:
 			aux = {}
 			aux['top'] = True
@@ -618,151 +627,98 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		   save_redis(idChat, idUser, 223)
 		   return str("Indique a marca que pretende")
 		elif opcao == 2:
-			save_redis(idChat, idUser, 224)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Lançamentos recentes.\n2. Todos os telemóveis\n3. sair''')
-		elif opcao == 3:
-			remove_redis(idChat, idUser, chatData)
-			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Telemóveis de uma marca\n2. Todos os telemóveis\n3. sair''')
-
-	elif menu == 223:
-		save_string(idChat, idUser, '_phones_brand_', msg)
-		save_redis(idChat, idUser, 224)
-		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Lançamentos recentes.\n2. Todos os telemóveis\3. sair''')
-
-	elif menu == 224:
-		if opcao == 1:
 			save_string(idChat, idUser, '_new_phones_', 'defined')
-			save_redis(idChat, idUser, 225)
 			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Telemóveis em Promoção.\n2. Todos os Telemóveis\n3. sair''')
-		elif opcao == 2:
-			save_redis(idChat, idUser, 225)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Telemóveis em Promoção.\n2. Todos os Telemóveis\n3. sair''')
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
 		elif opcao == 3:
-			remove_string(idChat, idUser, '_phones_brand_')
-			remove_redis(idChat, idUser, chatData)
-			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Lançamentos recentes.\n2. Todos os telemóveis\n3. sair''')
-
-	elif menu == 225:
-		if opcao == 1:
 			save_string(idChat, idUser, '_phones_Promo_', 'defined')
-			save_redis(idChat, idUser, 226)
 			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Definir intervalo de preço.\n2. Qualquer preço.\n3. sair''')
-		elif opcao == 2:
-			save_redis(idChat, idUser, 226)
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
+		elif opcao == 4:
+			save_string(idChat, idUser, '_phones_ofer', 'defined')
 			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Definir intervalo de preço.\n2. Qualquer preço.\n3. sair''')
-		elif opcao == 3:
-			remove_string(idChat, idUser, '_phones_brand_')
-			remove_string(idChat, idUser, '_new_phones_')
-			remove_redis(idChat, idUser, chatData)
-			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Telemóveis em Promoção.\n2. Todos os Telemóveis.\n3. sair''')
-
-	elif menu == 226:
-		if opcao == 1:
-			save_redis(idChat, idUser, 227)
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
+		elif opcao == 5:
+			save_redis(idChat, idUser, 224)
 			save_string(idChat, idUser, '_priceLimit_', 'defined')
 			return str('''Indique o valor mínimo''')
-		elif opcao == 2:
-			save_redis(idChat, idUser, 228)
+		elif opcao == 6:
+			save_string(idChat, idUser, '_prest_', 'defined')
 			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.\n3. Sair.''')
-		elif opcao == 3:
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
+		elif opcao == 7:
+			save_string(idChat, idUser, '_points_', 'defined')
+			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
+		elif opcao == 8:
+			requerido = final_phones(idChat, idChat)
 			remove_string(idChat, idUser, '_phones_brand_')
 			remove_string(idChat, idUser, '_new_phones_')
 			remove_string(idChat, idUser, '_priceLimit_')
+			remove_string(idChat, idUser, '_phones_Promo_')
+			remove_string(idChat, idUser, '_points_')
+			remove_string(idChat, idUser, '_prest_')
+			remove_string(idChat, idUser, '_phones_ofer')
+			remove_float(idChat, idUser, '_min_value_')
+			remove_float(idChat, idUser, '_max_value_')
+			remove_redis(idChat, idUser, chatData)
+			return requerido
+		elif opcao == 9:
+			remove_string(idChat, idUser, '_phones_brand_')
+			remove_string(idChat, idUser, '_new_phones_')
+			remove_string(idChat, idUser, '_priceLimit_')
+			remove_string(idChat, idUser, '_phones_Promo_')
+			remove_string(idChat, idUser, '_points_')
+			remove_string(idChat, idUser, '_prest_')
+			remove_string(idChat, idUser, '_phones_ofer')
+			remove_float(idChat, idUser, '_min_value_')
+			remove_float(idChat, idUser, '_max_value_')
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
 		else:
 			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Definir intervalo de preço.\n2. Qualquer preço\n3. sair''')
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
 
-	elif menu == 227:
+	elif menu == 223:
+		save_string(idChat, idUser, '_phones_brand_', msg)
+		save_redis(idChat, idUser, 222)
+		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
+
+	elif menu == 224:
 		try:
 			valorMin = regexPrice(msg)
 			save_float(idChat, idUser, '_min_value_', valorMin)
-			save_redis(idChat, idUser, 270)
+			save_redis(idChat, idUser, 225)
 			return str("Indique o valor máximo que procura.\n")
 		except:
 			return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
 
-	elif menu == 270:
+	elif menu == 225:
 		try:
 			valorMax = regexPrice(msg)
 			save_float(idChat, idUser, '_max_value_', valorMax)
-			save_redis(idChat, idUser, 228)
+			save_redis(idChat, idUser, 222)
 			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.\n3. Sair.''')
+1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
+5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
+8. apresentar resultados\n9. sair''')
 		except:
 			return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
-
-	elif menu == 228:
-		if opcao == 1:
-			save_redis(idChat, idUser, 229)
-			save_string(idChat, idUser, '_points_', 'defined')
-		elif opcao == 2:
-			save_redis(idChat, idUser, 229)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento a prestações.\n2. Qualquer opção de pagamento.\n3. sair''')
-		elif opcao == 3:
-			remove_string(idChat, idUser, '_phones_brand_')
-			remove_string(idChat, idUser, '_new_phones_')
-			remove_string(idChat, idUser, '_priceLimit_')
-			remove_string(idChat, idUser, '_phones_Promo_')
-			remove_string(idChat, idUser, '_points_')
-			remove_redis(idChat, idUser, chatData)
-			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento com pontos.\n2. Qualquer opção de pagamento.\n3. sair''')
-
-	elif menu == 229:
-		if opcao == 1:
-			save_string(idChat, idUser, '_prest_', 'defined')
-			requerido = final_phones(idChat, idUser)
-			remove_string(idChat, idUser, '_phones_brand_')
-			remove_string(idChat, idUser, '_new_phones_')
-			remove_string(idChat, idUser, '_priceLimit_')
-			remove_string(idChat, idUser, '_phones_Promo_')
-			remove_string(idChat, idUser, '_points_')
-			remove_string(idChat, idUser, '_prest_')
-			remove_redis(idChat, idUser, chatData)
-			return requerido
-		elif opcao == 2:
-			requerido = final_phones(idChat, idUser)
-			remove_string(idChat, idUser, '_phones_brand_')
-			remove_string(idChat, idUser, '_new_phones_')
-			remove_string(idChat, idUser, '_priceLimit_')
-			remove_string(idChat, idUser, '_phones_Promo_')
-			remove_string(idChat, idUser, '_points_')
-			remove_string(idChat, idUser, '_prest_')
-			remove_redis(idChat, idUser, chatData)
-			return requerido
-		elif opcao == 3:
-			remove_string(idChat, idUser, '_phones_brand_')
-			remove_string(idChat, idUser, '_new_phones_')
-			remove_string(idChat, idUser, '_priceLimit_')
-			remove_string(idChat, idUser, '_phones_Promo_')
-			remove_string(idChat, idUser, '_points_')
-			remove_string(idChat, idUser, '_prest_')
-			remove_redis(idChat, idUser, chatData)
-			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Possibilidade de pagamento a prestações.\n2. Qualquer opção de pagamento.\n3. sair''')
 
 	elif menu == 23:
 		if opcao == 1:
