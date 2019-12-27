@@ -3,7 +3,7 @@
 from rules_mode import get_response_rules
 from default_mode import get_response_default
 from pretty_print import pretty_print
-from utils import send_msg
+from utils import send_msg, clean_msg
 from ner_by_regex import init_ner_regex
 import globals, json, nltk
 
@@ -36,6 +36,24 @@ def download_recursos():
     except LookupError:
         nltk.download('nonbreaking_prefixes', quiet=True)
 
+def ver_mais(idChat):
+    verMaisAux = globals.redis_db.get("vermais" + str(idChat))
+    if verMaisAux:
+        c = json.loads(verMaisAux)
+        info_left = len(c["content"]) > 5
+        pretty_print(idChat, c["cat"], c["content"][:5], not info_left)
+        if info_left:
+            c["content"] = c["content"][5:]
+            globals.redis_db.set("vermais" + str(idChat), json.dumps(c))
+        else:
+            globals.redis_db.delete("vermais" + str(idChat))
+    else:
+        send_msg(idChat, "Não existe lista para ver...")
+
+def forward_to(idChat, chatData, data):
+    globals.redis_db.set(idChat, json.dumps(chatData))
+    send_msg(idChat, data)
+
 def get_response(idChat, idUser, msg, name, location):
     ''' For a given user message answer him
     :param: id chat
@@ -59,30 +77,15 @@ def get_response(idChat, idUser, msg, name, location):
         chatData["locationParam"] = location
 
     if chatData["status"] == "modo regras":
-        globals.redis_db.set(idChat, json.dumps(chatData))
-        send_msg(idChat, get_response_rules(idChat, idUser, msg, name, chatData))
+        forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
     elif chatData["status"] == "modo problemas":
-        globals.redis_db.set(idChat, json.dumps(chatData))
-        send_msg(idChat, get_solver(idChat, msg))
+        forward_to(idChat, chatData, get_solver(idChat, msg))
     else:
-        m = msg.lower()
+        m = clean_msg(msg)
         if m == "modo de regras":
             chatData["status"] = "modo regras"
-            globals.redis_db.set(idChat, json.dumps(chatData))
-            send_msg(idChat, get_response_rules(idChat, idUser, msg, name, chatData))
+            forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
         elif m == "ver mais":
-            verMaisAux = globals.redis_db.get("vermais" + str(idChat))
-            if verMaisAux:
-                c = json.loads(verMaisAux)
-                info_left = len(c["content"]) > 5
-                pretty_print(idChat, c["cat"], c["content"][:5], not info_left)
-                if info_left:
-                    c["content"] = c["content"][5:]
-                    globals.redis_db.set("vermais" + str(idChat), json.dumps(c))
-                else:
-                    globals.redis_db.delete("vermais" + str(idChat))
-
-            else:
-                send_msg(idChat, "Não existe lista para ver")
+            ver_mais(idChat)
         else:
             get_response_default(idChat, idUser, msg, name, chatData)

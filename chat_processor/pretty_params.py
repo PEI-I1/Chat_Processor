@@ -14,12 +14,12 @@ required_params = {
 
 optional_params = {
     # FS_scrapper params
-    'top': "Deseja filtrar apenas os telemóveis mais procurados?",
-    'new': "Deseja filtrar apenas os telemóveis mais recentes?",
-    'promo': "Deseja filtrar apenas os telemóveis com promoção?",
-    'ofer': "Deseja filtrar apenas os telemóveis que trazem ofertas?",
-    'prest': "Deseja filtrar apenas os telemóveis que se podem pagar com prestações?",
-    'points': "Deseja filtrar apenas os telemóveis que se podem pagar com pontos?",
+    'top': "Deseja filtrar apenas os telemóveis mais procurados? Diga 'Sim' ou 'Não'.",
+    'new': "Deseja filtrar apenas os telemóveis mais recentes? Diga 'Sim' ou 'Não'.",
+    'promo': "Deseja filtrar apenas os telemóveis com promoção? Diga 'Sim' ou 'Não'.",
+    'ofer': "Deseja filtrar apenas os telemóveis que trazem ofertas? Diga 'Sim' ou 'Não'.",
+    'prest': "Deseja filtrar apenas os telemóveis que se podem pagar com prestações? Diga 'Sim' ou 'Não'.",
+    'points': "Deseja filtrar apenas os telemóveis que se podem pagar com pontos? Diga 'Sim' ou 'Não'.",
     'brand': "Deseja filtrar por marca? Se sim indique qual, caso contrário responda 'não'",
     'min': "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'não'.",
     'max': "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'não'.",

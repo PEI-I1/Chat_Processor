@@ -18,7 +18,7 @@ packages_services = ["VOZ", "TV", "NET", "TV+NET", "TV+VOZ", "NET+VOZ", "TV+NET+
 movies_genres = ["Ação", "Aventura", "Cinema de arte", "Chanchada", "Comédia", "Comédia romântica", "Comédia dramática", "Comédia de ação", "Dança", "Documentário", "Docuficção", "Drama", "Espionagem", "Escolar", "Faroeste", "Western", "Fantasia científica", "Ficção científica", "Filmes de guerra", "Fantasia", "Guerra", "Musical", "Filme policial", "Romance", "Seriado", "Suspense", "Terror"]
 address_starts_with = ["Al\.", "Alameda", "Az\.", "Azinhaga", "Cc.", "Calçada", "Cam\.", "Caminho", "Estr.", "Estrada", "Ccnh\.", "Calçadinha", "R\.", "Rua", "Av\.", "Avenida", "Tv\.", "Travessa", "Pc\.", "Praça", "Lg\.", "Largo", "Pct\.", "Praceta", "Bc\.", "Beco", "Mq\.", "Marquês", "Pq\.", "Parque", "Pto\.", "Pátio", "Rot\.", "Rotunda", "Qta\.", "Quinta"]
 detect_functions = []
-phones_booleans = [("sim", "Sim"), ("nao", "Não"), (r"promo(cao|coes)?", "promo"), ("novos?", "new"), ("recentes?", "new"), ("descontos?", "promo"), ("ofertas?", "ofer"), ("prestac(ao|oes)", "prest"), ("pontos?", "points")]
+phones_booleans = [("sim", "Sim"), ("nao", "Não"), (r"promo(cao|coes)?", "promo"), ("novos?", "new"), ("recentes?", "new"), ("descontos?", "promo"), ("ofertas?", "ofer"), ("prestac(ao|oes)", "prest"), ("pontos?", "points"), ("tops?", "top"), ("popular(es)?", "top")]
 
 #Update possible entities values
 def update():

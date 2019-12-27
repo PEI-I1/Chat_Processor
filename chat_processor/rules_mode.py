@@ -74,7 +74,7 @@ def remove_string(idChat, idUser, code):
 	globals.redis_db.delete(str(idChat) + str(idUser) + code)
 
 
-ef final_movies_options(idChat, idUser):
+def final_movies_options(idChat, idUser):
     aux = {}
     genre = load_string(idChat, idUser, '_movie_genre') 
     cast = load_string(idChat, idUser, '_movie_cast')
@@ -431,7 +431,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 18:
         save_string(idChat, idUser, '_movie_name', msg)
         save_redis(idChat, idUser, 180)
-            return str('''Pretende especificar algum parametro de busca?\n1. sim\n2. não\n''')
+        return str('''Pretende especificar algum parametro de busca?\n1. sim\n2. não\n''')
 
     elif menu == 180:
         if opcao == 1:
@@ -672,7 +672,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 106)
         return str('''Pretende especificar mais agum parametro na pesquisa?\n1. sim\n2. não\n''')
 
-    elif menu = 106:
+    elif menu == 106:
         if opcao == 1: # apresentar opções outra vez
             save_redis(idChat, idUser, 14)
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.\n1. especificar o genero do filme\n2. espescificar cast\n3. especeficar produtor\n4. procurar sinopses\n5. especificar faixa etária\n4. sair\n''')
@@ -683,8 +683,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return requerido
 
-
-    elif menu == 13
+    elif menu == 13:
         if opcao == 1: #procurar cinemas sem dar nada
             requerido = get_content('/scrapper/movies/by_cinema', [], {})
             remove_redis(idChat, idUser, chatData)
