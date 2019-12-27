@@ -3,7 +3,7 @@
 from rules_mode import get_response_rules
 from default_mode import get_response_default
 from pretty_print import pretty_print
-from utils import send_msg, clean_msg
+from utils import send_msg, clean_msg, send_menu
 from ner_by_regex import init_ner_regex
 import globals, json, nltk
 
@@ -52,7 +52,11 @@ def ver_mais(idChat):
 
 def forward_to(idChat, chatData, data):
     globals.redis_db.set(idChat, json.dumps(chatData))
-    send_msg(idChat, data)
+
+    if isinstance(data, str):
+        send_msg(idChat, data)
+    else:
+        send_menu(idChat, data['msg'], data['menu'])
 
 def get_response(idChat, idUser, msg, name, location):
     ''' For a given user message answer him

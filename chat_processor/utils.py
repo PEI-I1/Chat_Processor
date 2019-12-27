@@ -115,6 +115,27 @@ def send_photo(idChat, msg):
 
     return res
 
+
+def send_menu(idChat, msg, reply_json):
+    '''Makes a request to API Endpoint in order do send a inline keyboard to user
+    :param: id chat
+    :param: message to send to user
+    :param: keyboard to send to user
+    :return: API Endpoint response or None
+    '''
+    URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
+
+    print(URL)
+    try:
+        res = requests.post(URL, data=msg.encode("utf-8"), json=reply_json)
+        res.raise_for_status()
+        res = res.text
+    except:
+        res = None
+
+    return res
+
+
 def get_loc(idChat):
     '''Makes a request to API Endpoint in order to request user GPS location
     :param: id chat
