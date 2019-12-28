@@ -121,7 +121,7 @@ def final_movies_duration(idChat, idUser):
 
     return get_content('/scrapper/sessions/by_duration', [], aux)
 
-def final_movies_duration_loc(idChat, idUser):
+def final_movies_duration_loc(idChat, idUser, chatData):
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
 
@@ -148,7 +148,7 @@ def final_movies_duration_loc(idChat, idUser):
 
     return get_content('/scrapper/sessions/by_duration', [], aux)
 
-def final_movies_loc(idChat, idUser):
+def final_movies_loc(idChat, idUser, chatData):
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
 
@@ -169,7 +169,7 @@ def final_movies_semloc(idChat, idUser):
 
     return get_content('/scrapper/sessions/next_sessions', [], aux)
 
-def final_movies_sessoes_loc(idChat, idUser):
+def final_movies_sessoes_loc(idChat, idUser, chatData):
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
 
@@ -271,9 +271,21 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
 
 	if menu == 0:
 		save_redis(idChat, idUser, 1)
-		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. cinemas ou sessões\n2. tarifários ou pacotes\n3. compra de telemóveis
-4. lojas da NOS\n5. linhas de apoio\n6. resolução de problemas técnicos\n7. exit''')
+		reply_markup={
+            'inline_keyboard': [
+				[{'text': 'cinemas ou sessões','callback_data': '1'}],
+                [{'text': 'tarifários ou pacotes','callback_data': '2'}],
+                [{'text': 'compra de telemóveis','callback_data': '3'}],
+                [{'text': 'lojas da NOS','callback_data': '4'}],
+                [{'text': 'linhas de apoio','callback_data': '5'}],
+                [{'text': 'problemas técnicos','callback_data': '6'}],
+                [{'text': 'sair','callback_data': '7'}]
+            ]
+        }
+		data = {}
+		data['msg'] = 'Escolha uma das opções apresentadas.'
+		data['menu'] = json.dumps(reply_markup)
+		return data
 
 	elif menu == 1:
 		opcao = int(msg)
@@ -293,11 +305,6 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
 		elif opcao == 7:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. cinemas ou sessões\n2. tarifários ou pacotes\n3. compra de telemóveis
-4. lojas da NOS\n5. linhas de apoio\n6. resolução de problemas técnicos\n7. sair''')
 
 	elif 10 < menu < 20 or 100 < menu < 200:
 		resposta = cinema_rules(idChat, idUser, menu, msg, chatData)
@@ -379,7 +386,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.\n1. especificar termo de procura de cinema\n2. espescificar localização\n3. especeficar data (ano-mês-dia)\n4. especificar limite para início das sessões\n5. especificar limite para fim das sessões\n4. sair\n''')
 
         if opcao == 2: # procurar sessoes por filme
-            requerido = final_movies_sessoes_loc(idChat, idUser)
+            requerido = final_movies_sessoes_loc(idChat, idUser, chatData)
             remove_redis(idChat, idUser, chatData)
             return requerido
 
@@ -528,7 +535,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.\n1. especificar termo de procura de um cienma específico\n2. especificar localização''')
 
         elif opcao == 2: # fazer a pesquisa com localização
-            requerido = final_movies_loc(idChat, idUser)
+            requerido = final_movies_loc(idChat, idUser, chatData)
             #requerido = get_content('/scrapper/sessions/next_sessions', [], {})
             remove_redis(idChat, idUser, chatData)
             return requerido
@@ -614,7 +621,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return str('''Escolha uma das seguintes opções, digitando o número correspondente.\n1. escrever expressão para procurar num cinema específico\n2. especificar localização\n3. especificar data\n4. especificar hora de início das sessões\n5. especificar hora de fim das sessões\n6. sair''')
         elif opcao == 2: #fazer pesquisa de duração de filme
             #duracao = load_string(idChat, idUser, '_movie_duration')
-            requerido = final_movies_duration_loc(idChat, idUser)
+            requerido = final_movies_duration_loc(idChat, idUser, chatData)
             #requerido = get_content('/scrapper/sessions/by_duration', [], {})
             remove_redis(idChat, idUser, chatData)
             return requerido
@@ -742,39 +749,91 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
 	if menu == 2:
 		save_redis(idChat, idUser, 21)
-		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. tarifários WTF\n2. pacotes\n3. sair''')
+		reply_markup={
+            'inline_keyboard': [
+				[{'text': 'tarifários WTF','callback_data': '1'}],
+                [{'text': 'pacotes','callback_data': '2'}],
+                [{'text': 'sair','callback_data': '3'}]
+            ]
+        }
+		data = {}
+		data['msg'] = 'Escolha uma das opções apresentadas.'
+		data['menu'] = json.dumps(reply_markup)
+		return data
 
 	elif menu == 3:
 		save_redis(idChat, idUser, 22)
-		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Procurar por um modelo específico.\n2. Fazer pesquisa sobre telemóveis.\n3. Top telemóveis mais vistos nos últimos dias.\n4. Sair''')
+		reply_markup={
+            'inline_keyboard': [
+				[{'text': 'modelo de telemóvel','callback_data': '1'}],
+                [{'text': 'pesquisa sobre telemóveis','callback_data': '2'}],
+                [{'text': 'top telemóveis mais vistos','callback_data': '3'}],
+                [{'text': 'sair','callback_data': '4'}]
+            ]
+        }
+		data = {}
+		data['msg'] = 'Escolha uma das opções apresentadas.'
+		data['menu'] = json.dumps(reply_markup)
+		return data
 
 	elif menu == 4:
 		save_redis(idChat, idUser, 23)
-		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. indicar uma zona para procura de lojas\n2. lojas perto da sua localização atual\n3. sair''')
+		reply_markup={
+            'inline_keyboard': [
+				[{'text': 'indicar zona prentendida','callback_data': '1'}],
+                [{'text': 'lojas perto de si','callback_data': '2'}],
+                [{'text': 'sair','callback_data': '3'}]
+            ]
+        }
+		data = {}
+		data['msg'] = 'Escolha uma das opções apresentadas.'
+		data['menu'] = json.dumps(reply_markup)
+		return data
 
 	elif menu == 5:
 		save_redis(idChat, idUser, 24)
-		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. linha de apoio de acordo com o assunto\n2. todas as linhas de apoio\n3. sair''')
+		reply_markup={
+            'inline_keyboard': [
+				[{'text': 'especificar assunto','callback_data': '1'}],
+                [{'text': 'todas as linhas de apoio','callback_data': '2'}],
+                [{'text': 'sair','callback_data': '3'}]
+            ]
+        }
+		data = {}
+		data['msg'] = 'Escolha uma das opções apresentadas.'
+		data['menu'] = json.dumps(reply_markup)
+		return data
 
 	elif menu == 21:
 		if opcao == 1:
 			save_redis(idChat, idUser, 25)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'todos os tarifários WTF','callback_data': '1'}],
+					[{'text': 'tarifários por nome','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das opções apresentadas.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 2:
 			save_redis(idChat, idUser, 26)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. indicar nome de um pacote\n2. fazer pesquisa sobre pacotes\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'indicar nome de pacote','callback_data': '1'}],
+					[{'text': 'pesquisa sobre pacotes','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das opções apresentadas.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. tarifários WTF\n2. pacotes\n3. sair''')
 
 	elif menu == 22:
 		if opcao == 1:
@@ -782,10 +841,23 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 			return str("Indique o nome do modelo que pretende.")
 		elif opcao == 2:
 			save_redis(idChat, idUser, 222)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'especificar marca','callback_data': '1'}],
+					[{'text': 'modelos recentes','callback_data': '2'}],
+					[{'text': 'promoções','callback_data': '3'}],
+					[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+					[{'text': 'definir intervalo de preços','callback_data': '5'}],
+					[{'text': 'pagamento a prestações','callback_data': '6'}],
+					[{'text': 'pagamento com pontos','callback_data': '7'}],
+					[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+					[{'text': 'sair','callback_data': '9'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			aux = {}
 			aux['top'] = True
@@ -795,10 +867,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 4:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Procurar por um modelo específico.\n2. Fazer pesquisa sobre telemóveis.\n
-3. Top telemóveis mais vistos nos últimos dias.\n4. sair''')
 
 	elif menu == 221:
 		aux = {}
@@ -813,38 +881,103 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		   return str("Indique a marca que pretende")
 		elif opcao == 2:
 			save_string(idChat, idUser, '_new_phones_', 'defined')
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'especificar marca','callback_data': '1'}],
+					[{'text': 'modelos recentes','callback_data': '2'}],
+					[{'text': 'promoções','callback_data': '3'}],
+					[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+					[{'text': 'definir intervalo de preços','callback_data': '5'}],
+					[{'text': 'pagamento a prestações','callback_data': '6'}],
+					[{'text': 'pagamento com pontos','callback_data': '7'}],
+					[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+					[{'text': 'sair','callback_data': '9'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			save_string(idChat, idUser, '_phones_Promo_', 'defined')
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'especificar marca','callback_data': '1'}],
+					[{'text': 'modelos recentes','callback_data': '2'}],
+					[{'text': 'promoções','callback_data': '3'}],
+					[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+					[{'text': 'definir intervalo de preços','callback_data': '5'}],
+					[{'text': 'pagamento a prestações','callback_data': '6'}],
+					[{'text': 'pagamento com pontos','callback_data': '7'}],
+					[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+					[{'text': 'sair','callback_data': '9'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 4:
 			save_string(idChat, idUser, '_phones_ofer', 'defined')
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'especificar marca','callback_data': '1'}],
+					[{'text': 'modelos recentes','callback_data': '2'}],
+					[{'text': 'promoções','callback_data': '3'}],
+					[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+					[{'text': 'definir intervalo de preços','callback_data': '5'}],
+					[{'text': 'pagamento a prestações','callback_data': '6'}],
+					[{'text': 'pagamento com pontos','callback_data': '7'}],
+					[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+					[{'text': 'sair','callback_data': '9'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 5:
 			save_redis(idChat, idUser, 224)
 			save_string(idChat, idUser, '_priceLimit_', 'defined')
 			return str('''Indique o valor mínimo''')
 		elif opcao == 6:
 			save_string(idChat, idUser, '_prest_', 'defined')
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'especificar marca','callback_data': '1'}],
+					[{'text': 'modelos recentes','callback_data': '2'}],
+					[{'text': 'promoções','callback_data': '3'}],
+					[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+					[{'text': 'definir intervalo de preços','callback_data': '5'}],
+					[{'text': 'pagamento a prestações','callback_data': '6'}],
+					[{'text': 'pagamento com pontos','callback_data': '7'}],
+					[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+					[{'text': 'sair','callback_data': '9'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 7:
 			save_string(idChat, idUser, '_points_', 'defined')
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'especificar marca','callback_data': '1'}],
+					[{'text': 'modelos recentes','callback_data': '2'}],
+					[{'text': 'promoções','callback_data': '3'}],
+					[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+					[{'text': 'definir intervalo de preços','callback_data': '5'}],
+					[{'text': 'pagamento a prestações','callback_data': '6'}],
+					[{'text': 'pagamento com pontos','callback_data': '7'}],
+					[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+					[{'text': 'sair','callback_data': '9'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 8:
 			requerido = final_phones(idChat, idChat)
 			remove_string(idChat, idUser, '_phones_brand_')
@@ -870,19 +1003,27 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 			remove_float(idChat, idUser, '_max_value_')
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
 
 	elif menu == 223:
 		save_string(idChat, idUser, '_phones_brand_', msg)
 		save_redis(idChat, idUser, 222)
-		return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+		reply_markup={
+			'inline_keyboard': [
+				[{'text': 'especificar marca','callback_data': '1'}],
+				[{'text': 'modelos recentes','callback_data': '2'}],
+				[{'text': 'promoções','callback_data': '3'}],
+				[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+				[{'text': 'definir intervalo de preços','callback_data': '5'}],
+				[{'text': 'pagamento a prestações','callback_data': '6'}],
+				[{'text': 'pagamento com pontos','callback_data': '7'}],
+				[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+				[{'text': 'sair','callback_data': '9'}]
+			]
+		}
+		data = {}
+		data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+		data['menu'] = json.dumps(reply_markup)
+		return data
 
 	elif menu == 224:
 		try:
@@ -898,10 +1039,23 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 			valorMax = regexPrice(msg)
 			save_float(idChat, idUser, '_max_value_', valorMax)
 			save_redis(idChat, idUser, 222)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. especificar marca\n2. limitar a modelos recentes\n3. limitar a promoções\n4. limitar a telemóveis com ofertas
-5. definir intervalo de preços\n6. possibilidade de pagamento a prestações\n7. possibilidade de pagamento com pontos
-8. apresentar resultados\n9. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'especificar marca','callback_data': '1'}],
+					[{'text': 'modelos recentes','callback_data': '2'}],
+					[{'text': 'promoções','callback_data': '3'}],
+					[{'text': 'telemóveis com ofertas','callback_data': '4'}],
+					[{'text': 'definir intervalo de preços','callback_data': '5'}],
+					[{'text': 'pagamento a prestações','callback_data': '6'}],
+					[{'text': 'pagamento com pontos','callback_data': '7'}],
+					[{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+					[{'text': 'sair','callback_data': '9'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		except:
 			return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
 
@@ -916,16 +1070,25 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 3:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. indicar uma zona para procura de lojas\n2. lojas perto da sua localização atual\n3. sair''')
 
 	elif menu == 24:
 		if opcao == 1:
 			save_redis(idChat, idUser, 241)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
-7. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'serviços NOS','callback_data': '1'}],
+					[{'text': 'entidades','callback_data': '2'}],
+					[{'text': 'equipamentos NOS','callback_data': '3'}],
+					[{'text': 'denúncia fraude/pirataria','callback_data': '4'}],
+					[{'text': 'faturas contencioso','callback_data': '5'}],
+					[{'text': 'informações','callback_data': '6'}],
+					[{'text': 'sair','callback_data': '7'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		if opcao == 2:
 			requerido = get_content('/fs_scrapper/linhas_apoio', [], {})
 			remove_redis(idChat, idUser, chatData)
@@ -933,9 +1096,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 3:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. linha de apoio de acordo com o assunto\n2. todas as linhas de apoio\n3. sair''')
 
 	elif menu == 25:
 		if opcao == 1:
@@ -944,14 +1104,19 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 			return requerido
 		elif opcao == 2:
 			save_redis(idChat, idUser, 251)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'WTF 1GB','callback_data': '1'},{'text': 'WTF 5GB','callback_data': '2'}],
+					[{'text': 'WTF 10GB','callback_data': '3'},{'text': 'sair','callback_data': '4'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. apresentar todo os tarifários WTF\n2. tarifários WTF por nome\n3. sair''')
 
 	elif menu == 26:
 		if opcao == 1:
@@ -959,14 +1124,21 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 			return str('''Indique o nome do pacote pretendido.''')
 		elif opcao == 2:
 			save_redis(idChat, idUser, 262)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. pacotes fibra\n2. pacotes satélite\n3. todos os tipos de pacotes\n4. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'pacotes fibra','callback_data': '1'}],
+					[{'text': 'pacotes satélite','callback_data': '2'}],
+					[{'text': 'todos os tipos de pacotes','callback_data': '3'}],
+					[{'text': 'sair','callback_data': '4'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. indicar nome de um pacote\n2. fazer pesquisa sobre pacotes\n3. sair''')
 
 	elif menu == 231:
 		aux = {}
@@ -990,17 +1162,51 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 	elif menu == 241:
 		if opcao == 1:
 			save_redis(idChat, idUser, 242)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone
-6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
+			save_redis(idChat, idUser, 262)
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'pacotes com televisão','callback_data': '1'}],
+					[{'text': 'telemóvel','callback_data': '2'}],
+					[{'text': 'Internet fixa','callback_data': '3'}],
+					[{'text': 'Internet móvel','callback_data': '4'}],
+					[{'text': 'telefone','callback_data': '5'}],
+					[{'text': 'ativação de pacotes Internet','callback_data': '6'}],
+					[{'text': 'apoio informático','callback_data': '7'}],
+					[{'text': 'sair','callback_data': '8'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 2:
 			save_redis(idChat, idUser, 243)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'empresas','callback_data': '1'}],
+					[{'text': 'corporate','callback_data': '2'}],
+					[{'text': 'profissionais e empresas','callback_data': '3'}],
+					[{'text': 'particulares','callback_data': '4'}],
+					[{'text': 'sair','callback_data': '5'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			save_redis(idChat, idUser, 244)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'reparação de equipamentos','callback_data': '1'}],
+					[{'text': 'devolução de equipamentos','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 4:
 			aux = {}
 			aux['subject'] = "Denúncia de fraude / pirataria"
@@ -1015,15 +1221,20 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 			return requerido
 		elif opcao == 6:
 			save_redis(idChat, idUser, 245)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'informações de portabilidade','callback_data': '1'}],
+					[{'text': 'vídeo intérprete','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 7:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Serviços NOS\n2. Entidades\n3. Equipamentos NOS\n4. Denúncia Fraude/Pirataria\n5. Faturas Contencioso\n6. Informações
-7. sair\n''')
 
 	elif menu == 242:
 		if opcao == 1:
@@ -1071,10 +1282,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 8:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Pacotes com Televisão\n 2. Telemóvel\n 3. Internet Fixa\n 4. Internet Móvel\n 5. Telefone
-6. Ativação de Pacotes Internet\n 7. Apoio Informático\n8. Sair''')
 
 	elif menu == 243:
 		if opcao == 1:
@@ -1104,9 +1311,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 5:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Empresas\n 2. Corporate\n 3. Profissionais e Empresas\n 4. Particulares\n5. Sair''')
 
 	elif menu == 244:
 		if opcao == 1:
@@ -1124,9 +1328,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 3:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Reparação de Equipamentos\n 2. Devolução de Equipamentos\n3. Sair''')
 
 	elif menu == 245:
 		if opcao == 1:
@@ -1144,9 +1345,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 3:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. Info Portabilidade\n 2. Video Intérprete\n3. Sair''')
 
 	elif menu == 251:
 		if opcao == 1:
@@ -1170,9 +1368,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		elif opcao == 4:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. WTF 1GB\n2. WTF 5GB\n3. WTF 10GB\n4. sair''')
 
 	elif menu == 261:
 		aux = {}
@@ -1185,61 +1380,145 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 		if opcao == 1:
 			save_string(idChat, idUser, '_package_type', 'fibra')
 			save_redis(idChat, idUser, 263)
-			return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
-1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'TV','callback_data': '1'}],
+					[{'text': 'NET','callback_data': '2'}],
+					[{'text': 'TV+NET','callback_data': '3'}],
+					[{'text': 'TV+VOZ','callback_data': '4'}],
+					[{'text': 'TV+NET+VOZ','callback_data': '5'}],
+					[{'text': 'sair','callback_data': '6'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 2:
 			save_string(idChat, idUser, '_package_type', 'satelite')
 			save_redis(idChat, idUser, 263)
-			return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
-1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'TV','callback_data': '1'}],
+					[{'text': 'NET','callback_data': '2'}],
+					[{'text': 'TV+NET','callback_data': '3'}],
+					[{'text': 'TV+VOZ','callback_data': '4'}],
+					[{'text': 'TV+NET+VOZ','callback_data': '5'}],
+					[{'text': 'sair','callback_data': '6'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			save_redis(idChat, idUser, 263)
-			return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
-1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'TV','callback_data': '1'}],
+					[{'text': 'NET','callback_data': '2'}],
+					[{'text': 'TV+NET','callback_data': '3'}],
+					[{'text': 'TV+VOZ','callback_data': '4'}],
+					[{'text': 'TV+NET+VOZ','callback_data': '5'}],
+					[{'text': 'sair','callback_data': '6'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 4:
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. pacotes fibra\n2. pacotes satélite\n3. todos os tipos de pacotes\n4. sair''')
 
 	elif menu == 263:
 		if opcao == 1:
 			save_string(idChat, idUser, '_package_service', 'TV')
 			save_redis(idChat, idUser, 264)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'definir intervalo de preços','callback_data': '1'}],
+					[{'text': 'qualquer preço','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 2:
 			save_string(idChat, idUser, '_package_service', 'NET')
 			save_redis(idChat, idUser, 264)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'definir intervalo de preços','callback_data': '1'}],
+					[{'text': 'qualquer preço','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 3:
 			save_string(idChat, idUser, '_package_service', 'TV+NET')
 			save_redis(idChat, idUser, 264)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'definir intervalo de preços','callback_data': '1'}],
+					[{'text': 'qualquer preço','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 4:
 			save_string(idChat, idUser, '_package_service', 'TV+VOZ')
 			save_redis(idChat, idUser, 264)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'definir intervalo de preços','callback_data': '1'}],
+					[{'text': 'qualquer preço','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 5:
 			save_string(idChat, idUser, '_package_service', 'TV+NET+VOZ')
 			save_redis(idChat, idUser, 264)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'definir intervalo de preços','callback_data': '1'}],
+					[{'text': 'qualquer preço','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 6:
 			save_redis(idChat, idUser, 264)
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
+			reply_markup={
+				'inline_keyboard': [
+					[{'text': 'definir intervalo de preços','callback_data': '1'}],
+					[{'text': 'qualquer preço','callback_data': '2'}],
+					[{'text': 'sair','callback_data': '3'}]
+				]
+			}
+			data = {}
+			data['msg'] = 'Escolha uma das seguintes opções.'
+			data['menu'] = json.dumps(reply_markup)
+			return data
 		elif opcao == 7:
 			remove_string(idChat, idUser, '_package_type')
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha um dos seguintes serviços, digitando o número correspondente.
-1. TV\n2. NET\n3. TV+NET\n4. TV+VOZ\n5. TV+NET+VOZ\n6. indiferenciado\n7. sair''')
 
 	elif menu == 264:
 		if opcao == 1:
@@ -1258,9 +1537,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 			remove_string(idChat, idUser, '_package_service')
 			remove_redis(idChat, idUser, chatData)
 			return str("Saiu do modo de regras.")
-		else:
-			return str('''Escolha uma das seguintes opções, digitando o número correspondente.
-1. definir intervalo de preços\n2. qualquer preço\n3. sair''')
 
 	elif menu == 265:
 		try:
@@ -1288,5 +1564,5 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
 
 def problem_rules(idChat, idUser, menu, msg, chatData):
-	#TODO
-	return ""
+	chatData["status"] == "modo problemas"
+	return str("Vamos tentar encontrar uma solução para o seu problema.")
