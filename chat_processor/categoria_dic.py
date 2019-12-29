@@ -17,7 +17,7 @@ cat = [
         'prettyPrint': 'Informação sobre Telemóveis',
         'words': [(r'modelos?', 1.0), (r'marcas?', 1.0), (r'telemove(l|is)', 1.0), (r'telemove(l|is).+marcas?', 2.0), (r'top', 1.0), (r'promo(cao|coes)?', 1.5), (r'descontos?', 1.0), (r'telemove(l|is).+promo(cao|coes)?', 2.0), (r'novidades?', 1.0),(r'novos?', 1.0), (r'telemove(l|is).+novos?', 2.0), (r'telemove(l|is).+recentes?', 2.0), (r'(com )?ofertas?', 1.0), (r'extra', 1.0), (r'pagamentos? a prestac(ao|oes)', 2.0), (r'prestac(ao|oes)', 1.0), (r'pontos?', 1.0), (r'preco', 1.0), (r'preco maximo', 1.0), (r'preco minimo', 1.0), (r'preco entre', 2.0)],
         'paramsRequired': {},
-        'paramsOptional': {'top':'PHONES_BOOLEAN', 'new':'PHONES_BOOLEAN', 'promo':'PHONES_BOOLEAN', 'ofer':'PHONES_BOOLEAN', 'prest':'PHONES_BOOLEAN', 'points':'PHONES_BOOLEAN', 'brand':'ORG|PRODUCT', 'min':'MONEY', 'max':'MONEY'},
+        'paramsOptional': {'top':'PHONES_BOOLEAN', 'new':'PHONES_BOOLEAN', 'promo':'PHONES_BOOLEAN', 'ofer':'PHONES_BOOLEAN', 'prest':'PHONES_BOOLEAN', 'points':'PHONES_BOOLEAN', 'brand':'ORG|PRODUCT', 'min':'MONEY|CARDINAL', 'max':'MONEY|CARDINAL'},
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False
@@ -51,7 +51,7 @@ cat = [
         'prettyPrint': 'Informação sobre os Pacotes NOS',
         'words': [(r'pacotes?', 1.0), (r'fibra', 1.0), (r'pacotes.+fibra', 1.0), (r'satelite', 1.0), (r'pacotes.+satelite', 1.0), (r'servicos?', 1.0),(r'TV', 1.0), (r'NET', 1.0), (r'TV+NET', 1.0), (r'TV+VOZ', 1.0), (r'preco', 1.0)],
         'paramsRequired': {},
-        'paramsOptional': {'type':'PACKAGE_TYPE', 'name':'PACKAGE', 'service':'PACKAGE_SERVICE', 'min':'MONEY', 'max':'MONEY'},
+        'paramsOptional': {'type':'PACKAGE_TYPE', 'name':'PACKAGE', 'service':'PACKAGE_SERVICE', 'min':'MONEY|CARDINAL', 'max':'MONEY|CARDINAL'},
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False
@@ -89,7 +89,7 @@ cat = [
         'prettyPrint': 'Procurar por um filme',
         'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'procurar?', 1.0), (r'consultar?', 1.0), (r'filmes?\.(com|de|sobre)', 2.0)],
         'paramsRequired': {},
-        'paramsOptional': {'genre':'MOVIE_GENRE', 'cast':'PERSON', 'producer':'PERSON', 'synopsis':'SYNOPSIS', 'age':'CARDINAL'},
+        'paramsOptional': {'genre':'MOVIE_GENRE', 'cast':'PERSON', 'producer':'PERSON', 'synopsis':'SYNOPSIS', 'age':'CARDINAL|DATE'},
         'locationParam': {},
         'canRequestWithoutParams': False,
         'needAtLeastOneOptionalParam': True
