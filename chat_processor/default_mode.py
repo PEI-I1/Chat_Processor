@@ -156,17 +156,18 @@ def new_params(entry_params, msg_params, size, func):
     params = {}
     missing_params = {}
 
-    for (key, ent_type) in entry_params.items():
-        i = 0
-        found = None
-        while i < size and found == None:
-            if msg_params[i]["type"] == ent_type:
-                found = func(key, msg_params[i])
-            i += 1
-        if found:
-            params.update(found)
-        else:
-            missing_params.update({key:ent_type})
+    for (key, ent_type_list) in entry_params.items():
+        for ent_type in ent_type_list.split('|'):
+            i = 0
+            found = None
+            while i < size and found == None:
+                if msg_params[i]["type"] == ent_type:
+                    found = func(key, msg_params[i])
+                i += 1
+            if found:
+                params.update(found)
+            else:
+                missing_params.update({key:ent_type})
 
     return params, missing_params
 
@@ -254,7 +255,7 @@ def get_location(idChat, idUser, msg, name, chatData, msg_params, entry, status,
     :param: detected parameters in message
     :param: category entry in categories dict
     :param: user status if user not send location
-    :param: message to send if user not send location 
+    :param: message to send if user not send location
     :param: make show button in chat to user send location?
     '''
     loc = get_city(entry, msg_params)
@@ -392,7 +393,7 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
     entry = get_entry(chatData["cat"])
     location_params = entry['locationParam']
 
-    # quanto o pedido nao recebe params > devolve resposta
+    # quanto o pedido nao recebe params, devolve resposta
     if not entry['paramsRequired'] and not entry['paramsOptional'] and not location_params:
         process_content(idChat, chatData, get_content(chatData["cat"], [], {}))
         globals.redis_db.delete(idChat)
@@ -480,7 +481,7 @@ def cannot_understand(idChat):
     globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):
-    '''Intro of message in default mode. If intro changed category/functionality request him 
+    '''Intro of message in default mode. If intro changed category/functionality request him
     in order to know if wants to change. If after x tries was not possible to detect the
     category/functionality requests if user wants to use rules mode or if wants to call
     to support lines. On other cases the flow is passed to process_params
