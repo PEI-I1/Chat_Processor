@@ -20,8 +20,9 @@ address_starts_with = ["Al\.", "Alameda", "Az\.", "Azinhaga", "Cc.", "Calçada",
 detect_functions = []
 phones_booleans = [("sim", "Sim"), ("nao", "Não"), (r"promo(cao|coes)?", "promo"), ("novos?", "new"), ("recentes?", "new"), ("descontos?", "promo"), ("ofertas?", "ofer"), ("prestac(ao|oes)", "prest"), ("pontos?", "points"), ("tops?", "top"), ("popular(es)?", "top")]
 
-#Update possible entities values
 def update():
+    '''Update possible entities values
+    '''
     global subjects, tariffs, packages, phone_models, phone_brands, municipies, movies, detect_functions
 
     aux = get_content("/fs_scrapper/linhas_apoio", [], {})
@@ -36,7 +37,6 @@ def update():
                     subs.add(w.title())
     subjects = list(subs)
 
-    #TODO: add NOS tariffs
     aux = get_content("/fs_scrapper/wtf", [], {})
     tariffs = extract_and_flatten(aux, ["nome"])
 

@@ -1,6 +1,6 @@
 from categoria_dic import cat as dicionario
 from config import urls
-import requests, urllib.parse, unidecode
+import requests, urllib.parse, unidecode, globals, json
 
 def merge_dicts(x, y):
     '''Merge two dictionaries

@@ -4,7 +4,6 @@ param_en_to_pt = {
     'producer': "produtor",
     'synopsis': "sinopse",
     'age': "restrição de idade"
-    # TODO: fazer para params do FS_scraper
 } 
 
 required_params = {

@@ -1,5 +1,5 @@
-from utils import send_msg, send_photo
-import json, re
+from utils import send_msg, send_photo, clean_msg
+import json, re, globals
 
 def bold(text):
     '''For a given text make a html bold of it
@@ -7,16 +7,18 @@ def bold(text):
     '''
     return "<b>" + text + "</b>"
 
-def linhas_apoio(idChat, content):
+def linhas_apoio(idChat, content, cat):
     '''Pretty print of support lines
     :param: id chat to send the messages
     :param: content of messages
     '''
     s = 'As linhas de apoio da NOS são:\n'
-    s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"] + "\n" + l["descriçao"], content))
+    #all info
+    #s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"] + "\n" + l["descriçao"], content))
+    s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"], content))
     send_msg(idChat, s)
 
-def phones(idChat, content):
+def phones(idChat, content, cat):
     '''Pretty print of phones
     :param: id chat to send the messages
     :param: content of messages
@@ -39,7 +41,7 @@ def phones(idChat, content):
         s += bold("Link para comprar: ") + p["link"]
         send_msg(idChat, s)
 
-def wtf(idChat, content):
+def wtf(idChat, content, cat):
     '''Pretty print of WTF tariffs
     :param: id chat to send the messages
     :param: content of messages
@@ -62,7 +64,7 @@ def wtf(idChat, content):
             s += bold("Uber Eats: ") + t["uber_eats"]
         send_msg(idChat, s)
 
-def stores(idChat, content):
+def stores(idChat, content, cat):
     '''Pretty print of stores
     :param: id chat to send the messages
     :param: content of messages
@@ -77,7 +79,7 @@ def stores(idChat, content):
         s += bold("Horário: ") + "\n               ".join(h)
         send_msg(idChat, s)
 
-def packages(idChat, content):
+def packages(idChat, content, cat):
     '''Pretty print of packages
     :param: id chat to send the messages
     :param: content of messages
@@ -123,7 +125,7 @@ def packages(idChat, content):
             s += bold("Vantagens:\n") + "\n".join(aux["Vantagens"])
             send_msg(idChat, s)
 
-def cinemas(idChat, content):
+def cinemas(idChat, content, cat):
     '''Pretty print of closed cinemas
     :param: id chat to send the messages
     :param: content of messages
@@ -132,7 +134,7 @@ def cinemas(idChat, content):
     s += "\n".join(content["cinemas"])
     send_msg(idChat, s) 
 
-def movies_by_cinema(idChat, content):
+def movies_by_cinema(idChat, content, cat):
     '''Pretty print of movies on display in cinema
     :param: id chat to send the messages
     :param: content of messages
@@ -142,7 +144,7 @@ def movies_by_cinema(idChat, content):
         s += "\n".join(content[c])
         send_msg(idChat, s)
 
-def movies_search(idChat, content):
+def movies_search(idChat, content, cat):
     '''Pretty print of a search for movies
     :param: id chat to send the messages
     :param: content of messages
@@ -167,7 +169,7 @@ def movies_search(idChat, content):
         })
         send_photo(idChat, msg)
 
-def releases(idChat, content):
+def releases(idChat, content, cat):
     '''Pretty print of movie releases
     :param: id chat to send the messages
     :param: content of messages
@@ -186,7 +188,7 @@ def releases(idChat, content):
         })
         send_photo(idChat, msg)
 
-def movie_details(idChat, content):
+def movie_details(idChat, content, cat):
     '''Pretty print of a movie
     :param: id chat to send the messages
     :param: content of messages
@@ -210,7 +212,7 @@ def movie_details(idChat, content):
     })
     send_photo(idChat, msg)
 
-def sessions_by_duration(idChat, content):
+def sessions_by_duration(idChat, content, cat):
     '''Pretty print of sessions with a specific duration on cinemas
     :param: id chat to send the messages
     :param: content of messages
@@ -227,23 +229,50 @@ def sessions_by_duration(idChat, content):
             s += bold("Link de compra: ") + m["Ticket link"] + "\n"
             send_msg(idChat, s)
 
-def next_sessions(idChat, content):
+def next_sessions(idChat, content, cat):
     '''Pretty print of next sessions on cinemas
     :param: id chat to send the messages
     :param: content of messages
     '''
-    for c in content:
-        send_msg(idChat, 'Próximas sessões no ' + c + ':')
-
-        for m in content[c]:
+    if isinstance(content, list):
+        for m in content:
             s = bold("Filme: ") + m["Movie"] + "\n"
             s += bold("Data: ") + m["Start date"] + "\n"
             s += bold("Hora de início: ") + m["Start time"] + "\n"
             s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
             s += bold("Link de compra: ") + m["Ticket link"] + "\n"
             send_msg(idChat, s)
+    else:
+        if len(content) <= 1:
+            for c in content:
+                globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c]}))
+                send_msg(idChat, 'Próximas sessões no ' + c + ':')
+                ver_mais(idChat)
+        else:
+            n = 1
+            m = 'Escolha um dos cinemas:\n'
+            m += "    0 -> Nenhuma das hipóteses\n"
+            cinemas = []
+            for c in content:
+                m += "    " + str(n) + " -> " + c + "\n"
+                cl = clean_msg(c)
+                words = cl.split()
+                l = len(words)
+                s = set()
+                while l > 0:
+                    s.add(" ".join(words[0:l]))
+                    l -= 1
+                    s.add(words[l])
+                for w in list(s):
+                    cinemas.append({'choice': n, 'match': w})
+                n += 1
 
-def sessions_by_movie(idChat, content):
+            m += "Indique o número ou o nome do cinema."
+
+        globals.redis_db.set("content" + str(idChat), json.dumps({'cat': cat, 'value': content, 'keys': cinemas}))
+        send_msg(idChat, m)
+
+def sessions_by_movie(idChat, content, cat):
     '''Pretty print of sessions for a specific movie on cinemas
     :param: id chat to send the messages
     :param: content of messages
@@ -258,7 +287,7 @@ def sessions_by_movie(idChat, content):
                 st += bold("Link de compra: ") + s["Ticket link"] + "\n"
                 send_msg(idChat, st)
 
-def sessions_by_date(idChat, content):
+def sessions_by_date(idChat, content, cat):
     '''Pretty print of sessions with a specific date on cinemas
     :param: id chat to send the messages
     :param: content of messages
@@ -304,8 +333,25 @@ def pretty_print(idChat, cat, content, allInfo):
         send_msg(idChat, content)
     elif isinstance(content, list) and not allInfo:
         func = switcher.get(cat, send_msg)
-        func(idChat, content[0:5])
+        func(idChat, content[0:5], cat)
         send_msg(idChat, "Se pretender ver o resto das opções escreva 'ver mais'.")
     else:
         func = switcher.get(cat, send_msg)
-        func(idChat, content)
+        func(idChat, content, cat)
+
+def ver_mais(idChat):
+    '''When lists are too long only shows first 5 elements
+    :param: id chat
+    '''
+    verMaisAux = globals.redis_db.get("vermais" + str(idChat))
+    if verMaisAux:
+        c = json.loads(verMaisAux)
+        info_left = len(c["content"]) > 5
+        pretty_print(idChat, c["cat"], c["content"][:5], not info_left)
+        if info_left:
+            c["content"] = c["content"][5:]
+            globals.redis_db.set("vermais" + str(idChat), json.dumps(c))
+        else:
+            globals.redis_db.delete("vermais" + str(idChat))
+    else:
+        send_msg(idChat, "Não existe lista para ver...")
