@@ -212,96 +212,153 @@ def movie_details(idChat, content, cat):
     })
     send_photo(idChat, msg)
 
+def ask_cinema(idChat, content, cat):
+    '''Ask user to select a cinema
+    :param: id chat
+    :param: content to filter
+    :param: category detected
+    '''
+    n = 1
+    m = 'Escolha um dos cinemas:\n'
+    m += "    0 -> Nenhuma das hipóteses\n"
+    cinemas = []
+
+    for c in content:
+        m += "    " + str(n) + " -> " + c + "\n"
+        cl = clean_msg(c)
+        words = cl.split()
+        l = len(words)
+        s = set()
+        while l > 0:
+            s.add(" ".join(words[0:l]))
+            l -= 1
+            s.add(words[l])
+        for w in list(s):
+            cinemas.append({'choice': n, 'match': w})
+        n += 1
+
+    m += "Indique o número ou o nome do cinema."
+    globals.redis_db.set("content" + str(idChat), json.dumps({'cat': cat, 'value': content, 'keys': cinemas}))
+    send_msg(idChat, m)
+
+def print_with_ask_cinema(idChat, content, cat, titleF, print_session):
+    '''Print or ask user for cinema
+    :param: id chat
+    :param: content to filter
+    :param: category detected
+    :param: function to save and print title
+    :param: function to print a session
+    '''
+    if isinstance(content, list):
+        for m in content:
+            print_session(idChat, m)
+    else:
+        if len(content) <= 1:
+            titleF(idChat, content, cat)
+            ver_mais(idChat)
+        else:
+            ask_cinema(idChat, content, cat)
+
+def title(idChat, content, cat, c):
+    prefix = '/scrapper/sessions/'
+    if cat == prefix + "by_duration" or cat == prefix + "next_sessions":
+        globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c]}))
+        send_msg(idChat, 'Próximas sessões no ' + c + ':')
+    elif cat == prefix + "by_movie":
+        for m in content[c]:
+            globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c][m]['sessions']}))
+            send_msg(idChat, 'Próximas sessões do filme "' + m + '" no ' + c + ':')
+    elif cat == prefix + "by_date":
+        globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c]}))
+        send_msg(idChat, 'Sessões no ' + c + ':')
+
+def session_of_sessions_by_duration(idChat, m):
+    '''Pretty print of a session from sessions with a specific duration on cinemas
+    :param: a session
+    '''
+    s = bold("Filme: ") + m["Movie"] + "\n"
+    s += bold("Data: ") + m["Start date"] + "\n"
+    s += bold("Hora de início: ") + m["Start time"] + "\n"
+    s += bold("Duração: ") + str(m["Length (min)"]) + " minutos\n"
+    s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
+    s += bold("Link de compra: ") + m["Ticket link"] + "\n"
+    send_msg(idChat, s)
+
 def sessions_by_duration(idChat, content, cat):
     '''Pretty print of sessions with a specific duration on cinemas
     :param: id chat to send the messages
     :param: content of messages
     '''
-    for c in content:
-        send_msg(idChat, 'Próximas sessões no ' + c + ':')
+    def aux(idChat, content, cat):
+        for c in content:
+            title(idChat, content, cat, c)
 
-        for m in content[c]:
-            s = bold("Filme: ") + m["Movie"] + "\n"
-            s += bold("Data: ") + m["Start date"] + "\n"
-            s += bold("Hora de início: ") + m["Start time"] + "\n"
-            s += bold("Duração: ") + str(m["Length (min)"]) + " minutos\n"
-            s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
-            s += bold("Link de compra: ") + m["Ticket link"] + "\n"
-            send_msg(idChat, s)
+    print_with_ask_cinema(idChat, content, cat, aux, session_of_sessions_by_duration)
+
+def session_of_next_sessions(idChat, m):
+    '''Pretty print of a session from next sessions on cinemas
+    :param: a session
+    '''
+    s = bold("Filme: ") + m["Movie"] + "\n"
+    s += bold("Data: ") + m["Start date"] + "\n"
+    s += bold("Hora de início: ") + m["Start time"] + "\n"
+    s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
+    s += bold("Link de compra: ") + m["Ticket link"] + "\n"
+    send_msg(idChat, s)
 
 def next_sessions(idChat, content, cat):
     '''Pretty print of next sessions on cinemas
     :param: id chat to send the messages
     :param: content of messages
     '''
-    if isinstance(content, list):
-        for m in content:
-            s = bold("Filme: ") + m["Movie"] + "\n"
-            s += bold("Data: ") + m["Start date"] + "\n"
-            s += bold("Hora de início: ") + m["Start time"] + "\n"
-            s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
-            s += bold("Link de compra: ") + m["Ticket link"] + "\n"
-            send_msg(idChat, s)
-    else:
-        if len(content) <= 1:
-            for c in content:
-                globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c]}))
-                send_msg(idChat, 'Próximas sessões no ' + c + ':')
-                ver_mais(idChat)
-        else:
-            n = 1
-            m = 'Escolha um dos cinemas:\n'
-            m += "    0 -> Nenhuma das hipóteses\n"
-            cinemas = []
-            for c in content:
-                m += "    " + str(n) + " -> " + c + "\n"
-                cl = clean_msg(c)
-                words = cl.split()
-                l = len(words)
-                s = set()
-                while l > 0:
-                    s.add(" ".join(words[0:l]))
-                    l -= 1
-                    s.add(words[l])
-                for w in list(s):
-                    cinemas.append({'choice': n, 'match': w})
-                n += 1
+    def aux(idChat, content, cat):
+        for c in content:
+            title(idChat, content, cat, c)
 
-            m += "Indique o número ou o nome do cinema."
+    print_with_ask_cinema(idChat, content, cat, aux, session_of_next_sessions)
 
-        globals.redis_db.set("content" + str(idChat), json.dumps({'cat': cat, 'value': content, 'keys': cinemas}))
-        send_msg(idChat, m)
+def session_of_sessions_by_movie(idChat, s):
+    '''Pretty print of a session from sessions for a specific movie on cinemas
+    :param: a session
+    '''
+    st = bold("Data: ") + s["Start date"] + "\n"
+    st += bold("Hora de início: ") + s["Start time"] + "\n"
+    st += bold("Lugares disponíveis: ") + s["Availability"] + "\n"
+    st += bold("Link de compra: ") + s["Ticket link"] + "\n"
+    send_msg(idChat, st)
 
 def sessions_by_movie(idChat, content, cat):
     '''Pretty print of sessions for a specific movie on cinemas
     :param: id chat to send the messages
     :param: content of messages
     '''
-    for c in content:
-        for m in content[c]:
-            send_msg(idChat, 'Próximas sessões do filme "' + m + '" no ' + c + ':')
-            for s in content[c][m]:
-                st = bold("Data: ") + s["Start date"] + "\n"
-                st += bold("Hora de início: ") + s["Start time"] + "\n"
-                st += bold("Lugares disponíveis: ") + s["Availability"] + "\n"
-                st += bold("Link de compra: ") + s["Ticket link"] + "\n"
-                send_msg(idChat, st)
+    def aux(idChat, content, cat):
+        for c in content:
+            title(idChat, content, cat, c)
+
+    print_with_ask_cinema(idChat, content, cat, aux, session_of_sessions_by_movie)
+
+def session_of_sessions_by_date(idChat, m):
+    '''Pretty print of a session from sessions with a specific date on cinemas
+    :param: a session
+    '''
+    s = bold("Filme: ") + m["Movie"] + "\n"
+    s += bold("Data: ") + m["Start date"] + "\n"
+    s += bold("Hora de início: ") + m["Start time"] + "\n"
+    s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
+    s += bold("Link de compra: ") + m["Ticket link"] + "\n"
+    send_msg(idChat, s)
 
 def sessions_by_date(idChat, content, cat):
     '''Pretty print of sessions with a specific date on cinemas
     :param: id chat to send the messages
     :param: content of messages
     '''
-    for c in content:
-        send_msg(idChat, 'Próximas sessões no ' + c + ':')
+    def aux(idChat, content, cat):
+        for c in content:
+            title(idChat, content, cat, c)
 
-        for m in content[c]:
-            s = bold("Filme: ") + m["Movie"] + "\n"
-            s += bold("Data: ") + m["Start date"] + "\n"
-            s += bold("Hora de início: ") + m["Start time"] + "\n"
-            s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
-            s += bold("Link de compra: ") + m["Ticket link"] + "\n"
-            send_msg(idChat, s)
+    print_with_ask_cinema(idChat, content, cat, aux, session_of_sessions_by_date)
 
 switcher = {
     '/fs_scrapper/linhas_apoio': linhas_apoio,

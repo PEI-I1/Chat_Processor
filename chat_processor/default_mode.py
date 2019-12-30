@@ -342,22 +342,21 @@ def save_param(idChat, msg, chatData, tp):
     :param: user chat state
     :param: type ('Required' or 'Optional')
     '''
-    if len(chatData["paramsMissing" + tp]):
-        first_key, first_type = list(chatData["paramsMissing" + tp].items())[0]
-        # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
-        # remover do missing o que foi detetado
-        m = clean_msg(msg)
-        if tp == "Optional":
-            if first_type == "PHONES_BOOLEAN":
-                if 'sim' == m:
-                    chatData["params" + tp][first_key] = "yes"
-            elif 'nao' != m:
-                chatData["params" + tp][first_key] = msg
-        else:
+    first_key, first_type = list(chatData["paramsMissing" + tp].items())[0]
+    # FIXME: usar entidade detetada (no msg_params) em vez da msg diretamente
+    # remover do missing o que foi detetado
+    m = clean_msg(msg)
+    if tp == "Optional":
+        if first_type == "PHONES_BOOLEAN":
+            if 'sim' == m:
+                chatData["params" + tp][first_key] = "yes"
+        elif 'nao' != m:
             chatData["params" + tp][first_key] = msg
+    elif tp == "Required":
+        chatData["params" + tp][first_key] = msg
 
-        del chatData["paramsMissing" + tp][first_key]
-        globals.redis_db.set(idChat, json.dumps(chatData))
+    del chatData["paramsMissing" + tp][first_key]
+    globals.redis_db.set(idChat, json.dumps(chatData))
 
 def missing_category_params(idChat, msg, chatData):
     '''Process answer to requested parameter and asks another if necessary
@@ -366,8 +365,10 @@ def missing_category_params(idChat, msg, chatData):
     :param: user chat state
     '''
     print("[DEBUG] adding param given by user")
-    save_param(idChat, msg, chatData, "Required")
-    save_param(idChat, msg, chatData, "Optional")
+    if len(chatData["paramsMissingRequired"]):
+        save_param(idChat, msg, chatData, "Required")
+    elif len(chatData["paramsMissingOptional"]):
+        save_param(idChat, msg, chatData, "Optional")
 
     print("[LOG] Valid required "+str(chatData['paramsRequired']))
     print("[LOG] Valid optional "+str(chatData['paramsOptional']))

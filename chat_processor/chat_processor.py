@@ -2,7 +2,7 @@
 
 from rules_mode import get_response_rules
 from default_mode import get_response_default
-from pretty_print import pretty_print, ver_mais
+from pretty_print import pretty_print, ver_mais, title
 from utils import send_msg, clean_msg, send_menu
 from ner_by_regex import init_ner_regex
 import globals, json, nltk, re
@@ -58,9 +58,7 @@ def process_content_num(idChat, content, num):
     n = 1
     for c in content['value']:
         if n == num:
-            globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': content['cat'], 'content': content['value'][c]}))
-            if content['cat'] == '/scrapper/sessions/next_sessions':
-                send_msg(idChat, 'Próximas sessões no ' + c + ':')
+            title(idChat, content['value'], content['cat'], c)
             ver_mais(idChat)
         n += 1
     if num >= n:
@@ -76,24 +74,21 @@ def process_content(idChat, msg, content):
     globals.redis_db.delete("content" + str(idChat))
     m = clean_msg(msg)
     if not re.search(r'^\s*0\s*$', m) and not re.search(r'\bnenhuma das hipoteses\b', m) and not re.search(r'\bnenhuma?\b', m):
-        if content['cat'] == '/scrapper/sessions/next_sessions':
-            num = re.search(r'^\s*([0-9]+)\s*$', msg) 
-            if num:
-                num = num.group(1)
-                process_content_num(idChat, content, int(num))
-            else:
-                i = 0
-                n = len(content['keys'])
-                found = False
-                while i < n and not found:
-                    if re.search(r'\b' + content['keys'][i]['match'] + r'\b', msg):
-                        found = True
-                        process_content_num(idChat, content, content['keys'][i]['choice'])
-                    i += 1
-                if not found:
-                    process_content_num(idChat, content, n+1)
+        num = re.search(r'^\s*([0-9]+)\s*$', msg) 
+        if num:
+            num = num.group(1)
+            process_content_num(idChat, content, int(num))
         else:
-            pretty_print(idChat, content['cat'], content['value'], True)
+            i = 0
+            n = len(content['keys'])
+            found = False
+            while i < n and not found:
+                if re.search(r'\b' + content['keys'][i]['match'] + r'\b', msg):
+                    found = True
+                    process_content_num(idChat, content, content['keys'][i]['choice'])
+                i += 1
+            if not found:
+                process_content_num(idChat, content, n+1)
     else:
         send_msg(idChat, "Faça uma nova questão. O que pretende saber?")
 
