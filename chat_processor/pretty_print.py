@@ -260,6 +260,12 @@ def print_with_ask_cinema(idChat, content, cat, titleF, print_session):
             ask_cinema(idChat, content, cat)
 
 def title(idChat, content, cat, c):
+    '''Set "ver mais" and send title to user acording to category
+    :param: id chat
+    :param: content to filter
+    :param: category detected
+    :param: cinema selected
+    '''
     prefix = '/scrapper/sessions/'
     if cat == prefix + "by_duration" or cat == prefix + "next_sessions":
         globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c]}))

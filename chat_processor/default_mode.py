@@ -212,7 +212,7 @@ def process_content(idChat, chatData, content):
     if content != None:
         if content:
             #se for uma lista devolve de forma diferente
-            if isinstance(content, list) and len(content) > 5:
+            if isinstance(content, list) and len(content) > 5 and chatData["cat"] != '/fs_scrapper/linhas_apoio':
                 pretty_print(idChat, chatData["cat"], content[:5], False)
                 globals.redis_db.set("vermais" + str(idChat), json.dumps({"cat": chatData["cat"], "content": content[5:]}))
             else:
