@@ -235,6 +235,23 @@ def detect_params(msg):
     params = list({json.dumps(p):p for p in params}.values())
     return params
 
+def ntp_answer(idChat, msg):
+    '''Get solution and parse it
+    :param: id chat
+    :param: user message
+    '''
+    answer = get_solver(idChat, msg)
+    send_msg(idChat, answer['msg'])
+    if answer['chat_id'] == -1:
+        globals.redis_db.delete(idChat)
+    elif answer['chat_id'] == -2:
+        globals.redis_db.delete(idChat)
+        linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
+        if linhas_apoio:
+            pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
+        else:
+            send_msg(idChat, "Não foi possível obter as linhas de apoio...")
+
 def modo_problemas(idChat, msg, chatData):
     '''Send to problem solver
     :param: id chat
@@ -243,7 +260,7 @@ def modo_problemas(idChat, msg, chatData):
     '''
     chatData["status"] = "modo problemas"
     globals.redis_db.set(idChat, json.dumps(chatData))
-    send_msg(idChat, get_solver(idChat, msg))
+    ntp_answer(idChat, msg)
 
 def get_location(idChat, idUser, msg, name, chatData, msg_params, entry, status, msg_ts, req_loc):
     '''Ask and interpret message in order to get user location

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from rules_mode import get_response_rules
-from default_mode import get_response_default
+from default_mode import get_response_default, ntp_answer
 from pretty_print import pretty_print, ver_mais, title
 from utils import send_msg, clean_msg, send_menu
 from ner_by_regex import init_ner_regex
@@ -111,7 +111,6 @@ def get_response(idChat, idUser, msg, name, location):
 
         if not chatData:
             chatData = {
-                "msgs": [],
                 "status": "",
                 "tries": 0,
                 "cat": "",
@@ -132,7 +131,8 @@ def get_response(idChat, idUser, msg, name, location):
         if chatData["status"] == "modo regras":
             forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
         elif chatData["status"] == "modo problemas":
-            forward_to(idChat, chatData, get_solver(idChat, msg))
+            globals.redis_db.set(idChat, json.dumps(chatData))
+            ntp_answer(idChat, msg)
         else:
             m = clean_msg(msg)
             if m == "modo de regras":
