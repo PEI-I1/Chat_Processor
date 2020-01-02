@@ -14,6 +14,36 @@ def load_redis(idChat, idUser):
 
 
 def remove_redis(idChat, idUser, chatData):
+    if load_string(idChat, idUser, '_movie_genre'):
+        remove_string(idChat, idUser, '_movie_genre')
+
+    if load_string(idChat, idUser, '_movie_cast'):
+        remove_string(idChat, idUser, '_movie_cast')
+
+    if load_string(idChat, idUser, '_movie_producer'):
+        remove_string(idChat, idUser, '_movie_producer')
+
+    if load_string(idChat, idUser, '_movie_synopsis'):
+        remove_string(idChat, idUser, '_movie_synopsis')
+
+    if load_string(idChat, idUser, '_movie_age'):
+        remove_string(idChat, idUser, '_movie_age')
+
+    if load_string(idChat, idUser, '_search_term'):
+        remove_string(idChat, idUser, '_search_term')
+
+    if load_string(idChat, idUser, '_movie_duration'):
+        remove_string(idChat, idUser, '_movie_duration')
+
+    if load_string(idChat, idUser, '_movie_date'):
+        remove_string(idChat, idUser, '_movie_date')
+
+    if load_string(idChat, idUser, '_start_time'):
+        remove_string(idChat, idUser, '_start_time')
+
+    if load_string(idChat, idUser, '_end_time'):
+        remove_string(idChat, idUser, '_end_time')    
+    
     chatData["status"] = ''
     globals.redis_db.set(idChat, json.dumps(chatData))
     globals.redis_db.delete(str(idChat) + str(idUser) + '_rules_mode')
