@@ -1,4 +1,4 @@
-from config import urls
+from config import REDIS_HOST, REDIS_PORT
 import deeppavlov
 import redis
 
@@ -13,4 +13,4 @@ def init():
 
     #Connect to redis
     global redis_db
-    redis_db = redis.StrictRedis(host=urls['REDIS']['host'], port=urls['REDIS']['port'], db=0)
+    redis_db = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
