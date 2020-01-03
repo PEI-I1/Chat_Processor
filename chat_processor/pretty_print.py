@@ -126,22 +126,22 @@ def packages(idChat, content, cat):
             send_msg(idChat, s)
 
 def cinemas(idChat, content, cat):
-    '''Pretty print of closed cinemas
-    :param: id chat to send the messages
+    '''Pretty print of closest cinemas
+    :param: chat id to send the messages to
     :param: content of messages
     '''
-    s = 'Os cinemas NOS perto de si são:\n'
-    s += "\n".join(content["cinemas"])
+    s = 'Os cinemas NOS perto de si num raio de 20km são:\n'
+    s += "\n - ".join(content["cinemas"])
     send_msg(idChat, s) 
 
 def movies_by_cinema(idChat, content, cat):
     '''Pretty print of movies on display in cinema
-    :param: id chat to send the messages
+    :param: chat id to send the messages to
     :param: content of messages
     '''
     for c in content:
-        s = 'Os filmes em exibição no ' + c + ' são:\n'
-        s += "\n".join(content[c])
+        s = 'Os filmes em exibição no ' + bold(c) + ' são:\n'
+        s += "\n - ".join(content[c])
         send_msg(idChat, s)
 
 def movies_search(idChat, content, cat):
@@ -155,7 +155,7 @@ def movies_search(idChat, content, cat):
         s = bold("Título: ") + m["Portuguese title"] + "\n"
         s += bold("Título original: ") + m["Original title"] + "\n"
         s += bold("Elenco: ") + m["Cast"] + "\n"
-        s += bold("Produtor: ") + m["Producer"] + "\n"
+        s += bold("Realizador: ") + m["Producer"] + "\n"
         s += bold("Género: ") + m["Genre"] + "\n"
         s += bold("Duração: ") + str(m["Length (min)"]) + " minutos\n"
         s += bold("Idade: ") + str(m["Age rating"]) + " anos\n"
@@ -178,8 +178,10 @@ def releases(idChat, content, cat):
 
     for m in content:
         s = bold("Título: ") + m["Original title"] + "\n"
+        s += bold("Realizador: ") + m["Producer"] + "\n"
         s += bold("Elenco: ") + m["Cast"] + "\n"
         s += bold("Género: ") + m["Genre"] + "\n"
+        s += bold("Trailer: ") + m["Trailer"] + "\n"
         photo = m["Banner"]
         
         msg = json.dumps({
@@ -198,7 +200,7 @@ def movie_details(idChat, content, cat):
     s = bold("Título: ") + m["Portuguese title"] + "\n"
     s += bold("Título original: ") + m["Original title"] + "\n"
     s += bold("Elenco: ") + m["Cast"] + "\n"
-    s += bold("Produtor: ") + m["Producer"] + "\n"
+    s += bold("Realizador: ") + m["Producer"] + "\n"
     s += bold("Género: ") + m["Genre"] + "\n"
     s += bold("Duração: ") + str(m["Length (min)"]) + " minutos\n"
     s += bold("Idade: ") + str(m["Age rating"]) + " anos\n"
@@ -306,6 +308,7 @@ def session_of_next_sessions(idChat, m):
     :param: a session
     '''
     s = bold("Filme: ") + m["Movie"] + "\n"
+    s += bold("Trailer: ") + m["Trailer"] + "\n"
     s += bold("Data: ") + m["Start date"] + "\n"
     s += bold("Hora de início: ") + m["Start time"] + "\n"
     s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
