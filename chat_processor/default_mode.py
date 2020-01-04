@@ -3,9 +3,11 @@ from spell_checker import spell_check_ss
 from utils import *
 import globals, nltk, json, copy
 import regex as re
+from datetime import date, timedelta
 from pretty_print import pretty_print
 from ner_by_regex import detect_entities_regex
 from pretty_params import optional_params as pp_opt, required_params as pp_req, param_en_to_pt
+from text_to_number import parse_number
 
 confianca_level = 0.70
 tries = 5
@@ -121,6 +123,87 @@ def id_param(key, msg_param):
     '''
     return {key:msg_param["entity"]}
 
+def parse_date_time(string):
+    params = []
+    td = date.today()
+    cs = clean_msg(string)
+
+    if re.search(r'\bamanha\b', cs):
+        tm = td + timedelta(days=1)
+        params.append({'date': tm.strftime('%Y-%m-%d')})
+    elif re.search(r'\bhoje\b', clean_msg(string)):
+        params.append({'date': td.strftime('%Y-%m-%d')})
+
+    if re.search(r'\bmanha\b', cs):
+        params.append({'start_time': '06:00:00'})
+        params.append({'end_time': '12:00:00'})
+    elif re.search(r'\btarde\b', cs):
+        params.append({'start_time': '12:00:00'})
+        params.append({'end_time': '20:00:00'})
+    elif re.search(r'\bnoite\b', cs):
+        params.append({'start_time': '20:00:00'})
+        params.append({'end_time': '06:00:00'})
+
+    return params
+
+def parse_date(key, string):
+    params = parse_date_time(string)
+    mounths = {
+        'janeiro': '01',
+        'fevereiro': '02',
+        'marco': '03',
+        'abril': '04',
+        'maio': '05',
+        'junho': '06',
+        'julho': '07',
+        'agosto': '08',
+        'setembro': '09',
+        'outubro': '10',
+        'novembro': '11',
+        'dezembro': '12'
+    }
+
+    st = '(' + '|'.join(mounths.keys()) + ')'
+
+    if not len(params):
+        string = parse_number(string)
+        string = re.sub(r''+st, lambda x: mounths[x[0]], clean_msg(string))
+        string = re.sub(r'[^0-9]+',r'-', string)
+
+        string = re.sub(r'^([0-9])-', r'0\1-', string)
+        string = re.sub(r'-([0-9])-', r'-0\1-', string)
+
+        ss = string.split('-')
+        ss = ss[::-1]
+        string = '-'.join(ss)
+        params.append({key: string})
+
+    return params
+
+def parse_time(key, string):
+    params = parse_date_time(string)
+
+    if not len(params):
+        string = parse_number(string)
+        string = re.sub(r'^([0-9]+)a?\s*h(oras?)?\s*$',r'\1:00',string)
+        string = re.sub(r'^([0-9]+)\s*m(in(utos?)?)?\s*$',r'\1',string)
+        string = re.sub(r'[^0-9]*([0-9]+)[^0-9]+([0-9]+)[^0-9]*', r'\1:\2:00', string)
+        string = re.sub(r'^([0-9]):', r'0\1:', string)
+        string = re.sub(r':([0-9]):', r':0\1:', string)
+
+        if key == "duration":
+            string = re.sub(r'[^:]*:0?([0-9]+):[^:]*', r'\1', string)
+        params.append({key: string})
+
+    return params
+
+def parse_money_cardinal(string):
+    string = re.sub(r' ?euros?\s*', '', string)
+    string = re.sub(r' ?€\s*', '', string)
+
+    string = parse_number(string)
+    return re.sub(r'\s+', '', string)
+
 def transform_param(key, msg_param):
     '''Transform a param
     :param: key of param
@@ -129,8 +212,14 @@ def transform_param(key, msg_param):
     found = None
 
     # if para tratar casos com intervalos de TIME/MONEY
-    if msg_param["type"] == "TIME" or msg_param["type"] == "MONEY":
-        pass # temporario ate se fazer a funçao de parse de datas/horas
+    if msg_param["type"] == "TIME"
+        found = parse_time(msg_param["entity"])
+    elif msg_param["type"] == "DATE":
+        found = parse_date(msg_param["entity"])
+    elif msg_param["type"] == "CARDINAL":
+        found = [{key: parse_money_cardinal(msg_param["entity"])}]
+    elif msg_param["type"] == "MONEY":
+        found = [{key: parse_money_cardinal(msg_param["entity"])}]
         # # FIXME: resolver casos em que só temos fim/max TIME/MONEY
         # if skip_one:
         #     skip_one = False
@@ -140,9 +229,9 @@ def transform_param(key, msg_param):
     # if para separar os varios diferentes PHONES_BOOLEAN
     elif msg_param["type"] == "PHONES_BOOLEAN":
         if msg_param["entity"] == key:
-            found = {key:"yes"}
+            found = [{key:"yes"}]
     else:
-        found = {key:msg_param["entity"]}
+        found = [{key:msg_param["entity"]}]
 
     return found
 
@@ -159,13 +248,14 @@ def new_params(entry_params, msg_params, size, func):
     for (key, ent_type_list) in entry_params.items():
         for ent_type in ent_type_list.split('|'):
             i = 0
-            found = None
+            found = []
             while i < size and found == None:
                 if msg_params[i]["type"] == ent_type:
                     found = func(key, msg_params[i])
                 i += 1
-            if found:
-                params.update(found)
+            if len(found):
+                for f in found:
+                    params.update(f)
             else:
                 missing_params.update({key:ent_type})
 
