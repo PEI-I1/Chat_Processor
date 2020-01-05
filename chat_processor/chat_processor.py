@@ -121,7 +121,8 @@ def get_response(idChat, idUser, msg, name, location):
                 "paramsRequired": {},
                 "paramsOptional":{},
                 "paramsMissingRequired": {},
-                "paramsMissingOptional": {}
+                "paramsMissingOptional": {},
+                "msg_params": {}
             }
 
         if location:

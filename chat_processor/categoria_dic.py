@@ -128,7 +128,7 @@ cat = [
         'words': [(r'sess(ao|oes)', 1.0), (r'sess(ao|oes)', 1.0), (r'exibic(ao|oes)', 1.0), (r'duracao', 1.0), (r'tempo', 1.0),
                   (r'tamanho', 1.0), (r'demora', 1.0), (r'extensao', 1.0), (r'minutos', 1.0), (r'horas?', 1.0), (r'sess(ao|oes) ate', 1.0),
                   (r'sess(ao|oes) com menos', 2.5)],
-        'paramsRequired': {"duration":'TIME'},
+        'paramsRequired': {"duration":'TIME|CARDINAL'},
         'paramsOptional': {'date':'DATE', 'start_time':'TIME', 'end_time':'TIME'},
         'locationParam': {'search_term':'GPE', 'lat':'', 'lon':''},
         'canRequestWithoutParams': False,
