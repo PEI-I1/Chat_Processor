@@ -140,9 +140,9 @@ def movies_by_cinema(idChat, content, cat):
     :param: content of messages
     '''
     for c in content:
-        s = 'Os filmes em exibição no ' + bold(c) + ' são:\n'
-        s += "\n - ".join([
-            bold("Título: ") + m["Portuguese title"] + "\n   " + bold("IMDB Rating: ") + m["IMDB Rating"]
+        s = 'Os filmes em exibição no ' + bold(c) + ' são:'
+        s += ''.join([
+            '\n - ' + bold('Título: ') + m['Portuguese title'] + '\n    ' + bold('IMDB Rating: ') + m['IMDB Rating']
             for m in content[c]])
         send_msg(idChat, s)
 
