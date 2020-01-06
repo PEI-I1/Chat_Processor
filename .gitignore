@@ -106,3 +106,8 @@ venv.bak/
 #nltk
 nltk_data/
 dump.rdb
+
+# Emacs artifacts
+**/#**#
+**/*.*~
+**/.#*

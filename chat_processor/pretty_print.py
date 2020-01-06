@@ -140,8 +140,10 @@ def movies_by_cinema(idChat, content, cat):
     :param: content of messages
     '''
     for c in content:
-        s = 'Os filmes em exibição no ' + bold(c) + ' são:\n'
-        s += "\n - ".join(content[c])
+        s = 'Os filmes em exibição no ' + bold(c) + ' são:'
+        s += ''.join([
+            '\n - ' + bold('Título: ') + m['Portuguese title'] + '\n    ' + bold('IMDB Rating: ') + m['IMDB Rating']
+            for m in content[c]])
         send_msg(idChat, s)
 
 def movies_search(idChat, content, cat):
@@ -154,6 +156,7 @@ def movies_search(idChat, content, cat):
     for m in content:
         s = bold("Título: ") + m["Portuguese title"] + "\n"
         s += bold("Título original: ") + m["Original title"] + "\n"
+        s += bold("IMDB Rating: ") + m["IMDB Rating"] + "\n"
         s += bold("Elenco: ") + m["Cast"] + "\n"
         s += bold("Realizador: ") + m["Producer"] + "\n"
         s += bold("Género: ") + m["Genre"] + "\n"
@@ -178,6 +181,7 @@ def releases(idChat, content, cat):
 
     for m in content:
         s = bold("Título: ") + m["Original title"] + "\n"
+        s += bold("IMDB Rating: ") + m["IMDB Rating"] + "\n"
         s += bold("Realizador: ") + m["Producer"] + "\n"
         s += bold("Elenco: ") + m["Cast"] + "\n"
         s += bold("Género: ") + m["Genre"] + "\n"
@@ -199,6 +203,7 @@ def movie_details(idChat, content, cat):
 
     s = bold("Título: ") + m["Portuguese title"] + "\n"
     s += bold("Título original: ") + m["Original title"] + "\n"
+    s += bold("IMDB Rating: ") + m["IMDB Rating"] + "\n"
     s += bold("Elenco: ") + m["Cast"] + "\n"
     s += bold("Realizador: ") + m["Producer"] + "\n"
     s += bold("Género: ") + m["Genre"] + "\n"
