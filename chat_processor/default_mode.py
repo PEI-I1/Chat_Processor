@@ -116,14 +116,11 @@ def add_new_params(old_list, new_list):
         if not k in old_list:
             old_list.update({k:v})
 
-def id_param(key, msg_param):
-    '''Return the identity of a param
-    :param: key of param
-    :param: parameter
-    '''
-    return [{key:msg_param["entity"]}]
-
 def parse_date_time(string):
+    '''Parses entities of type date and time in order to try detect some aditional ways of saying date or time
+    and put them in a correct format to routes of scrapers
+    :param: string with date/time to parse
+    '''
     params = []
     td = date.today()
     cs = clean_msg(string)
@@ -147,6 +144,9 @@ def parse_date_time(string):
     return params
 
 def parse_date(key, string):
+    '''Parses entities of type date in order to put it in a correct format to routes of scrapers
+    :param: string with date to parse
+    '''
     params = parse_date_time(string)
     mounths = {
         'janeiro': '01',
@@ -167,28 +167,47 @@ def parse_date(key, string):
 
     if not len(params):
         string = parse_number(string)
-        string = re.sub(r''+st, lambda x: mounths[x[0]], clean_msg(string))
-        string = re.sub(r'[^0-9]+',r'-', string)
+        if re.match(r'^\s*entre\s+[0-9]+\s+e\s+[0-9]+\s*$', string):
+            string = re.sub(r'^\s*entre\s+([0-9]+)\s+e\s+([0-9]+)\s*$', r'\1|\2', string)
+            nums = string.split('|')
+            if nums[0] == nums[1]:
+                params.append({'min': nums[0]})
+            elif float(nums[0]) < float(nums[1]):
+                params.append({'min': nums[0]})
+                params.append({'max': nums[1]})
+            else:
+                params.append({'min': nums[1]})
+                params.append({'max': nums[0]})
+        elif re.match(r'\s*[0-9]+\s*anos?\s*', string):
+            string = re.sub(r'\s*([0-9]+)\s*anos?\s*', r'\1', string)
+            params.append({'age': string})
+        elif key != 'age':
+            string = re.sub(r''+st, lambda x: mounths[x[0]], clean_msg(string))
+            string = re.sub(r'[^0-9]+',r'-', string)
 
-        string = re.sub(r'^([0-9])-', r'0\1-', string)
-        string = re.sub(r'-([0-9])-', r'-0\1-', string)
+            string = re.sub(r'^([0-9])-', r'0\1-', string)
+            string = re.sub(r'-([0-9])-', r'-0\1-', string)
 
-        ss = string.split('-')
-        ss = ss[::-1]
-        string = '-'.join(ss)
-        params.append({key: string})
+            ss = string.split('-')
+            ss = ss[::-1]
+            string = '-'.join(ss)
+            params.append({key: string})
 
     return params
 
 def parse_time(key, string):
+    '''Parses entities of type time in order to put it in a correct format to routes of scrapers
+    :param: string with time to parse
+    '''
     params = parse_date_time(string)
 
     if not len(params):
         string = parse_number(string)
         if re.match(r'^\s*[0-9]+\s*m(in(utos?)?)?\s*$', string):
+            print(string)
             string = re.sub(r'^\s*([0-9]+)\s*m(in(utos?)?)?\s*$', r'\1', string)
             params.append({'duration': string})
-        else:
+        elif key != 'duration':
             string = re.sub(r'^([0-9]+)a?\s*h(oras?)?\s*$',r'\1:00',string)
             string = re.sub(r'^([0-9]+)\s*m(in(utos?)?)?\s*$',r'00:\1',string)
             string = re.sub(r'[^0-9]*([0-9]+)[^0-9]+([0-9]+)[^0-9]*', r'\1:\2:00', string)
@@ -198,45 +217,109 @@ def parse_time(key, string):
 
     return params
 
-def parse_money_cardinal(string):
-    string = re.sub(r' ?euros?\s*', '', string)
-    string = re.sub(r' ?€\s*', '', string)
+def parse_money_cardinal(key, string):
+    '''Parses entities of type money/cardinal in order to put it in a correct format to routes of scrapers
+    :param: string with money/cardinal to parse
+    '''
+    string = re.sub(r'\s*euros?\s*', '', string)
+    string = re.sub(r'\s*€\s*', '', string)
 
-    string = parse_number(string)
-    return re.sub(r'\s+', '', string)
+    if re.match(r'^\s*entre\s+[0-9]+\s+e\s+[0-9]+\s*$', string):
+        print(string)
+        string = re.sub(r'^\s*entre\s+([0-9]+)\s+e\s+([0-9]+)\s*$', r'\1|\2', string)
+        nums = string.split('|')
+        if nums[0] == nums[1]:
+            return [{'min': nums[0]}]
+        elif float(nums[0]) < float(nums[1]):
+            return [{'min': nums[0]}, {'max': nums[1]}]
+        else:
+            return [{'min': nums[1]}, {'max': nums[0]}]
+    else:
+        string = parse_number(string)
+        return [{key: re.sub(r'\s+', '', string)}]
 
-def transform_param(key, msg_param):
+def compare_params(found, params, chatData, fst_key, sec_key):
+    '''Compare parameters in order to discover whitch one is bigger and to put them in the correct order
+    :param: parameters discovered with this detected entity
+    :param: parameters discovered in this phrase at the moment
+    :param: user chat state
+    :param: parameter key with supposedly lower value
+    :param: parameter key with supposedly bigger value
+    '''
+    valueS = None
+    valueE = None
+    indS = -1
+    indE = -1
+
+    if fst_key == 'min' and sec_key == 'max':
+        func = float
+    else:
+        func = str
+
+    for index, f in enumerate(found):
+        k, v = list(f.items())[0]
+        if k == fst_key:
+            valueS = v
+            indS = index
+        if k == sec_key:
+            valueE = v
+            indE = index
+    if indE != -1 and valueE != None:
+        if fst_key in params:
+            if params[fst_key] == valueE:
+                del found[indE]
+            elif func(params[fst_key]) > func(valueE):
+                found[indE][sec_key] = params[fst_key]
+                params[fst_key] = valueE
+        elif fst_key in chatData['paramsOptional']:
+            if chatData['paramsOptional'][fst_key] == valueE:
+                del found[indE]
+            elif func(chatData['paramsOptional'][fst_key]) > func(valueE):
+                found[indE][sec_key] = chatData['paramsOptional'][fst_key]
+                chatData['paramsOptional'][fst_key] = valueE
+        elif indS != -1 and valueS != None:
+            if valueS == valueE:
+                del found[indE]
+            elif func(valueS) > func(valueE):
+                found[indS][fst_key] = valueE
+                found[indE][sec_key] =valueS
+
+def transform_param(key, msg_param, params, chatData):
     '''Transform a param
     :param: key of param
     :param: parameter
     '''
     found = []
 
-    # if para tratar casos com intervalos de TIME/MONEY
     if "TIME" in msg_param["type"]:
         found = parse_time(key, msg_param["entity"])
+        if key == 'end_time':
+            compare_params(found, params, chatData, 'start_time', 'end_time')
     elif "DATE" in msg_param["type"]:
         found = parse_date(key, msg_param["entity"])
     elif "CARDINAL" in msg_param["type"]:
-        found = [{key: parse_money_cardinal(msg_param["entity"])}]
+        found = parse_money_cardinal(key, msg_param["entity"])
+        if key == 'max':
+            compare_params(found, params, chatData, 'min', 'max')
     elif "MONEY" in msg_param["type"]:
-        found = [{key: parse_money_cardinal(msg_param["entity"])}]
-        # # FIXME: resolver casos em que só temos fim/max TIME/MONEY
-        # if skip_one:
-        #     skip_one = False
-        # else:
-        #     skip_one = True
-        #     found = {key:msg_param["entity"]}
-    # if para separar os varios diferentes PHONES_BOOLEAN
+        found = parse_money_cardinal(key, msg_param["entity"])
+        if key == 'max':
+            compare_params(found, params, chatData, 'min', 'max')
     elif "PHONES_BOOLEAN" in msg_param["type"]:
         if msg_param["entity"] == key:
             found = [{key:"yes"}]
+    elif "PERSON" in msg_param["type"]:
+        if key == "producer":
+            if "cast" not in params or params["cast"] != msg_param["entity"]:
+                found = [{key:msg_param["entity"]}]
+        else:
+            found = [{key:msg_param["entity"]}]
     else:
         found = [{key:msg_param["entity"]}]
 
     return found
 
-def new_params(entry_params, msg_params, size, func):
+def new_params(entry_params, msg_params, size, chatData):
     ''' Auxiliar function for initial recognition of params, detects missing params
     :param: parameters of category
     :param: parameters detected in message
@@ -253,7 +336,7 @@ def new_params(entry_params, msg_params, size, func):
 
             while i < size and found == []:
                 if msg_params[i]["type"] == ent_type:
-                    found = func(key, msg_params[i])
+                    found = transform_param(key, msg_params[i], params, chatData)
                 i += 1
 
             for f in found:
@@ -264,15 +347,15 @@ def new_params(entry_params, msg_params, size, func):
 
     return params, missing_params
 
-def detect_new_params(msg_params, entry):
+def detect_new_params(msg_params, entry, chatData):
     ''' Initial recognition of params, detects missing params
     :param: parameters detected in user message
     :param: entry in categoria_dict of category/functionality
     :return: detected required parameters, missing required parameters, detected optional parameters, missing optional parameters
     '''
     size = len(msg_params)
-    required_params, required_missing_params = new_params(entry["paramsRequired"], msg_params, size, transform_param)
-    optional_params, optional_missing_params = new_params(entry["paramsOptional"], msg_params, size, transform_param)
+    required_params, required_missing_params = new_params(entry["paramsRequired"], msg_params, size, chatData)
+    optional_params, optional_missing_params = new_params(entry["paramsOptional"], msg_params, size, chatData)
     return required_params, required_missing_params, optional_params, optional_missing_params
 
 def get_city(entry, msg_params):
@@ -417,7 +500,7 @@ def new_category_params(idChat, chatData, entry, msg_params):
     :param: parameters detected in user message
     '''
     # process msg params, save
-    required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, entry)
+    required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, entry, chatData)
     # adicionar ao redis
     add_new_params(chatData['paramsRequired'], required_params)
     add_new_params(chatData['paramsOptional'], optional_params)
@@ -459,27 +542,34 @@ def save_param(idChat, msg, chatData, tp, msg_params):
         'paramsRequired': chatData['paramsMissingRequired'],
         'paramsOptional': chatData['paramsMissingOptional']
     }
-    required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, paramsMissing)
+    required_params, missing_required_params, optional_params, missing_optional_params = detect_new_params(msg_params, paramsMissing, chatData)
     add_new_params(chatData['paramsRequired'], required_params)
     add_new_params(chatData['paramsOptional'], optional_params)
+
+    chatData["paramsMissingRequired"] = missing_required_params
+    chatData["paramsMissingOptional"] = missing_optional_params
+
+    lr = len(required_params)
+    lo = len(optional_params)
 
     m = clean_msg(msg)
     if tp == "Optional":
         if first_type == "PHONES_BOOLEAN":
             if 'sim' == m:
                 chatData["params" + tp][first_key] = "yes"
+            elif 'nao' == m:
+                del chatData["paramsMissing" + tp][first_key]
         elif 'nao' != m:
-            if first_key not in optional_params:
+            if first_key not in optional_params and lr == 0 and lo == 0:
                 chatData["params" + tp][first_key] = msg
+                del chatData["paramsMissing" + tp][first_key]
+        else:
+            del chatData["paramsMissing" + tp][first_key]
     elif tp == "Required":
-        if first_key not in required_params:
+        if first_key not in required_params and lr == 0 and lo == 0:
             chatData["params" + tp][first_key] = msg
+            del chatData["paramsMissing" + tp][first_key]
 
-    chatData["paramsMissingRequired"] = missing_required_params
-    chatData["paramsMissingOptional"] = missing_optional_params
-
-    if first_key in chatData["paramsMissing" + tp]:
-        del chatData["paramsMissing" + tp][first_key]
     globals.redis_db.set(idChat, json.dumps(chatData))
 
 def missing_category_params(idChat, msg, chatData, msg_params):
@@ -532,8 +622,9 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
     else:
         # new problem. save obtained params
         if chatData["paramsStatus"] == "new":
-            msg_params = chatData['msg_params']
-            chatData['msg_params'] = {}
+            if chatData['msg_params'] != {}:
+                msg_params = chatData['msg_params']
+                chatData['msg_params'] = {}
             new_category_params(idChat, chatData, entry, msg_params)
         # processing problem by asking and saving missing params
         elif chatData["paramsStatus"] == "missing":

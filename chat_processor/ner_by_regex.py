@@ -19,6 +19,8 @@ movies_genres = ["Ação", "Aventura", "Cinema de arte", "Chanchada", "Comédia"
 address_starts_with = ["Al\.", "Alameda", "Az\.", "Azinhaga", "Cc.", "Calçada", "Cam\.", "Caminho", "Estr.", "Estrada", "Ccnh\.", "Calçadinha", "R\.", "Rua", "Av\.", "Avenida", "Tv\.", "Travessa", "Pc\.", "Praça", "Lg\.", "Largo", "Pct\.", "Praceta", "Bc\.", "Beco", "Mq\.", "Marquês", "Pq\.", "Parque", "Pto\.", "Pátio", "Rot\.", "Rotunda", "Qta\.", "Quinta"]
 detect_functions = []
 phones_booleans = [("sim", "Sim"), ("nao", "Não"), (r"promo(cao|coes)?", "promo"), ("novos?", "new"), ("recentes?", "new"), ("descontos?", "promo"), ("ofertas?", "ofer"), ("prestac(ao|oes)", "prest"), ("pontos?", "points"), ("tops?", "top"), ("popular(es)?", "top")]
+days = ['amanha', 'hoje']
+times = ['manha', 'tarde', 'noite']
 
 def update():
     '''Update possible entities values
@@ -81,6 +83,8 @@ def update():
         partial(detect, phone_models, 'PRODUCT'),
         partial(detect, municipies, 'GPE'),
         partial(detect, movies, 'WORK OF ART'),
+        partial(detect, days, 'DATE'),
+        partial(detect, times, 'TIME'),
         detect_phones_boolean
     ]
 
