@@ -123,11 +123,15 @@ def send_menu(idChat, msg, reply_json):
     :param: keyboard to send to user
     :return: API Endpoint response or None
     '''
-    URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
+    URL = urls["API_ENDPOINT"] + "/send_keyboard/" + urllib.parse.quote(str(idChat), safe='')
 
     print(URL)
     try:
-        res = requests.post(URL, data=msg.encode("utf-8"), json=reply_json)
+	info = {}
+	info['text'] = msg
+	info['keyboard'] = reply_json
+	info = json.dumps(info)
+        res = requests.post(URL, data=info.encode("utf-8"))
         res.raise_for_status()
         res = res.text
     except:
