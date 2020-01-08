@@ -127,10 +127,10 @@ def send_menu(idChat, msg, reply_json):
 
     print(URL)
     try:
-	info = {}
-	info['text'] = msg
-	info['keyboard'] = reply_json
-	info = json.dumps(info)
+        info = {}
+        info['text'] = msg
+        info['keyboard'] = reply_json
+        info = json.dumps(info)
         res = requests.post(URL, data=info.encode("utf-8"))
         res.raise_for_status()
         res = res.text

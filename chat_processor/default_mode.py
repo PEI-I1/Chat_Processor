@@ -8,6 +8,7 @@ from pretty_print import pretty_print
 from ner_by_regex import detect_entities_regex
 from pretty_params import optional_params as pp_opt, required_params as pp_req, param_en_to_pt
 from text_to_number import parse_number
+from config import PARAM_THRESHOLD
 
 confianca_level = 0.70
 tries = 5
@@ -491,6 +492,7 @@ def ask_param(idChat, chatData):
         msg = pretty_question_optional_param(str(param_key))
 
     send_msg(idChat, msg)
+    
 
 def new_category_params(idChat, chatData, entry, msg_params):
     '''first process of params
@@ -523,6 +525,10 @@ def new_category_params(idChat, chatData, entry, msg_params):
         print("[LOG] Missing required "+str(chatData['paramsMissingRequired']))
         print("[LOG] Missing optional "+str(chatData['paramsMissingOptional']))
 
+        if len(missing_optional_params) > PARAM_THRESHOLD:
+            querystrings_aux = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
+            querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
+            process_content(idChat, chatData, get_content(chatData["cat"], [], querystrings))
         ask_param(idChat, chatData)
     else:
         chatData["paramsStatus"] = "done"
