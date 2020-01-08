@@ -564,12 +564,12 @@ def save_param(idChat, msg, chatData, tp, msg_params):
     m = clean_msg(msg)
     if tp == "Optional":
         if first_type == "PHONES_BOOLEAN":
-            if re.match('\bs(im)?|y\b', m):
+            if re.match(r'\bs(im)?|y\b', m):
                 chatData["params" + tp][first_key] = "yes"
                 del chatData["paramsMissing" + tp][first_key]
-            elif re.match('\bn(ao)?\b', m):
+            elif re.match(r'\bn(ao)?\b', m):
                 del chatData["paramsMissing" + tp][first_key]
-        elif re.match('\bn(ao)?\b', m):
+        elif re.match(r'\bn(ao)?\b', m):
             if first_key not in optional_params and lr == 0 and lo == 0:
                 chatData["params" + tp][first_key] = msg
                 del chatData["paramsMissing" + tp][first_key]
@@ -663,7 +663,7 @@ def change_category(idChat, idUser, msg, name, chatData):
     muda_categoria = clean_msg(msg)
 
     # se o user quiser mudar, altera-se a categoria e marca-se como new para os params
-    if re.match('\bs(im)?|y\b', muda_categoria):
+    if re.match(r'\bs(im)?|y\b', muda_categoria):
         chatData["cat"] = chatData["cat_change"]
         chatData["paramsStatus"] = "new"
     # se o user nao quiser mudar, trata-se a ultima mensagem (antes de perguntar se queria mudar de pedido)
