@@ -44,10 +44,11 @@ def forward_to(idChat, chatData, data):
     '''
     globals.redis_db.set(idChat, json.dumps(chatData))
 
-    if 'menu' in data:
-        send_menu(idChat, data['msg'], data['menu'])
-    else:
-        send_msg(idChat, data['msg'])
+    if data is not None:
+        if 'menu' in data:
+            send_menu(idChat, data['msg'], data['menu'])
+        else:
+            send_msg(idChat, data['msg'])
 
 def process_content_num(idChat, content, num):
     '''Process choice made by user to filter content
@@ -74,7 +75,7 @@ def process_content(idChat, msg, content):
     globals.redis_db.delete("content" + str(idChat))
     m = clean_msg(msg)
     if not re.search(r'^\s*0\s*$', m) and not re.search(r'\bnenhuma das hipoteses\b', m) and not re.search(r'\bnenhuma?\b', m):
-        num = re.search(r'^\s*([0-9]+)\s*$', msg) 
+        num = re.search(r'^\s*([0-9]+)\s*$', msg)
         if num:
             num = num.group(1)
             process_content_num(idChat, content, int(num))
