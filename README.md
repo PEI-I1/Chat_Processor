@@ -1,5 +1,14 @@
 # Chat_Processor
 
+## Table of Contents
+* [What is it?](#what-is-it)
+* [Usage](#usage)
+  - [Development setup](#development-setup)
+    - [Dependencies](#dependencies)
+    - [Worktrough](#worktrough)
+  - [Deployment](#deployment)
+* [API](#api)
+
 ## What is it?
 
 Chat Processor is a natural language interpreter that tries to tag messages in order to determine the best answer is for it.
