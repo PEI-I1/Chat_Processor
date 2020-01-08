@@ -493,6 +493,7 @@ def ask_param(idChat, chatData):
         param_key, param_value = list(chatData["paramsMissingOptional"].items())[0]
         print("[LOG] Asking Optional param (param_key): " + param_key)
         msg = pretty_question_optional_param(str(param_key))
+        msg += "\nSe pretender obter já os resultados escreva por favor 'pesquisar'."
 
     send_msg(idChat, msg)
     
@@ -563,13 +564,15 @@ def save_param(idChat, msg, chatData, tp, msg_params):
 
     m = clean_msg(msg)
     if tp == "Optional":
-        if first_type == "PHONES_BOOLEAN":
+        if re.match(r'\bpesquisar?\b', m):
+            chatData['paramsMissingOptional'] = {}
+        elif first_type == "PHONES_BOOLEAN":
             if re.match(r'\bs(im)?|y\b', m):
                 chatData["params" + tp][first_key] = "yes"
                 del chatData["paramsMissing" + tp][first_key]
             elif re.match(r'\bn(ao)?\b', m):
                 del chatData["paramsMissing" + tp][first_key]
-        elif re.match(r'\bn(ao)?\b', m):
+        elif not re.match(r'\bn(ao)?\b', m):
             if first_key not in optional_params and lr == 0 and lo == 0:
                 chatData["params" + tp][first_key] = msg
                 del chatData["paramsMissing" + tp][first_key]
