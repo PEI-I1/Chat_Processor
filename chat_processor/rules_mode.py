@@ -305,7 +305,8 @@ def final_packages(idChat, idUser):
 
     if tipo:
         aux['type'] = tipo
-        aux['type'] = tiporemove_string(idChat, idUser, '_package_type')
+        aux['type'] = tipo
+        remove_string(idChat, idUser, '_package_type')
 
     if servico:
         aux['service'] = servico
