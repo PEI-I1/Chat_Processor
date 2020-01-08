@@ -1,6 +1,7 @@
 import globals #redis_db
 from utils import get_content, get_loc
 from regex_rules_mode import regexPrice
+from pretty_print import pretty_print
 import json
 
 
@@ -132,7 +133,10 @@ def final_movies_options(idChat, idUser):
         aux['age'] = age
         remove_string(idChat, idUser, '_movie_age')
 
-    return get_content('/scrapper/movies/search', [], aux)
+    pretendido = get_content('/scrapper/movies/search', [], aux)
+    pretty_print(idChat, '/scrapper/movies/search', pretendido, True)
+
+    return None
 
 def final_movies_duration(idChat, idUser):
     aux = {}
@@ -162,7 +166,10 @@ def final_movies_duration(idChat, idUser):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
-    return get_content('/scrapper/sessions/by_duration', [], aux)
+    pretendido = get_content('/scrapper/sessions/by_duration', [], aux)
+    pretty_print(idChat, '/scrapper/sessions/by_duration', pretendido, True)
+
+    return None
 
 def final_movies_duration_loc(idChat, idUser, chatData):
     aux = {}
@@ -196,7 +203,10 @@ def final_movies_duration_loc(idChat, idUser, chatData):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
-    return get_content('/scrapper/sessions/by_duration', [], aux)
+    pretendido = get_content('/scrapper/sessions/by_duration', [], aux)
+    pretty_print(idChat, '/scrapper/sessions/by_duration', pretendido, True)
+
+    return None
 
 def final_movies_loc(idChat, idUser, chatData):
     aux = {}
@@ -209,7 +219,10 @@ def final_movies_loc(idChat, idUser, chatData):
     aux['lat'] = float(chatData['locationParam']['lat'])
     aux['lon'] = float(chatData['locationParam']['lon'])
 
-    return get_content('/scrapper/sessions/next_sessions', [], aux)
+    pretendido = get_content('/scrapper/sessions/next_sessions', [], aux)
+    pretty_print(idChat, '/scrapper/sessions/next_sessions', pretendido, True)
+
+    return None
 
 def final_movies_semloc(idChat, idUser):
     aux = {}
@@ -249,7 +262,10 @@ def final_movies_sessoes_loc(idChat, idUser, chatData):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
-    return get_content('/scrapper/sessions/by_date', [], aux)
+    pretendido = get_content('/scrapper/sessions/by_date', [], aux)
+    pretty_print(idChat, '/scrapper/sessions/by_date', pretendido, True)
+
+    return None
 
 def final_movies_sessoes(idChat, idUser):
     aux = {}
@@ -275,7 +291,10 @@ def final_movies_sessoes(idChat, idUser):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
-    return get_content('/scrapper/sessions/by_date', [], aux)
+    pretendido = get_content('/scrapper/sessions/by_date', [], aux)
+    pretty_print(idChat, '/scrapper/sessions/by_date', pretendido, True)
+
+    return None
 
 
 def final_packages(idChat, idUser):
@@ -286,15 +305,23 @@ def final_packages(idChat, idUser):
 
     if tipo:
         aux['type'] = tipo
+        aux['type'] = tiporemove_string(idChat, idUser, '_package_type')
 
     if servico:
         aux['service'] = servico
+        remove_string(idChat, idUser, '_package_service')
 
     if preco:
         aux['min'] = load_float(idChat, idUser, '_min_value')
         aux['max'] = load_float(idChat, idUser, '_max_value')
+        remove_string(idChat, idUser, '_package_price')
+        remove_float(idChat, idUser, '_min_value')
+        remove_float(idChat, idUser, '_max_value')
 
-    return get_content('/fs_scrapper/packages', [], aux)
+    pretendido = get_content('/fs_scrapper/packages', [], aux)
+    pretty_print(idChat, '/fs_scrapper/packages', pretendido, False)
+
+    return None
 
 
 def final_phones(idChat, idUser):
@@ -310,20 +337,32 @@ def final_phones(idChat, idUser):
     if priceLimit:
         aux['min'] = load_float(idChat, idUser, '_min_value_')
         aux['max'] = load_float(idChat, idUser, '_max_value_')
+        remove_string(idChat, idUser, '_priceLimit_')
+        remove_float(idChat, idUser, '_min_value_')
+        remove_float(idChat, idUser, '_max_value_')
     if brand:
         aux['brand'] = brand
+        remove_string(idChat, idUser, '_phones_brand_')
     if promo:
         aux['promo'] = True
+        remove_string(idChat, idUser, '_phones_Promo_')
     if points:
         aux['points'] = True
+        remove_string(idChat, idUser, '_points_')
     if prest:
         aux['prest'] = True
+        remove_string(idChat, idUser, '_prest_')
     if newPhones:
         aux['new'] = True
+        remove_string(idChat, idUser, '_new_phones_')
     if ofer:
         aux['ofer'] = True
+        remove_string(idChat, idUser, '_phones_ofer')
 
-    return get_content('/fs_scrapper/phones', [], aux)
+    pretendido = get_content('/fs_scrapper/packages', [], aux)
+    pretty_print(idChat, '/fs_scrapper/packages', pretendido, False)
+
+    return None
 
 
 def get_response_rules(idChat, idUser, msg, name, chatData):
@@ -459,9 +498,10 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
             
         elif opcao == 4: # Apresentar próximas estreias
-            requerido = get_content('/scrapper/movies/releases', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            requerido = get_content('/scrapper/movies/releases', [], {})
+            pretty_print(idChat, '/scrapper/movies/releases', requerido, True)
+            return None
 
         elif opcao == 5:
             save_redis(idChat, idUser, 15)
@@ -516,9 +556,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
             
         if opcao == 2: # procurar sessoes por filme
-            requerido = final_movies_sessoes(idChat, idUser)
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_sessoes(idChat, idUser)
+            return None
 
     elif menu == 190:
         if opcao == 1:
@@ -539,9 +579,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
            
         if opcao == 2: # procurar sessoes por filme
-            requerido = final_movies_sessoes_loc(idChat, idUser, chatData)
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_sessoes_loc(idChat, idUser, chatData)
+            return None
 
     elif menu == 191:
         if opcao == 1:
@@ -660,10 +700,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # procurar sessoes por filme
-            requerido = final_movies_sessoes(idChat, idUser)
-            #requerido = get_content('/scrapper/sessions/by_movie', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_sessoes(idChat, idUser)
+            return None
 
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
@@ -773,10 +812,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa sem localização
-            requerido = final_movies_semloc(idChat, idUser)
-            #requerido = get_content('/scrapper/sessions/next_sessions', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_semloc(idChat, idUser)
+            return None
 
     elif menu == 108:
         if opcao == 1:
@@ -827,10 +865,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa com localização
-            requerido = final_movies_loc(idChat, idUser, chatData)
-            #requerido = get_content('/scrapper/sessions/next_sessions', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_loc(idChat, idUser, chatData)
+            return None
 
     elif menu == 139:
         if opcao == 1:
@@ -873,11 +910,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: #fazer pesquisa de duração de filme
-            #duracao = load_string(idChat, idUser, '_movie_duration')
-            requerido = final_movies_duration(idChat, idUser)
-            #requerido = get_content('/scrapper/sessions/by_duration', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_duration(idChat, idUser)
+            return None
 
     elif menu == 158:
         if opcao == 1:
@@ -987,18 +1022,17 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: #fazer pesquisa de duração de filme
-            #duracao = load_string(idChat, idUser, '_movie_duration')
-            requerido = final_movies_duration_loc(idChat, idUser, chatData)
-            #requerido = get_content('/scrapper/sessions/by_duration', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_duration_loc(idChat, idUser, chatData)
+            return None
 
     elif menu == 15: # obter info do filme
         aux = {}
         aux['movie'] = msg
-        requerido = get_content('/scrapper/movies/details', [], aux)
         remove_redis(idChat, idUser, chatData)
-        return requerido
+        requerido = get_content('/scrapper/movies/details', [], aux)
+        pretty_print(idChat, '/scrapper/movies/details', requerido, True)
+        return None
 
     elif menu == 14:
         if opcao == 1:
@@ -1109,16 +1143,15 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa
-            requerido = final_movies_options(idChat, idUser)
-            #requerido = get_content('/scrapper/movies/search', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_movies_options(idChat, idUser)
+            return None
 
     elif menu == 13:
         if opcao == 1: #procurar cinemas sem dar nada
-            requerido = get_content('/scrapper/movies/by_cinema', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            get_content('/scrapper/movies/by_cinema', [], {})
+            return None
             
         elif opcao == 2: #procurar cinemas com query
             save_redis(idChat, idUser, 102)
@@ -1128,9 +1161,10 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             aux = {}
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
-            requerido = get_content('/scrapper/movies/by_cinema', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            requerido = get_content('/scrapper/movies/by_cinema', [], {})
+            pretty_print(idChat, '/scrapper/movies/by_cinema', requerido, True)
+            return None
 
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
@@ -1138,38 +1172,42 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 12:
         if opcao == 1: #procurar cinemas sem dar nada
-            requerido = get_content('/scrapper/cinemas/search', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            requerido = get_content('/scrapper/cinemas/search', [], {})
+            pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
+            return None
             
         elif opcao == 2: #procurar cinemas com query
             save_redis(idChat, idUser, 101)
             return str('''Insira uma expressão para procurar o cinema''')
 
         elif opcao == 3: #procurar cinemas com lat e long
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
             requerido = get_content('/scrapper/cinemas/search', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
+            return None
 
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
 
     elif menu == 101: #procurar cinemas com query
+        remove_redis(idChat, idUser, chatData)
         aux = {}
         aux['search_term'] = msg
         requerido = get_content('/scrapper/cinemas/search', [], {})
-        remove_redis(idChat, idUser, chatData)
-        return requerido
+        pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
+        return None
 
     elif menu == 102: #procurar cinemas com query
+        remove_redis(idChat, idUser, chatData)
         aux = {}
         aux['search_term'] = msg
         requerido = get_content('/scrapper/movies/by_cinema', [], aux)
-        remove_redis(idChat, idUser, chatData)
-        return requerido
+        pretty_print(idChat, '/scrapper/movies/by_cinema', requerido, True)
+        return None
         
 def fs_rules(idChat, idUser, menu, msg, chatData):
     try:
@@ -1289,21 +1327,23 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             data['menu'] = json.dumps(reply_markup)
             return data
         elif opcao == 3:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['top'] = True
             requerido = get_content('/fs_scrapper/phones', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/phones', requerido, True)
+            return None
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
 
     elif menu == 221:
+        remove_redis(idChat, idUser, chatData)
         aux = {}
         aux['brand'] = msg
         requerido = get_content('/fs_scrapper/phones', [], aux)
-        remove_redis(idChat, idUser, chatData)
-        return requerido
+        pretty_print(idChat, '/fs_scrapper/phones', requerido, True)
+        return None
 
     elif menu == 222:
         if opcao == 1:
@@ -1409,18 +1449,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             data['menu'] = json.dumps(reply_markup)
             return data
         elif opcao == 8:
-            requerido = final_phones(idChat, idChat)
-            remove_string(idChat, idUser, '_phones_brand_')
-            remove_string(idChat, idUser, '_new_phones_')
-            remove_string(idChat, idUser, '_priceLimit_')
-            remove_string(idChat, idUser, '_phones_Promo_')
-            remove_string(idChat, idUser, '_points_')
-            remove_string(idChat, idUser, '_prest_')
-            remove_string(idChat, idUser, '_phones_ofer')
-            remove_float(idChat, idUser, '_min_value_')
-            remove_float(idChat, idUser, '_max_value_')
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            final_phones(idChat, idChat)
+            return None
         elif opcao == 9:
             remove_string(idChat, idUser, '_phones_brand_')
             remove_string(idChat, idUser, '_new_phones_')
@@ -1520,18 +1551,20 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             data['menu'] = json.dumps(reply_markup)
             return data
         if opcao == 2:
-            requerido = get_content('/fs_scrapper/linhas_apoio', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            requerido = get_content('/fs_scrapper/linhas_apoio', [], {})
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, False)
+            return None
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
 
     elif menu == 25:
         if opcao == 1:
-            requerido = get_content('/fs_scrapper/wtf', [], {})
             remove_redis(idChat, idUser, chatData)
-            return requerido
+            requerido = get_content('/fs_scrapper/wtf', [], {})
+            pretty_print(idChat, '/fs_scrapper/wtf', requerido, True)
+            return None
         elif opcao == 2:
             save_redis(idChat, idUser, 251)
             reply_markup={
@@ -1571,20 +1604,22 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return str("Saiu do modo de regras.")
 
     elif menu == 231:
+        remove_redis(idChat, idUser, chatData)
         aux = {}
         aux['search_term'] = msg
         requerido = get_content('/fs_scrapper/stores', [], aux)
-        remove_redis(idChat, idUser, chatData)
-        return requerido
+        pretty_print(idChat, '/fs_scrapper/stores', requerido, True)
+        return None
 
     elif menu == 232:
         if 'locationParam' in chatData:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
             requerido = get_content('/fs_scrapper/stores', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/stores', requerido, True)
+            return None
         else:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
@@ -1638,17 +1673,19 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             data['menu'] = json.dumps(reply_markup)
             return data
         elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Denúncia de fraude / pirataria"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 5:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Contencioso"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 6:
             save_redis(idChat, idUser, 245)
             reply_markup={
@@ -1668,143 +1705,162 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 242:
         if opcao == 1:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Pacotes com televisão"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 2:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Telemóvel"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 3:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Internet fixa"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Internet móvel"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 5:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Telefone"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 6:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Ativação pacotes internet"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 7:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Apoio informático"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 8:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
 
     elif menu == 243:
         if opcao == 1:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Empresas"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 2:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Corporate"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 3:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] =  "Profissionais e empresas"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 4:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Particulares"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
 
     elif menu == 244:
         if opcao == 1:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Reparação de equipamentos"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 2:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Devolução de equipamentos NOS"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
 
     elif menu == 245:
         if opcao == 1:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "Video intérprete"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 2:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['subject'] = "InfoPortabilidade"
             requerido = get_content('/fs_scrapper/linhas_apoio', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/linhas_apoio', requerido, True)
+            return None
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
 
     elif menu == 251:
         if opcao == 1:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['nome'] = 'WTF 1GB'
             requerido = get_content('/fs_scrapper/wtf_name', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/wtf_name', requerido, True)
+            return None
         elif opcao == 2:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['nome'] = 'WTF 5GB'
             requerido = get_content('/fs_scrapper/wtf_name', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/wtf_name', requerido, True)
+            return None
         elif opcao == 3:
+            remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['nome'] = 'WTF 10GB'
             requerido = get_content('/fs_scrapper/wtf_name', [], aux)
-            remove_redis(idChat, idUser, chatData)
-            return requerido
+            pretty_print(idChat, '/fs_scrapper/wtf_name', requerido, True)
+            return None
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
             return str("Saiu do modo de regras.")
 
     elif menu == 261:
+        remove_redis(idChat, idUser, chatData)
         aux = {}
         aux['name'] = msg
         requerido = get_content('/fs_scrapper/packages', [], aux)
-        remove_redis(idChat, idUser, chatData)
-        return requerido
+        pretty_print(idChat, '/fs_scrapper/packages', requerido, True)
+        return None
 
     elif menu == 262:
         if opcao == 1:
@@ -1956,12 +2012,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 265)
             return str("Indique o valor mínimo que procura.")
         elif opcao == 2:
-            required = final_packages(idChat, idUser)
-            remove_string(idChat, idUser, '_package_type')
-            remove_string(idChat, idUser, '_package_service')
-            remove_string(idChat, idUser, '_package_price')
+            final_packages(idChat, idUser)
             remove_redis(idChat, idUser, chatData)
-            return required
+            return None
         elif opcao == 3:
             remove_string(idChat, idUser, '_package_type')
             remove_string(idChat, idUser, '_package_service')
@@ -1981,14 +2034,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         try:
             valorMax = regexPrice(msg)
             save_float(idChat, idUser, '_max_value', valorMax)
-            required = final_packages(idChat, idUser)
-            remove_string(idChat, idUser, '_package_type')
-            remove_string(idChat, idUser, '_package_service')
-            remove_string(idChat, idUser, '_package_price')
-            remove_float(idChat, idUser, '_min_value')
-            remove_float(idChat, idUser, '_max_value')
+            final_packages(idChat, idUser)
             remove_redis(idChat, idUser, chatData)
-            return required
+            return None
         except:
             return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
 
