@@ -6,6 +6,7 @@ CINEMA_SCRAPER = os.getenv('CINEMA_SCRAPER', 'http://127.0.0.1:5003')
 RS = os.getenv('RS', 'http://127.0.0.1:5004')
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+PARAM_THRESHOLD = 2
 
 urls = {
     'API_ENDPOINT': API_ENDPOINT,

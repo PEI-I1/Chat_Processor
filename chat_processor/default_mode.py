@@ -8,6 +8,7 @@ from pretty_print import pretty_print
 from ner_by_regex import detect_entities_regex
 from pretty_params import optional_params as pp_opt, required_params as pp_req, param_en_to_pt
 from text_to_number import parse_number
+from config import PARAM_THRESHOLD
 
 confianca_level = 0.70
 tries = 5
@@ -417,16 +418,19 @@ def ntp_answer(idChat, msg):
     :param: user message
     '''
     answer = get_solver(idChat, msg)
-    send_msg(idChat, answer['msg'])
-    if answer['chat_id'] == -1:
-        globals.redis_db.delete(idChat)
-    elif answer['chat_id'] == -2:
-        globals.redis_db.delete(idChat)
-        linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
-        if linhas_apoio:
-            pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
-        else:
-            send_msg(idChat, "Não foi possível obter as linhas de apoio...")
+    if answer:
+        send_msg(idChat, answer['msg'])
+        if answer['chat_id'] == -1:
+            globals.redis_db.delete(idChat)
+        elif answer['chat_id'] == -2:
+            globals.redis_db.delete(idChat)
+            linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
+            if linhas_apoio:
+                pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
+            else:
+                send_msg(idChat, "Não foi possível obter as linhas de apoio...")
+    else:
+        send_msg(idChat, "Não foi possível obter uma resposta...")
 
 def modo_problemas(idChat, msg, chatData):
     '''Send to problem solver
@@ -489,8 +493,10 @@ def ask_param(idChat, chatData):
         param_key, param_value = list(chatData["paramsMissingOptional"].items())[0]
         print("[LOG] Asking Optional param (param_key): " + param_key)
         msg = pretty_question_optional_param(str(param_key))
+        msg += "\nSe pretender obter já os resultados escreva por favor 'pesquisar'."
 
     send_msg(idChat, msg)
+    
 
 def new_category_params(idChat, chatData, entry, msg_params):
     '''first process of params
@@ -523,6 +529,10 @@ def new_category_params(idChat, chatData, entry, msg_params):
         print("[LOG] Missing required "+str(chatData['paramsMissingRequired']))
         print("[LOG] Missing optional "+str(chatData['paramsMissingOptional']))
 
+        if len(missing_optional_params) > PARAM_THRESHOLD:
+            querystrings_aux = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
+            querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
+            process_content(idChat, chatData, get_content(chatData["cat"], [], querystrings))
         ask_param(idChat, chatData)
     else:
         chatData["paramsStatus"] = "done"
@@ -554,12 +564,15 @@ def save_param(idChat, msg, chatData, tp, msg_params):
 
     m = clean_msg(msg)
     if tp == "Optional":
-        if first_type == "PHONES_BOOLEAN":
-            if 'sim' == m:
+        if re.match(r'\bpesquisar?\b', m):
+            chatData['paramsMissingOptional'] = {}
+        elif first_type == "PHONES_BOOLEAN":
+            if re.match(r'\bs(im)?|y\b', m):
                 chatData["params" + tp][first_key] = "yes"
-            elif 'nao' == m:
                 del chatData["paramsMissing" + tp][first_key]
-        elif 'nao' != m:
+            elif re.match(r'\bn(ao)?\b', m):
+                del chatData["paramsMissing" + tp][first_key]
+        elif not re.match(r'\bn(ao)?\b', m):
             if first_key not in optional_params and lr == 0 and lo == 0:
                 chatData["params" + tp][first_key] = msg
                 del chatData["paramsMissing" + tp][first_key]
@@ -653,7 +666,7 @@ def change_category(idChat, idUser, msg, name, chatData):
     muda_categoria = clean_msg(msg)
 
     # se o user quiser mudar, altera-se a categoria e marca-se como new para os params
-    if muda_categoria == "sim":
+    if re.match(r'\bs(im)?|y\b', muda_categoria):
         chatData["cat"] = chatData["cat_change"]
         chatData["paramsStatus"] = "new"
     # se o user nao quiser mudar, trata-se a ultima mensagem (antes de perguntar se queria mudar de pedido)

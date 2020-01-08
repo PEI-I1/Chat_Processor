@@ -73,7 +73,7 @@ def get_solver(idChat, msg):
     try:
         res = requests.post(URL, json={"idChat": idChat, "msg": msg})
         res.raise_for_status()
-        res = res.text
+        res = res.json()
     except:
         res = None
 
