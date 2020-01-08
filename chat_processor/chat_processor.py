@@ -44,10 +44,10 @@ def forward_to(idChat, chatData, data):
     '''
     globals.redis_db.set(idChat, json.dumps(chatData))
 
-    if 'msg' in data:
+    if 'menu' in data:
         send_menu(idChat, data['msg'], data['menu'])
     else:
-        send_msg(idChat, data)
+        send_msg(idChat, data['msg'])
 
 def process_content_num(idChat, content, num):
     '''Process choice made by user to filter content

@@ -404,7 +404,9 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
 
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif 10 < menu < 20 or 100 < menu < 200:
         resposta = cinema_rules(idChat, idUser, menu, msg, chatData)
@@ -419,7 +421,9 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
         return resposta
 
     else:
-        return str("Pedimos desculpa, mas algo correu mal.")
+        data = {}
+        data['msg'] = str("Pedimos desculpa, mas algo correu mal.")
+        return data
 
 
 def cinema_rules(idChat, idUser, menu, msg, chatData):
@@ -506,11 +510,15 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 5:
             save_redis(idChat, idUser, 15)
-            return str('''Especifique o filme que pretende obter infomações sobre.''')
+            data = {}
+            data['msg'] = str('''Especifique o filme que pretende obter infomações sobre.''')
+            return data
 
         elif opcao == 6:
             save_redis(idChat, idUser, 16)
-            return str('''Especifique a duração do filme que pretende, em minutos.''')
+            data = {}
+            data['msg'] = str('''Especifique a duração do filme que pretende, em minutos.''')
+            return data
 
         elif opcao == 7:
             save_redis(idChat, idUser, 17)
@@ -526,7 +534,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 8:
             save_redis(idChat, idUser, 18)
-            return str('''Especifique o nome do filme.''')
+            data = {}
+            data['msg'] = str('''Especifique o nome do filme.''')
+            return data
 
         elif opcao == 9:
             save_redis(idChat, idUser, 19)
@@ -542,6 +552,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 10:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
     elif menu == 19:
         if opcao == 1:
@@ -587,23 +600,33 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 191:
         if opcao == 1:
             save_redis(idChat, idUser, 199)
-            return str('''Escreva termo de pesquisa para um cinema''')
+            data = {}
+            data['msg'] = str('''Escreva termo de pesquisa para um cinema''')
+            return data
 
         if opcao == 2: # procurar sessoes por filme
             save_redis(idChat, idUser, 198)
-            return str('''Especifique a sua localização''')
+            data = {}
+            data['msg'] = str('''Especifique a sua localização''')
+            return data
 
         if opcao == 3: # procurar sessoes por filme
             save_redis(idChat, idUser, 197)
-            return str('''Indique a data (ano-mês-dia)''')
+            data = {}
+            data['msg'] = str('''Indique a data (ano-mês-dia)''')
+            return data
 
         if opcao == 4: # procurar sessoes por filme
             save_redis(idChat, idUser, 196)
-            return str('''Especifique limite para início das sessões''')
+            data = {}
+            data['msg'] = str('''Especifique limite para início das sessões''')
+            return data
 
         if opcao == 5: # procurar sessoes por filme
             save_redis(idChat, idUser, 195)
-            return str('''Especifique limite para fim das sessões''')
+            data = {}
+            data['msg'] = str('''Especifique limite para fim das sessões''')
+            return data
 
     elif menu == 199:
         save_string(idChat, idUser, '_search_term', msg)
@@ -707,30 +730,46 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
     elif menu == 181:
         if opcao == 1:
             save_redis(idChat, idUser, 189)
-            return str('''Escreva termo de pesquisa para um cinema''')
+            data = {}
+            data['msg'] = str('''Escreva termo de pesquisa para um cinema''')
+            return data
 
         elif opcao == 2: # procurar sessoes por filme
             save_redis(idChat, idUser, 188)
-            return str('''Especifique a sua localização''')
+            data = {}
+            data['msg'] = str("Especifique a sua localização")
+            return data
 
         elif opcao == 3: # procurar sessoes por filme
             save_redis(idChat, idUser, 187)
-            return str('''Indique a data (ano-mês-dia)''')
+            data = {}
+            data['msg'] = str("Indique a data (ano-mês-dia)")
+            return data
 
         elif opcao == 4: # procurar sessoes por filme
             save_redis(idChat, idUser, 186)
-            return str('''Especifique limite para início das sessões''')
+            data = {}
+            data['msg'] = str("Especifique limite para início das sessões")
+            return data
 
         elif opcao == 5: # procurar sessoes por filme
             save_redis(idChat, idUser, 185)
-            return str('''Especifique limite para fim das sessões''')
+            data = {}
+            data['msg'] = str("Especifique limite para fim das sessões")
+            return data
 
         elif opcao == 6:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
     elif menu == 189:
         save_string(idChat, idUser, '_package_price', 'all')
@@ -820,12 +859,19 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 108:
         if opcao == 1:
             save_redis(idChat, idUser, 169)
-            return str('''Especifique termo de procura por cinema''')
+            data = {}
+            data['msg'] = str('''Especifique termo de procura por cinema''')
+            return data
         elif opcao == 2:
             save_redis(idChat, idUser, 168)
-            return str('''Especifique localização''')
+            data = {}
+            data['msg'] = str('''Especifique localização''')
+            return data
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
     elif menu == 169:
         save_string(idChat, idUser, '_search_term', msg)
@@ -873,10 +919,14 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 139:
         if opcao == 1:
             save_redis(idChat, idUser, 168)
-            return str('''Especifique termo de procura por cinema''')
+            data = {}
+            data['msg'] = str('''Especifique termo de procura por cinema''')
+            return data
         elif opcao == 1:
             save_redis(idChat, idUser, 168)
-            return str('''Especifique localização''')
+            data = {}
+            data['msg'] = str('''Especifique localização''')
+            return data
 
 
     elif menu == 16:
@@ -918,26 +968,39 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 158:
         if opcao == 1:
             save_redis(idChat, idUser, 149)
-            return str('''Escreva termo de pesquisa para um cinema''')
+            data = {}
+            data['msg'] = str('''Escreva termo de pesquisa para um cinema''')
+            return data
 
         elif opcao == 2: # procurar sessoes por filme
             save_redis(idChat, idUser, 148)
-            return str('''Especifique a sua localização''')
+            data = {}
+            data['msg'] = str('''Especifique a sua localização''')
+            return data
 
         elif opcao == 3: # procurar sessoes por filme
             save_redis(idChat, idUser, 147)
-            return str('''Indique a data (ano-mês-dia)''')
+            data = {}
+            data['msg'] = str('''Indique a data (ano-mês-dia)''')
+            return data
 
         elif opcao == 4: # procurar sessoes por filme
             save_redis(idChat, idUser, 146)
-            return str('''Especifique limite para início das sessões''')
+            data = {}
+            data['msg'] = str('''Especifique limite para início das sessões''')
+            return data
 
         elif opcao == 5: # procurar sessoes por filme
             save_redis(idChat, idUser, 145)
-            return str('''Especifique limite para fim das sessões''')
+            data = {}
+            data['msg'] = str('''Especifique limite para fim das sessões''')
+            return data
 
         elif opcao == 6:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
     elif menu == 149:
         save_string(idChat, idUser, '_package_price', 'all')
@@ -1038,26 +1101,39 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 14:
         if opcao == 1:
             save_redis(idChat, idUser, 179)
-            return str('''Especifique que tipo de género pretende.''')
+            data = {}
+            data['msg'] = str('''Especifique que tipo de género pretende.''')
+            return data
 
         elif opcao == 2:
             save_redis(idChat, idUser, 178)
-            return str('''Especifique o cast, separando cada nome por vírgula.''')
+            data = {}
+            data['msg'] = str('''Especifique o cast, separando cada nome por vírgula.''')
+            return data
 
         elif opcao == 3:
             save_redis(idChat, idUser, 177)
-            return str('''Especifique um produtor.''')
+            data = {}
+            data['msg'] = str('''Especifique um produtor.''')
+            return data
 
         elif opcao == 4:
             save_redis(idChat, idUser, 176)
-            return str('''Especifique expressões para procurar na sinopse''')
+            data = {}
+            data['msg'] = str('''Especifique expressões para procurar na sinopse''')
+            return data
 
         elif opcao == 5:
             save_redis(idChat, idUser, 175)
-            return str('''Especifique faixa etária''')
+            data = {}
+            data['msg'] = str('''Especifique faixa etária''')
+            return data
 
         elif opcao == 6:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
     elif menu == 179:
         save_string(idChat, idUser, '_movie_genre', msg)
@@ -1156,7 +1232,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             
         elif opcao == 2: #procurar cinemas com query
             save_redis(idChat, idUser, 102)
-            return str('''Insira uma expressão para procurar o cinema''')
+            data = {}
+            data['msg'] = str('''Insira uma expressão para procurar o cinema''')
+            return data
 
         elif opcao == 3: #procurar cinemas com lat e long
             aux = {}
@@ -1169,6 +1247,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
 
     elif menu == 12:
@@ -1180,7 +1261,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             
         elif opcao == 2: #procurar cinemas com query
             save_redis(idChat, idUser, 101)
-            return str('''Insira uma expressão para procurar o cinema''')
+            data = {}
+            data['msg'] = str('''Insira uma expressão para procurar o cinema''')
+            return data
 
         elif opcao == 3: #procurar cinemas com lat e long
             remove_redis(idChat, idUser, chatData)
@@ -1193,6 +1276,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
+            data = {}
+            data['msg'] = str('''Saiu do modo de regras.''')
+            return data
 
     elif menu == 101: #procurar cinemas com query
         remove_redis(idChat, idUser, chatData)
@@ -1302,12 +1388,16 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 22:
         if opcao == 1:
             save_redis(idChat, idUser, 221)
-            return str("Indique o nome do modelo que pretende.")
+            data = {}
+            data['msg'] = str('''Indique o nome do modelo que pretende.''')
+            return data
         elif opcao == 2:
             save_redis(idChat, idUser, 222)
             reply_markup={
@@ -1336,7 +1426,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 221:
         remove_redis(idChat, idUser, chatData)
@@ -1348,8 +1440,10 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 222:
         if opcao == 1:
-           save_redis(idChat, idUser, 223)
-           return str("Indique a marca que pretende")
+            save_redis(idChat, idUser, 223)
+            data = {}
+            data['msg'] = str('''Indique a marca que pretende.''')
+            return data
         elif opcao == 2:
             save_string(idChat, idUser, '_new_phones_', 'defined')
             reply_markup={
@@ -1410,7 +1504,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         elif opcao == 5:
             save_redis(idChat, idUser, 224)
             save_string(idChat, idUser, '_priceLimit_', 'defined')
-            return str('''Indique o valor mínimo''')
+            data = {}
+            data['msg'] = str('''Indique o valor mínimo.''')
+            return data
         elif opcao == 6:
             save_string(idChat, idUser, '_prest_', 'defined')
             reply_markup={
@@ -1464,7 +1560,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_float(idChat, idUser, '_min_value_')
             remove_float(idChat, idUser, '_max_value_')
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 223:
         save_string(idChat, idUser, '_phones_brand_', msg)
@@ -1492,9 +1590,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             valorMin = regexPrice(msg)
             save_float(idChat, idUser, '_min_value_', valorMin)
             save_redis(idChat, idUser, 225)
-            return str("Indique o valor máximo que procura.\n")
+            data = {}
+            data['msg'] = str('''Indique o valor máximo que procura.''')
+            return data
         except:
-            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
+            data = {}
+            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
+            return data
 
     elif menu == 225:
         try:
@@ -1519,19 +1621,27 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             data['menu'] = json.dumps(reply_markup)
             return data
         except:
-            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
+            data = {}
+            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
+            return data
 
     elif menu == 23:
         if opcao == 1:
             save_redis(idChat, idUser, 231)
-            return str("Indique uma zona ou morada para a qual procura lojas NOS.")
+            data = {}
+            data['msg'] = str('''Indique uma zona ou morada para a qual procura lojas NOS.''')
+            return data
         elif opcao == 2:
             save_redis(idChat, idUser, 232)
             get_loc(idChat)
-            return str("Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.")
+            data = {}
+            data['msg'] = str('''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
+            return data
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 24:
         if opcao == 1:
@@ -1558,7 +1668,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 25:
         if opcao == 1:
@@ -1580,12 +1692,16 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 26:
         if opcao == 1:
             save_redis(idChat, idUser, 261)
-            return str('''Indique o nome do pacote pretendido.''')
+            data = {}
+            data['msg'] = str('''Indique o nome do pacote pretendido.''')
+            return data
         elif opcao == 2:
             save_redis(idChat, idUser, 262)
             reply_markup={
@@ -1602,7 +1718,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 231:
         remove_redis(idChat, idUser, chatData)
@@ -1623,7 +1741,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         else:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 241:
         if opcao == 1:
@@ -1702,7 +1822,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 242:
         if opcao == 1:
@@ -1756,7 +1878,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         elif opcao == 8:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 243:
         if opcao == 1:
@@ -1789,7 +1913,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         elif opcao == 5:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 244:
         if opcao == 1:
@@ -1808,7 +1934,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 245:
         if opcao == 1:
@@ -1827,7 +1955,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 251:
         if opcao == 1:
@@ -1853,7 +1983,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return None
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 261:
         remove_redis(idChat, idUser, chatData)
@@ -1916,7 +2048,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
         elif opcao == 4:
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 263:
         if opcao == 1:
@@ -2005,13 +2139,17 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         elif opcao == 7:
             remove_string(idChat, idUser, '_package_type')
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 264:
         if opcao == 1:
             save_string(idChat, idUser, '_package_price', 'defined')
             save_redis(idChat, idUser, 265)
-            return str("Indique o valor mínimo que procura.")
+            data = {}
+            data['msg'] = str('''Indique o valor mínimo que procura.''')
+            return data
         elif opcao == 2:
             final_packages(idChat, idUser)
             remove_redis(idChat, idUser, chatData)
@@ -2020,16 +2158,22 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_string(idChat, idUser, '_package_type')
             remove_string(idChat, idUser, '_package_service')
             remove_redis(idChat, idUser, chatData)
-            return str("Saiu do modo de regras.")
+            data = {}
+            data['msg'] = str("Saiu do modo de regras.")
+            return data
 
     elif menu == 265:
         try:
             valorMin = regexPrice(msg)
             save_float(idChat, idUser, '_min_value', valorMin)
             save_redis(idChat, idUser, 266)
-            return str("Indique o valor máximo que procura.\n")
+            data = {}
+            data['msg'] = str('''Indique o valor máximo que procura.''')
+            return data
         except:
-            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
+            data = {}
+            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
+            return data
 
     elif menu == 266:
         try:
@@ -2039,7 +2183,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             remove_redis(idChat, idUser, chatData)
             return None
         except:
-            return str("Por favor, volte a tentar inserindo o valor com dígitos e .")
+            data = {}
+            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
+            return data
 
 
 def problem_rules(idChat, idUser, menu, msg, chatData):
