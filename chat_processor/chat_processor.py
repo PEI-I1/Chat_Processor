@@ -136,10 +136,10 @@ def get_response(idChat, idUser, msg, name, location):
             ntp_answer(idChat, msg)
         else:
             m = clean_msg(msg)
-            if m == "modo de regras":
+            if re.match('\bmodo (de )?regras\b', m):
                 chatData["status"] = "modo regras"
                 forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
-            elif m == "ver mais":
+            elif re.match('\bver mais\b', m):
                 ver_mais(idChat)
             else:
                 get_response_default(idChat, idUser, msg, name, chatData)

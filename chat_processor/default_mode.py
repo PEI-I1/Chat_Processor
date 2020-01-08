@@ -417,16 +417,19 @@ def ntp_answer(idChat, msg):
     :param: user message
     '''
     answer = get_solver(idChat, msg)
-    send_msg(idChat, answer['msg'])
-    if answer['chat_id'] == -1:
-        globals.redis_db.delete(idChat)
-    elif answer['chat_id'] == -2:
-        globals.redis_db.delete(idChat)
-        linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
-        if linhas_apoio:
-            pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
-        else:
-            send_msg(idChat, "Não foi possível obter as linhas de apoio...")
+    if answer:
+        send_msg(idChat, answer['msg'])
+        if answer['chat_id'] == -1:
+            globals.redis_db.delete(idChat)
+        elif answer['chat_id'] == -2:
+            globals.redis_db.delete(idChat)
+            linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
+            if linhas_apoio:
+                pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
+            else:
+                send_msg(idChat, "Não foi possível obter as linhas de apoio...")
+    else:
+        send_msg(idChat, "Não foi possível obter uma resposta...")
 
 def modo_problemas(idChat, msg, chatData):
     '''Send to problem solver
@@ -555,11 +558,12 @@ def save_param(idChat, msg, chatData, tp, msg_params):
     m = clean_msg(msg)
     if tp == "Optional":
         if first_type == "PHONES_BOOLEAN":
-            if 'sim' == m:
+            if re.match('\bs(im)?|y\b', m):
                 chatData["params" + tp][first_key] = "yes"
-            elif 'nao' == m:
                 del chatData["paramsMissing" + tp][first_key]
-        elif 'nao' != m:
+            elif re.match('\bn(ao)?\b', m):
+                del chatData["paramsMissing" + tp][first_key]
+        elif re.match('\bn(ao)?\b', m):
             if first_key not in optional_params and lr == 0 and lo == 0:
                 chatData["params" + tp][first_key] = msg
                 del chatData["paramsMissing" + tp][first_key]
@@ -653,7 +657,7 @@ def change_category(idChat, idUser, msg, name, chatData):
     muda_categoria = clean_msg(msg)
 
     # se o user quiser mudar, altera-se a categoria e marca-se como new para os params
-    if muda_categoria == "sim":
+    if re.match('\bs(im)?|y\b', muda_categoria):
         chatData["cat"] = chatData["cat_change"]
         chatData["paramsStatus"] = "new"
     # se o user nao quiser mudar, trata-se a ultima mensagem (antes de perguntar se queria mudar de pedido)
