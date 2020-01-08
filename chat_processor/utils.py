@@ -87,7 +87,7 @@ def send_msg(idChat, msg):
     '''
     URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
 
-    print(URL)
+    print("[LOG] get_solver from: "+URL)
     try:
         res = requests.post(URL, data=msg.encode("utf-8"))
         res.raise_for_status()

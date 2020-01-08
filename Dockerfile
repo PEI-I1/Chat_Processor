@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y \
     libhdf5-dev \
     git
 
-RUN git clone https://github.com/PEI-I1/Chat_Processor.git
-
+COPY . ./Chat_Processor
 WORKDIR Chat_Processor
 
 RUN pip install -r requirements.txt
