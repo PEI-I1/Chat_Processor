@@ -2,7 +2,12 @@
 
 ## What is it?
 
-TODO
+Chat Processor is a natural language interpreter that tries to tag messages in order to determine the best answer is for it.
+It works as the main controller of the NOS Bot, making requests to other components based on the user's queries/questions.
+It supports two execution modes, a default one and a rules based mode. In the default mode the users messages are understood using a dictionary where each element is a category, which represents a feature made available by the bot, as well as a group of words against which each message is compared to in order to tag it in one of the categories.
+Each message is spell checked (symspellpy with frequency words generated from a OpenSubtitles corpus) to fix misspellings/typos.
+Entity recognition is achieved by using a modified multilingual version of BERT model developed by deeppavlov although, because some entities are not detected by the model, regex is also used.
+The response to each user is "prettified" using the text formatting capabilities of Telegram.
 
 ## Usage
 

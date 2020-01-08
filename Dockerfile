@@ -6,8 +6,7 @@ RUN apt-get update && apt-get install -y \
     gfortran \
     libblas-dev \
     liblapack-dev \
-    libhdf5-dev \
-    git
+    libhdf5-dev
 
 COPY . ./Chat_Processor
 WORKDIR Chat_Processor
