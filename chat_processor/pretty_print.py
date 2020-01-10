@@ -12,11 +12,15 @@ def linhas_apoio(idChat, content, cat):
     :param: id chat to send the messages
     :param: content of messages
     '''
-    s = 'As linhas de apoio da NOS são:\n'
-    #all info
-    #s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"] + "\n" + l["descriçao"], content))
-    s += "\n".join(map(lambda l: bold(l["categoria"] + ": ") + l["numero"], content))
-    send_msg(idChat, s)
+    send_msg(idChat, 'As linhas de apoio da NOS são:\n')
+
+    for l in content:
+        s = bold(l["categoria"]) + "\n"
+        s += bold("Contacto: ") + l["numero"] + "\n"
+        s += l["horario"] + "\n"
+        if 'preco' in l:
+            s += bold("Custo da chamada: ") + l["preco"] + "\n"
+        send_msg(idChat, s)
 
 def phones(idChat, content, cat):
     '''Pretty print of phones
