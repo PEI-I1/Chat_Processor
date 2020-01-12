@@ -6,6 +6,10 @@ import json
 
 
 def load_redis(idChat, idUser):
+    '''Load the number of the menu that was sent to the user
+    :param: chat id
+    :param: user id
+    '''
     aux = globals.redis_db.get(str(idChat) + str(idUser) + '_rules_mode')
 
     if aux:
@@ -15,6 +19,11 @@ def load_redis(idChat, idUser):
 
 
 def remove_redis(idChat, idUser, chatData):
+    '''Remove the user information on the rules mode stored in redis
+    :param: chat id
+    :param: user id
+    :param: chatData
+    '''
     if load_string(idChat, idUser, '_movie_genre'):
         remove_string(idChat, idUser, '_movie_genre')
 
@@ -51,14 +60,30 @@ def remove_redis(idChat, idUser, chatData):
 
 
 def save_redis(idChat, idUser, menu):
+    '''Save the number of the menu that was sent to the user
+    :param: chat id
+    :param: user id
+    :param: menu number
+    '''
     globals.redis_db.set(str(idChat) + str(idUser) + '_rules_mode', menu)
 
 
 def save_number(idChat, idUser, code, number):
+    '''Save an input number from the user
+    :param: chat id
+    :param: user id
+    :param: code to identify the number
+    :param: number
+    '''
     globals.redis_db.set(str(idChat) + str(idUser) + code, number)
 
 
 def load_number(idChat, idUser, code):
+    '''Load an input number from the user associated with a code
+    :param: chat id
+    :param: user id
+    :param: code to identify the number
+    '''
     aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
@@ -68,14 +93,29 @@ def load_number(idChat, idUser, code):
 
 
 def remove_number(idChat, idUser, code):
+    '''Remove an input number from the user associated with a code
+    :param: chat id
+    :param: user id
+    :param: code to identify the number
+    '''
     globals.redis_db.delete(str(idChat) + str(idUser) + code)
 
 
 def save_float(idChat, idUser, code, number):
+    '''Save an input float from the user
+    :param: chat id
+    :param: user id
+    :param: code to identify the float
+    :param: float'''
     globals.redis_db.set(str(idChat) + str(idUser) + code, number)
 
 
 def load_float(idChat, idUser, code):
+    '''Load an input float from the user associated with a code
+    :param: chat id
+    :param: user id
+    :param: code to identify the float
+    '''
     aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
@@ -85,14 +125,29 @@ def load_float(idChat, idUser, code):
 
 
 def remove_float(idChat, idUser, code):
+    '''Remove an input float from the user associated with a code
+    :param: chat id
+    :param: user id
+    :param: code to identify the float
+    '''
     globals.redis_db.delete(str(idChat) + str(idUser) + code)
 
 
 def save_string(idChat, idUser, code, string):
+    '''Save an input string from the user
+    :param: chat id
+    :param: user id
+    :param: code to identify the string
+    :param: float'''
     globals.redis_db.set(str(idChat) + str(idUser) + code, string)
 
 
 def load_string(idChat, idUser, code):
+    '''Load an input string from the user associated with a code
+    :param: chat id
+    :param: user id
+    :param: code to identify the string
+    '''
     aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
@@ -102,10 +157,19 @@ def load_string(idChat, idUser, code):
 
 
 def remove_string(idChat, idUser, code):
+    '''Remove an input string from the user associated with a code
+    :param: chat id
+    :param: user id
+    :param: code to identify the string
+    '''
     globals.redis_db.delete(str(idChat) + str(idUser) + code)
 
 
 def final_movies_options(idChat, idUser):
+    '''Send request to Cinema Scrapper for movies with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     genre = load_string(idChat, idUser, '_movie_genre') 
     cast = load_string(idChat, idUser, '_movie_cast')
@@ -139,6 +203,10 @@ def final_movies_options(idChat, idUser):
     return None
 
 def final_movies_duration(idChat, idUser):
+    '''Send request to Cinema Scrapper for sessions of a movie with the chosen options and forwardthe reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
     duration = load_string(idChat, idUser, '_movie_duration')
@@ -172,6 +240,10 @@ def final_movies_duration(idChat, idUser):
     return None
 
 def final_movies_duration_loc(idChat, idUser, chatData):
+    '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
 
@@ -209,6 +281,10 @@ def final_movies_duration_loc(idChat, idUser, chatData):
     return None
 
 def final_movies_loc(idChat, idUser, chatData):
+    '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
 
@@ -225,6 +301,10 @@ def final_movies_loc(idChat, idUser, chatData):
     return None
 
 def final_movies_semloc(idChat, idUser):
+    '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term') 
 
@@ -235,6 +315,10 @@ def final_movies_semloc(idChat, idUser):
     return get_content('/scrapper/sessions/next_sessions', [], aux)
 
 def final_movies_sessoes_loc(idChat, idUser, chatData):
+    '''Send request to Cinemas Scrapper for session of a movie with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
 
@@ -268,6 +352,10 @@ def final_movies_sessoes_loc(idChat, idUser, chatData):
     return None
 
 def final_movies_sessoes(idChat, idUser):
+    '''Send request to Cinemas Scrapper for session of a movie with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     search_term = load_string(idChat, idUser, '_search_term')
 
@@ -298,6 +386,10 @@ def final_movies_sessoes(idChat, idUser):
 
 
 def final_packages(idChat, idUser):
+    '''Send request to FS Scrapper for packages with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux =  {}
     tipo = load_string(idChat, idUser, '_package_type')
     servico = load_string(idChat, idUser, '_package_service')
@@ -326,6 +418,10 @@ def final_packages(idChat, idUser):
 
 
 def final_phones(idChat, idUser):
+    '''Send request to FS Scrapper for phones with the chosen options and forward the reply to user
+    :param: chat id
+    :param: user id
+    '''
     aux = {}
     promo = load_string(idChat, idUser, '_phones_Promo_')
     newPhones = load_string(idChat, idUser, '_new_phones_')
@@ -367,6 +463,13 @@ def final_phones(idChat, idUser):
 
 
 def get_response_rules(idChat, idUser, msg, name, chatData):
+    '''Send the first menu of the rules mode to the user and identify the correct method to process the received message
+    :param: chat id
+    :param: user id
+    :param: messagem received from user
+    :param: user name
+    :param: chatData
+    '''
     menu = load_redis(idChat, idUser)
 
     if menu == 0:
@@ -399,8 +502,11 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
             return resposta
 
         elif opcao == 6:
-            resposta = problem_rules(idChat, idUser, opcao, msg, chatData)
-            return resposta
+            chatData["status"] == "modo problemas"
+            globals.redis_db.set(idChat, json.dumps(chatData))
+            data = {}
+            data['msg'] = str("Vamos tentar encontrar uma solução para o seu problema.")
+            return data
 
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
@@ -416,10 +522,6 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
         resposta = fs_rules(idChat, idUser, menu, msg, chatData)
         return resposta
 
-    elif 30 < menu < 40 or 300 < menu < 400:
-        resposta = problem_rules(idChat, idUser, menu, msg, chatData)
-        return resposta
-
     else:
         data = {}
         data['msg'] = str("Pedimos desculpa, mas algo correu mal.")
@@ -427,6 +529,13 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
 
 
 def cinema_rules(idChat, idUser, menu, msg, chatData):
+    '''Deal with cinema related steps of the rules mode, process user messages and send the following step
+    :param: chat id
+    :param: user id
+    :param: number of the menu sent to user
+    :param: messagem received from user
+    :param: chatData
+    '''
     try:
         opcao = int(msg)
     except ValueError:
@@ -1297,6 +1406,13 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
         return None
         
 def fs_rules(idChat, idUser, menu, msg, chatData):
+    '''Deal with FS related steps of the rules mode, process user messages and send the following step
+    :param: chat id
+    :param: user id
+    :param: number of the menu sent to user
+    :param: messagem received from user
+    :param: chatData
+    '''
     try:
         opcao = int(msg)
     except ValueError:
@@ -2186,8 +2302,3 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             data = {}
             data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
             return data
-
-
-def problem_rules(idChat, idUser, menu, msg, chatData):
-    chatData["status"] == "modo problemas"
-    return str("Vamos tentar encontrar uma solução para o seu problema.")
