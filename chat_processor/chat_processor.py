@@ -145,6 +145,7 @@ def get_response(idChat, idUser, msg, name, location):
                 m = clean_msg(msg)
                 if re.match(r'\bmodo (de )?regras\b', m):
                     chatData["status"] = "modo regras"
+                    globals.redis_db.set(idChat, json.dumps(chatData))
                     forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
                 elif re.match(r'\bver mais\b', m):
                     ver_mais(idChat)

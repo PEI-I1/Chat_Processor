@@ -502,8 +502,11 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
             return resposta
 
         elif opcao == 6:
-            resposta = problem_rules(idChat, idUser, chatData)
-            return resposta
+            chatData["status"] == "modo problemas"
+            globals.redis_db.set(idChat, json.dumps(chatData))
+            data = {}
+            data['msg'] = str("Vamos tentar encontrar uma solução para o seu problema.")
+            return data
 
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
@@ -2299,13 +2302,3 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             data = {}
             data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
             return data
-
-
-def problem_rules(idChat, idUser, chatData):
-    '''Deal with cinema related steps of the rules mode, process user messages and send the following step
-    :param: chat id
-    :param: user id
-    :param: chatData
-    '''
-    chatData["status"] == "modo problemas"
-    return str("Vamos tentar encontrar uma solução para o seu problema.")
