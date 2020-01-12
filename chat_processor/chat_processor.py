@@ -101,46 +101,52 @@ def get_response(idChat, idUser, msg, name, location):
     :param: user name
     :param: user location
     '''
-    contentAux = globals.redis_db.get("content" + str(idChat))
-    content = json.loads(contentAux) if contentAux else None
-
-    if content:
-        process_content(idChat, msg, content)
+    if re.match(r'^/reset(\s)*$', msg):
+        globals.redis_db.delete("content" + str(idChat))
+        globals.redis_db.delete("vermais" + str(idChat))
+        globals.redis_db.delete(str(idChat) + str(idUser) + "_rules_mode");
+        globals.redis_db.delete(idChat)
+        print("[get_response] Client data removed")
     else:
-        chatDataAux = globals.redis_db.get(idChat)
-        chatData = json.loads(chatDataAux) if chatDataAux else None
+        contentAux = globals.redis_db.get("content" + str(idChat))
+        content = json.loads(contentAux) if contentAux else None
 
-        if not chatData:
-            chatData = {
-                "status": "",
-                "tries": 0,
-                "cat": "",
-                "cat_change": "",
-                "cat_change_last_msg": "",
-                "paramsStatus": "new",
-                "locationParam": None,
-                "paramsRequired": {},
-                "paramsOptional":{},
-                "paramsMissingRequired": {},
-                "paramsMissingOptional": {},
-                "msg_params": {}
-            }
-
-        if location:
-            chatData["status"] = ""
-            chatData["locationParam"] = location
-
-        if chatData["status"] == "modo regras":
-            forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
-        elif chatData["status"] == "modo problemas":
-            globals.redis_db.set(idChat, json.dumps(chatData))
-            ntp_answer(idChat, msg)
+        if content:
+            process_content(idChat, msg, content)
         else:
-            m = clean_msg(msg)
-            if re.match(r'\bmodo (de )?regras\b', m):
-                chatData["status"] = "modo regras"
+            chatDataAux = globals.redis_db.get(idChat)
+            chatData = json.loads(chatDataAux) if chatDataAux else None
+
+            if not chatData:
+                chatData = {
+                    "status": "",
+                    "tries": 0,
+                    "cat": "",
+                    "cat_change": "",
+                    "cat_change_last_msg": "",
+                    "paramsStatus": "new",
+                    "locationParam": None,
+                    "paramsRequired": {},
+                    "paramsOptional":{},
+                    "paramsMissingRequired": {},
+                    "paramsMissingOptional": {},
+                    "msg_params": {}
+                }
+
+            if location:
+                chatData["status"] = ""
+                chatData["locationParam"] = location
+            if chatData["status"] == "modo regras":
                 forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
-            elif re.match(r'\bver mais\b', m):
-                ver_mais(idChat)
+            elif chatData["status"] == "modo problemas":
+                globals.redis_db.set(idChat, json.dumps(chatData))
+                ntp_answer(idChat, msg)
             else:
-                get_response_default(idChat, idUser, msg, name, chatData)
+                m = clean_msg(msg)
+                if re.match(r'\bmodo (de )?regras\b', m):
+                    chatData["status"] = "modo regras"
+                    forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
+                elif re.match(r'\bver mais\b', m):
+                    ver_mais(idChat)
+                else:
+                    get_response_default(idChat, idUser, msg, name, chatData)
