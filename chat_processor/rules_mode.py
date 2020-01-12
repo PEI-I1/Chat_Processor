@@ -2308,4 +2308,5 @@ def problem_rules(idChat, idUser, chatData):
     :param: chatData
     '''
     chatData["status"] == "modo problemas"
+    globals.redis_db.set(idChat, json.dumps(chatData))
     return str("Vamos tentar encontrar uma solução para o seu problema.")
