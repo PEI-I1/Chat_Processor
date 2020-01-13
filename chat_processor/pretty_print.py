@@ -31,7 +31,17 @@ def phones(idChat, content, cat):
 
     for p in content:
         s = bold("Nome: ") + p["nome"] + "\n"
-        s += bold("Preço: ") + p["preco"] + " €\n"
+        s += bold("Preço: ") + p["preco"] + " €"
+        if 'preco_original' in p:
+            s += ' (custava ' + p['preco_original'] + ' €)\n'
+        else:
+            s += '\n'
+        if 'processador' in p:
+             s += bold("Processador: ") + p["processador"] + "\n"
+        if 'memoria' in p:
+             s += bold("Memória: ") + p["memoria"] + "\n"
+        if 'camara' in p:
+            s += bold("Câmara: ") + "\n         " + p["camara"] + "\n"
         if 'oferta' in p:
             s += bold("Oferta: ") + p["oferta"] + "\n"
         if 'tags' in p:
@@ -40,10 +50,17 @@ def phones(idChat, content, cat):
                     s += bold("Oferta: ") + t + "\n"
         if 'pontos' in p:
             s += bold("Comprar com pontos: ") + p["pontos"] + "\n"
-        if 'pretacoes' in p:
-            s += bold("Comprar às prestações: ") + p["pretacoes"] + "\n"
+        if 'prestacoes' in p:
+            s += bold("Comprar às prestações: ") + p["prestacoes"] + "\n"
         s += bold("Link para comprar: ") + p["link"]
-        send_msg(idChat, s)
+        if 'image_link' in p:
+            msg = json.dumps({
+                'photo': p['image_link'],
+                'caption': s
+            })
+            send_photo(idChat, msg)
+        else:
+            send_msg(idChat, s)
 
 def wtf(idChat, content, cat):
     '''Pretty print of WTF tariffs
