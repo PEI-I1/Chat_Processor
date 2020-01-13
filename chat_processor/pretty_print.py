@@ -334,11 +334,11 @@ def session_of_next_sessions(idChat, m):
     :param: a session
     '''
     s = bold("Filme: ") + m["Movie"] + "\n"
-    s += bold("Trailer: ") + m["Trailer"] + "\n"
     s += bold("Data: ") + m["Start date"] + "\n"
     s += bold("Hora de início: ") + m["Start time"] + "\n"
     s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
     s += bold("Link de compra: ") + m["Ticket link"] + "\n"
+    s += bold("Trailer: ") + m["Trailer"] + "\n"
     send_msg(idChat, s)
 
 def next_sessions(idChat, content, cat):
