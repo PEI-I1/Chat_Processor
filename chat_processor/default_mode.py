@@ -529,10 +529,15 @@ def new_category_params(idChat, chatData, entry, msg_params):
         print("[LOG] Missing required "+str(chatData['paramsMissingRequired']))
         print("[LOG] Missing optional "+str(chatData['paramsMissingOptional']))
 
-        if len(missing_required_params) == 0 and len(missing_optional_params) > PARAM_THRESHOLD:
+        if len(missing_required_params) == 0 and (not entry['needAtLeastOneOptionalParam'] or len(chatData['paramsOptional']) > 0) and len(missing_optional_params) > PARAM_THRESHOLD:
             querystrings_aux = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
             querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
-            process_content(idChat, chatData, get_content(chatData["cat"], [], querystrings))
+            content = get_content(chatData["cat"], [], querystrings)
+
+            if len(content) < 2:
+                chatData["paramsMissingOptional"] = {}
+                
+            process_content(idChat, chatData, content)
         ask_param(idChat, chatData)
     else:
         chatData["paramsStatus"] = "done"
