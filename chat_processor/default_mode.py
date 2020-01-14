@@ -213,8 +213,8 @@ def parse_time(key, string):
             string = re.sub(r'[^0-9]*([0-9]+)[^0-9]+([0-9]+)[^0-9]*', r'\1:\2:00', string)
             string = re.sub(r'^([0-9]):', r'0\1:', string)
             string = re.sub(r':([0-9]):', r':0\1:', string)
-            string = re.sub(r'^([0-9]+):$', r'\1:00:00', string)
-            string = re.sub(r'^([0-9]+):([0-9]+):?$', r'\1:\2:00', string)
+            string = re.sub(r'^\s*([0-9]+)\s*:\s*$', r'\1:00:00', string)
+            string = re.sub(r'^\s*([0-9]+)\s*:\s*([0-9]+)\s*:?\s*$', r'\1:\2:00', string)
             params.append({key: string})
 
     return params
@@ -297,6 +297,7 @@ def is_blacklisted(st):
     while i < l and not blacklisted:
         if re.match(globals.blacklist[i], st):
             blacklisted = True
+        i += 1
 
     return blacklisted
 
