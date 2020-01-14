@@ -73,6 +73,10 @@ cat = [
                   (r't(ele)?v(isao)?((\s+(e\s+)?)|(\s*\+\s*))voz', 1.5), 
                   # voz + tv, ....
                   (r'voz((\s+(e\s+)?)|(\s*\+\s*))t(ele)?v(isao)?', 1.5),
+                  # net + voz, ....
+                  (r'(inter)?net((\s+(e\s+)?)|(\s*\+\s*))voz', 1.5),
+                  # voz + net, ....
+                  (r'voz((\s+(e\s+)?)|(\s*\+\s*))(inter)?net', 1.5),
                   (r'pacotes?.+satelite', 1.5), (r'pacotes?.+tv', 1.5), (r'pacotes?.+net', 1.5), (r'pacotes?.+fibra', 1.5), 
                   (r'planos?.+satelite', 1.5), (r'planos?.+tv', 1.5), (r'planos?.+net', 1.5), (r'planos?.+fibra', 1.5)],
         'paramsRequired': {},
