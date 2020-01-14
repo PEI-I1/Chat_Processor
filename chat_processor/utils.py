@@ -69,7 +69,7 @@ def get_solver(idChat, msg):
     '''
     URL = urls["RS"] + "/solver"
 
-    print(URL)
+    print("[LOG] get solver: "+URL)
     try:
         res = requests.post(URL, json={"idChat": idChat, "msg": msg})
         res.raise_for_status()
@@ -87,7 +87,7 @@ def send_msg(idChat, msg):
     '''
     URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
 
-    print("[LOG] get_solver from: "+URL)
+    print("[LOG] send msg to: "+URL)
     try:
         res = requests.post(URL, data=msg.encode("utf-8"))
         res.raise_for_status()
@@ -105,7 +105,7 @@ def send_photo(idChat, msg):
     '''
     URL = urls["API_ENDPOINT"] + "/send_photo/" + urllib.parse.quote(str(idChat), safe='')
 
-    print(URL)
+    print("[LOG] send photo to:"+URL)
     try:
         res = requests.post(URL, data=msg.encode("utf-8"))
         res.raise_for_status()
@@ -125,7 +125,7 @@ def send_menu(idChat, msg, reply_json):
     '''
     URL = urls["API_ENDPOINT"] + "/send_keyboard/" + urllib.parse.quote(str(idChat), safe='')
 
-    print(URL)
+    print("[LOG] send menu to: "+URL)
     try:
         info = {}
         info['text'] = msg
@@ -147,7 +147,7 @@ def get_loc(idChat):
     '''
     URL = urls["API_ENDPOINT"] + "/get_location/" + urllib.parse.quote(str(idChat), safe='')
 
-    print(URL)
+    print("[LOG] get loc from: "+URL)
     try:
         res = requests.get(URL)
         res.raise_for_status()
