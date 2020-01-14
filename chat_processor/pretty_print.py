@@ -158,18 +158,6 @@ def cinemas(idChat, content, cat):
     else:
         send_msg(idChat, "Desculpe, mas não existe nenhum cinema perto.")
 
-def movies_by_cinema(idChat, content, cat):
-    '''Pretty print of movies on display in cinema
-    :param: chat id to send the messages to
-    :param: content of messages
-    '''
-    for c in content:
-        s = 'Os filmes em exibição no ' + bold(c) + ' são:'
-        s += ''.join([
-            '\n - ' + bold('Título: ') + m['Portuguese title'] + '\n    ' + bold('IMDB Rating: ') + m['IMDB Rating']
-            for m in content[c]])
-        send_msg(idChat, s)
-
 def movies_search(idChat, content, cat):
     '''Pretty print of a search for movies
     :param: id chat to send the messages
@@ -308,6 +296,28 @@ def title(idChat, content, cat, c):
     elif cat == prefix + "by_date":
         globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c]}))
         send_msg(idChat, 'Sessões no ' + c + ':')
+    elif cat == '/scrapper/movies/by_cinema':
+        globals.redis_db.set("vermais" + str(idChat), json.dumps({'cat': cat, 'content': content[c]}))
+        send_msg(idChat, 'Os filmes em exibição no ' + c + ' são:')
+
+def movie_of_movies_by_cinema(idChat, m):
+    '''Pretty print of a movie from movies of a cinema
+    :param: a movie
+    '''
+    s = '\n - ' + bold('Título: ') + m['Portuguese title']
+    s += '\n    ' + bold('IMDB Rating: ') + m['IMDB Rating']
+    send_msg(idChat, s)
+
+def movies_by_cinema(idChat, content, cat):
+    '''Pretty print of movies on display in cinema
+    :param: chat id to send the messages to
+    :param: content of messages
+    '''
+    def aux(idChat, content, cat):
+        for c in content:
+            title(idChat, content, cat, c)
+
+    print_with_ask_cinema(idChat, content, cat, aux, movie_of_movies_by_cinema)
 
 def session_of_sessions_by_duration(idChat, m):
     '''Pretty print of a session from sessions with a specific duration on cinemas
