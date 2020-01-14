@@ -304,8 +304,8 @@ def movie_of_movies_by_cinema(idChat, m):
     '''Pretty print of a movie from movies of a cinema
     :param: a movie
     '''
-    s = '\n - ' + bold('Título: ') + m['Portuguese title']
-    s += '\n    ' + bold('IMDB Rating: ') + m['IMDB Rating']
+    s = bold('Título: ') + m['Portuguese title'] + "\n"
+    s += bold('IMDB Rating: ') + m['IMDB Rating']
     send_msg(idChat, s)
 
 def movies_by_cinema(idChat, content, cat):
