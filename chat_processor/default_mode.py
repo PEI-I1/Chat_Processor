@@ -205,7 +205,6 @@ def parse_time(key, string):
     if not len(params):
         string = parse_number(string)
         if re.match(r'^\s*[0-9]+\s*m(in(utos?)?)?\s*$', string):
-            print(string)
             string = re.sub(r'^\s*([0-9]+)\s*m(in(utos?)?)?\s*$', r'\1', string)
             params.append({'duration': string})
         elif key != 'duration':
@@ -214,6 +213,8 @@ def parse_time(key, string):
             string = re.sub(r'[^0-9]*([0-9]+)[^0-9]+([0-9]+)[^0-9]*', r'\1:\2:00', string)
             string = re.sub(r'^([0-9]):', r'0\1:', string)
             string = re.sub(r':([0-9]):', r':0\1:', string)
+            string = re.sub(r'^([0-9]+):$', r'\1:00:00', string)
+            string = re.sub(r'^([0-9]+):([0-9]+):?$', r'\1:\2:00', string)
             params.append({key: string})
 
     return params
