@@ -10,7 +10,6 @@ initSC()
 
 @app.route('/getResponse', methods=['POST'])
 def index():
-    print("HERE")
     req = request.get_json()
     req['msg'] = req['msg'].encode('utf-8').decode('utf-8')
     print(req)
