@@ -107,6 +107,7 @@ def get_response(idChat, idUser, msg, name, location):
         globals.redis_db.delete(str(idChat) + str(idUser) + "_rules_mode");
         globals.redis_db.delete(idChat)
         print("[get_response] Client data removed")
+        send_msg(idChat, "Conversa reiniciada")
     else:
         contentAux = globals.redis_db.get("content" + str(idChat))
         content = json.loads(contentAux) if contentAux else None
