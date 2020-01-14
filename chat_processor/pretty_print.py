@@ -151,9 +151,9 @@ def cinemas(idChat, content, cat):
     :param: chat id to send the messages to
     :param: content of messages
     '''
-    s = 'Os cinemas NOS perto de si num raio de 20km são:\n'
+    s = 'Os cinemas NOS perto de si num raio de 20km são:\n - '
     s += "\n - ".join(content["cinemas"])
-    send_msg(idChat, s) 
+    send_msg(idChat, s)
 
 def movies_by_cinema(idChat, content, cat):
     '''Pretty print of movies on display in cinema
@@ -208,7 +208,7 @@ def releases(idChat, content, cat):
         s += bold("Género: ") + m["Genre"] + "\n"
         s += bold("Trailer: ") + m["Trailer"] + "\n"
         photo = m["Banner"]
-        
+
         msg = json.dumps({
             'photo': photo,
             'caption': s
