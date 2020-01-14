@@ -151,9 +151,12 @@ def cinemas(idChat, content, cat):
     :param: chat id to send the messages to
     :param: content of messages
     '''
-    s = 'Os cinemas NOS perto de si num raio de 20km são:\n - '
-    s += "\n - ".join(content["cinemas"])
-    send_msg(idChat, s)
+    if len(content["cinemas"]):
+        s = 'Os cinemas NOS perto de si num raio de 20km são:\n'
+        s += " - " + "\n - ".join(content["cinemas"])
+        send_msg(idChat, s)
+    else:
+        send_msg(idChat, "Desculpe, mas não existe nenhum cinema perto.")
 
 def movies_by_cinema(idChat, content, cat):
     '''Pretty print of movies on display in cinema

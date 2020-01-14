@@ -205,7 +205,6 @@ def parse_time(key, string):
     if not len(params):
         string = parse_number(string)
         if re.match(r'^\s*[0-9]+\s*m(in(utos?)?)?\s*$', string):
-            print(string)
             string = re.sub(r'^\s*([0-9]+)\s*m(in(utos?)?)?\s*$', r'\1', string)
             params.append({'duration': string})
         elif key != 'duration':
@@ -214,6 +213,8 @@ def parse_time(key, string):
             string = re.sub(r'[^0-9]*([0-9]+)[^0-9]+([0-9]+)[^0-9]*', r'\1:\2:00', string)
             string = re.sub(r'^([0-9]):', r'0\1:', string)
             string = re.sub(r':([0-9]):', r':0\1:', string)
+            string = re.sub(r'^([0-9]+):$', r'\1:00:00', string)
+            string = re.sub(r'^([0-9]+):([0-9]+):?$', r'\1:\2:00', string)
             params.append({key: string})
 
     return params
@@ -283,7 +284,21 @@ def compare_params(found, params, chatData, fst_key, sec_key):
                 del found[indE]
             elif func(valueS) > func(valueE):
                 found[indS][fst_key] = valueE
-                found[indE][sec_key] =valueS
+                found[indE][sec_key] = valueS
+
+def is_blacklisted(st):
+    '''Check if string is not blacklisted
+    :param: string to check
+    '''
+    blacklisted = False
+    l = len(globals.blacklist)
+    i = 0
+    
+    while i < l and not blacklisted:
+        if re.match(globals.blacklist[i], st):
+            blacklisted = True
+
+    return blacklisted
 
 def transform_param(key, msg_param, params, chatData):
     '''Transform a param
@@ -292,31 +307,33 @@ def transform_param(key, msg_param, params, chatData):
     '''
     found = []
 
-    if "TIME" in msg_param["type"]:
-        found = parse_time(key, msg_param["entity"])
-        if key == 'end_time':
-            compare_params(found, params, chatData, 'start_time', 'end_time')
-    elif "DATE" in msg_param["type"]:
-        found = parse_date(key, msg_param["entity"])
-    elif "CARDINAL" in msg_param["type"]:
-        found = parse_money_cardinal(key, msg_param["entity"])
-        if key == 'max':
-            compare_params(found, params, chatData, 'min', 'max')
-    elif "MONEY" in msg_param["type"]:
-        found = parse_money_cardinal(key, msg_param["entity"])
-        if key == 'max':
-            compare_params(found, params, chatData, 'min', 'max')
-    elif "PHONES_BOOLEAN" in msg_param["type"]:
-        if msg_param["entity"] == key:
-            found = [{key:"yes"}]
-    elif "PERSON" in msg_param["type"]:
-        if key == "producer":
-            if "cast" not in params or params["cast"] != msg_param["entity"]:
+    #check if is not in blacklist
+    if not is_blacklisted(msg_param["entity"]):
+        if "TIME" in msg_param["type"]:
+            found = parse_time(key, msg_param["entity"])
+            if key == 'end_time':
+                compare_params(found, params, chatData, 'start_time', 'end_time')
+        elif "DATE" in msg_param["type"]:
+            found = parse_date(key, msg_param["entity"])
+        elif "CARDINAL" in msg_param["type"]:
+            found = parse_money_cardinal(key, msg_param["entity"])
+            if key == 'max':
+                compare_params(found, params, chatData, 'min', 'max')
+        elif "MONEY" in msg_param["type"]:
+            found = parse_money_cardinal(key, msg_param["entity"])
+            if key == 'max':
+                compare_params(found, params, chatData, 'min', 'max')
+        elif "PHONES_BOOLEAN" in msg_param["type"]:
+            if msg_param["entity"] == key:
+                found = [{key:"yes"}]
+        elif "PERSON" in msg_param["type"]:
+            if key == "producer":
+                if "cast" not in params or params["cast"] != msg_param["entity"]:
+                    found = [{key:msg_param["entity"]}]
+            else:
                 found = [{key:msg_param["entity"]}]
         else:
             found = [{key:msg_param["entity"]}]
-    else:
-        found = [{key:msg_param["entity"]}]
 
     return found
 
