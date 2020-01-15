@@ -460,8 +460,8 @@ def final_phones(idChat, idUser):
         aux['ofer'] = True
         remove_string(idChat, idUser, '_phones_ofer')
 
-    pretendido = get_content('/fs_scrapper/packages', [], aux)
-    pretty_print(idChat, '/fs_scrapper/packages', pretendido, False)
+    pretendido = get_content('/fs_scrapper/phones', [], aux)
+    pretty_print(idChat, '/fs_scrapper/phones', pretendido, False)
 
     return None
 
@@ -1665,7 +1665,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
         elif opcao == 8:
             remove_redis(idChat, idUser, chatData)
-            final_phones(idChat, idChat)
+            final_phones(idChat, idUser)
             return None
         elif opcao == 9:
             remove_string(idChat, idUser, '_phones_brand_')
