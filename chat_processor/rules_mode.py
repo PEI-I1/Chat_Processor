@@ -571,10 +571,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 12)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'todos os cinemas','callback_data': '1'}],
-                    [{'text': 'cinema em específico ','callback_data': '2'}],
-                    [{'text': 'perto de localização','callback_data': '3'}],
-                    [{'text': 'sair','callback_data': '4'}]
+                    [{'text': 'cinema em específico ','callback_data': '1'}],
+                    [{'text': 'perto de localização','callback_data': '2'}],
+                    [{'text': 'sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -1365,19 +1364,13 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
 
     elif menu == 12:
-        if opcao == 1: #procurar cinemas sem dar nada
-            remove_redis(idChat, idUser, chatData)
-            requerido = get_content('/scrapper/cinemas/search', [], {})
-            pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
-            return None
-
-        elif opcao == 2: #procurar cinemas com query
+        if opcao == 1: #procurar cinemas com query
             save_redis(idChat, idUser, 101)
             data = {}
             data['msg'] = str('''Insira uma expressão para procurar o cinema''')
             return data
 
-        elif opcao == 3: #procurar cinemas com lat e long
+        elif opcao == 2: #procurar cinemas com lat e long
             remove_redis(idChat, idUser, chatData)
             aux = {}
             aux['lat'] = float(chatData['locationParam']['lat'])
@@ -1386,7 +1379,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
             return None
 
-        elif opcao == 4:
+        elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             data = {}
             data['msg'] = str('''Saiu do modo de regras.''')
