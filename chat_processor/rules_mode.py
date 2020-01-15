@@ -79,7 +79,7 @@ def save_number(idChat, idUser, code, number):
     :param: code to identify the number
     :param: number
     '''
-    globals.redis_db.set(str(idChat) + str(idUser) + code, number)
+    globals.redis_db.set(str(idChat) + str(idUser) + code, number.encode('utf-8'))
 
 
 def load_number(idChat, idUser, code):
@@ -91,7 +91,7 @@ def load_number(idChat, idUser, code):
     aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
-        return int(aux)
+        return int(str(aux.decode('utf-8')))
     else:
         return None
 
@@ -111,7 +111,7 @@ def save_float(idChat, idUser, code, number):
     :param: user id
     :param: code to identify the float
     :param: float'''
-    globals.redis_db.set(str(idChat) + str(idUser) + code, number)
+    globals.redis_db.set(str(idChat) + str(idUser) + code, number.encode('utf-8'))
 
 
 def load_float(idChat, idUser, code):
@@ -123,7 +123,7 @@ def load_float(idChat, idUser, code):
     aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
-        return float(aux)
+        return float(str(aux.decode('utf-8')))
     else:
         return 0.0
 
@@ -143,7 +143,7 @@ def save_string(idChat, idUser, code, string):
     :param: user id
     :param: code to identify the string
     :param: float'''
-    globals.redis_db.set(str(idChat) + str(idUser) + code, string)
+    globals.redis_db.set(str(idChat) + str(idUser) + code, string.encode('utf-8'))
 
 
 def load_string(idChat, idUser, code):
@@ -155,7 +155,7 @@ def load_string(idChat, idUser, code):
     aux = globals.redis_db.get(str(idChat) + str(idUser) + code)
 
     if aux:
-        return aux
+        return str(aux.decode('utf-8'))
     else:
         return None
 
@@ -443,6 +443,7 @@ def final_phones(idChat, idUser):
         remove_float(idChat, idUser, '_max_value_')
     if brand:
         aux['brand'] = brand
+        print(brand)
         remove_string(idChat, idUser, '_phones_brand_')
     if promo:
         aux['promo'] = True
@@ -1684,6 +1685,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 223:
         save_string(idChat, idUser, '_phones_brand_', msg)
+        print(msg)
         save_redis(idChat, idUser, 222)
         reply_markup={
             'inline_keyboard': [
