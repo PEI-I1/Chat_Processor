@@ -1389,7 +1389,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
         remove_redis(idChat, idUser, chatData)
         aux = {}
         aux['search_term'] = msg
-        requerido = get_content('/scrapper/cinemas/search', [], {})
+        requerido = get_content('/scrapper/cinemas/search', [], aux)
         pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
         return None
 
