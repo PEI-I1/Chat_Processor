@@ -223,7 +223,7 @@ def final_movies_duration(idChat, idUser):
         remove_string(idChat, idUser, '_search_term')
 
     if duration:
-        aux['date'] = duration
+        aux['duration'] = duration
         remove_string(idChat, idUser, '_movie_duration')
 
     if date:
@@ -264,7 +264,7 @@ def final_movies_duration_loc(idChat, idUser, chatData):
     aux['lon'] = float(chatData['locationParam']['lon'])
 
     if duration:
-        aux['date'] = duration
+        aux['duration'] = duration
         remove_string(idChat, idUser, '_movie_duration')
 
     if date:
