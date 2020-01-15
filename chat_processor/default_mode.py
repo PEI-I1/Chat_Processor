@@ -9,6 +9,7 @@ from ner_by_regex import detect_entities_regex
 from pretty_params import optional_params as pp_opt, required_params as pp_req, param_en_to_pt
 from text_to_number import parse_number
 from config import PARAM_THRESHOLD
+from prefab_msgs import prefab_msgs
 
 confianca_level = 0.70
 tries = 5
@@ -99,14 +100,14 @@ def pretty_question_optional_param(param_key):
     :param: optional parameter
     :return: string with question to user
     '''
-    return pp_opt.get(param_key, "Pode-nos dizer algo sobre: "+param_key+"\n(Responda 'não' caso não saiba)")
+    return pp_opt.get(param_key, prefab_msgs["request"][1].format(param_key))
 
 def localizeToPT(param):
     '''Translate a parameter in english to portuguese in order to put in messages sended to user
     :param: parameter to translate
     :return: translated parameter
     '''
-    return param_en_to_pt.get(param, param+" (pedimos desculpa pelo inglês)")
+    return param_en_to_pt.get(param, prefab_msgs["misc"][0].format(param))
 
 def add_new_params(old_list, new_list):
     '''Add elements of a source list to a destination list if element not exists in the destination list
@@ -413,9 +414,9 @@ def process_content(idChat, chatData, content):
             else:
                 pretty_print(idChat, chatData["cat"], content, True)
         else:
-            send_msg(idChat, "Não existe informação sobre o que pretende...")
+            send_msg(idChat, prefab_msgs["failed"][1])
     else:
-        send_msg(idChat, "Não foi possível obter a resposta...")
+        send_msg(idChat, prefab_msgs["failed"][2])
 
 def detect_params(msg):
     '''Detect parameters(entities) in user message
@@ -446,9 +447,9 @@ def ntp_answer(idChat, msg):
             if linhas_apoio:
                 pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
             else:
-                send_msg(idChat, "Não foi possível obter as linhas de apoio...")
+                send_msg(idChat, prefab_msgs["failed"][3])
     else:
-        send_msg(idChat, "Não foi possível obter uma resposta...")
+        send_msg(idChat, prefab_msgs["failed"][2])
 
 def modo_problemas(idChat, msg, chatData):
     '''Send to problem solver
@@ -669,7 +670,7 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
         # devolve resposta (todos os params foram obtidos), ou retorna falha (qd necessario minimo um param)
         if chatData["paramsStatus"] == "done":
             if entry['needAtLeastOneOptionalParam'] and len(chatData['paramsOptional']) == 0:
-                send_msg(idChat, "Pedimos desculpa, mas sem preencher nenhum dos campos não podemos efetuar a sua pesquisa.")
+                send_msg(idChat, prefab_msgs["failed"][4])
             else:
                 print("[LOG] All info collected. Sending response")
                 querystrings_aux = merge_dicts(chatData["paramsOptional"], chatData['locationParam'])
@@ -725,14 +726,14 @@ def cannot_understand(idChat):
     '''Send messages so user can know that was not possible to understand what he/she wants.
     :param: id chat
     '''
-    send_msg(idChat, "Desculpe mas não foi possível identificar o que pretende.")
-    send_msg(idChat, "Pode tentar o modo de regras ao escrever 'modo de regras'.")
-    send_msg(idChat, "Ou pode se quiser ligar para uma das seguintes linhas de apoio:")
+    send_msg(idChat, prefab_msgs["failed"][5])
+    send_msg(idChat, prefab_msgs["failed"][6])
+    send_msg(idChat, prefab_msgs["failed"][7])
     linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
     if linhas_apoio:
         pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
     else:
-        send_msg(idChat, "Não foi possível obter as linhas de apoio...")
+        send_msg(idChat, prefab_msgs["failed"][3])
     globals.redis_db.delete(idChat)
 
 def get_response_default(idChat, idUser, msg, name, chatData):
@@ -768,7 +769,7 @@ def get_response_default(idChat, idUser, msg, name, chatData):
             else:
                 chatData["tries"] += 1
                 globals.redis_db.set(idChat, json.dumps(chatData))
-                send_msg(idChat, "Desculpe mas não foi possível identificar o que pretende. Tente de novo!")
+                send_msg(idChat, prefab_msgs["failed"][8])
         elif confianca > confianca_level:
             if chatData["cat"] == cat:
                 process_params(idChat, idUser, msg, name, chatData, params)
