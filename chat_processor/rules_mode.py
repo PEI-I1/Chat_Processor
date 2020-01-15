@@ -680,8 +680,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         if opcao == 2: # procurar sessoes por filme
-            remove_redis(idChat, idUser, chatData)
             final_movies_sessoes(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 190:
@@ -703,8 +703,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         if opcao == 2: # procurar sessoes por filme
-            remove_redis(idChat, idUser, chatData)
             final_movies_sessoes_loc(idChat, idUser, chatData)
+            remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 191:
@@ -834,8 +834,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # procurar sessoes por filme
-            remove_redis(idChat, idUser, chatData)
             final_movies_sessoes(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             return None
 
         elif opcao == 3:
@@ -962,8 +962,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa sem localização
-            remove_redis(idChat, idUser, chatData)
             final_movies_semloc(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 108:
@@ -1022,8 +1022,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa com localização
-            remove_redis(idChat, idUser, chatData)
             final_movies_loc(idChat, idUser, chatData)
+            remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 139:
@@ -1071,8 +1071,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: #fazer pesquisa de duração de filme
-            remove_redis(idChat, idUser, chatData)
             final_movies_duration(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 158:
@@ -1196,8 +1196,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: #fazer pesquisa de duração de filme
-            remove_redis(idChat, idUser, chatData)
             final_movies_duration_loc(idChat, idUser, chatData)
+            remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 15: # obter info do filme
@@ -1330,8 +1330,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa
-            remove_redis(idChat, idUser, chatData)
             final_movies_options(idChat, idUser)
+            remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 13:
