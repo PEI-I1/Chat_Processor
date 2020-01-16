@@ -154,7 +154,7 @@ def cinemas(idChat, content, cat):
     :param: content of messages
     '''
     if len(content["cinemas"]):
-        s = 'Os cinemas NOS perto de si num raio de 20km são:\n'
+        s = 'Os cinemas NOS mais perto de ti são:\n'
         s += " - " + "\n - ".join(content["cinemas"])
         send_msg(idChat, s)
     else:
@@ -241,11 +241,11 @@ def ask_cinema(idChat, content, cat):
     '''
     n = 1
     m = 'Escolha um dos cinemas:\n'
-    m += "    0 -> Nenhuma das hipóteses\n"
+    m += "    0. Nenhuma das hipóteses\n"
     cinemas = []
 
     for c in content:
-        m += "    " + str(n) + " -> " + c + "\n"
+        m += "    " + str(n) + ". " + c + "\n"
         cl = clean_msg(c)
         words = cl.split()
         l = len(words)

@@ -31,6 +31,7 @@ phones_booleans = [("sim", "Sim"), ("nao", "Não"), (r"promo(cao|coes)?", "promo
 days = ['amanha', 'hoje']
 times = ['manha', 'tarde', 'noite']
 scheduler = None
+municipies_stopwords = ["da", "do", "de", "a", "o", "e", "das", "dos", "des"]
 
 def update():
     '''Update possible entities values
@@ -97,7 +98,7 @@ def update():
             partial(detect, movies_genres, 'MOVIE_GENRE'),
             partial(detect, phone_brands, 'ORG'),
             partial(detect, phone_models, 'PRODUCT'),
-            partial(detect, municipies, 'GPE'),
+            detect_location,
             partial(detect, movies, 'WORK OF ART'),
             partial(detect, days, 'DATE'),
             partial(detect, times, 'TIME'),
@@ -153,6 +154,45 @@ def detect(words, t, msg):
             ents.append({'entity': w, 'type': t})
 
     return ents
+
+def detect_location(msg):
+    ''' Detects the entities of type GPE of a message
+    '''
+    ents = {}
+    
+    for m in municipies:
+        cm = clean_msg(m)
+        if re.search(r'\b' + cm + r'\b', msg):
+            ents[m] = len(m.split())
+        else:
+            for st in municipies_stopwords:
+                cm = re.sub(r'\b' + st + r'\b', "", cm)
+            cm = re.sub(r'\s+', ' ', cm)
+
+            words = cm.split()
+            n = len(words)
+            found = False
+
+            i = 0
+            while i < n and not found:
+                if re.search(r'\b' + " ".join(words[i:n+1]) + r'\b', msg):
+                    ents[m] = n-i
+                    found = True
+                i += 1
+
+            i = 0
+            while i < n and not found:
+                if re.search(r'\b' + " ".join(words[0:i+1]) + r'\b', msg): 
+                    ents[m] = i+1
+                if re.search(r'\b' + words[i] + r'\b', msg):
+                    ents[m] = 1
+                i += 1
+
+    if len(ents) > 0:
+        ent = max(ents, key=ents.get)
+        return [{'entity': ent, 'type': 'GPE'}]
+    else:
+        return []
 
 
 def detect_address(msg):

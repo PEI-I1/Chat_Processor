@@ -432,6 +432,10 @@ def detect_params(msg):
     return params
 
 def process_linhas_apoio(linhas_apoio, assunto):
+    '''Process support lines according to assunto of ntp problem
+    :param: list of support lines
+    :param: assunto
+    '''
     regex = r'\btelevisao\b'
 
     if assunto == 'voz':
@@ -553,7 +557,7 @@ def new_category_params(idChat, chatData, entry, msg_params):
         print("[LOG] NeedAtLeastOneParam !!! ")
         warning_msg = "Esta busca precisará no mínimo de um destes campos:\n"
         for param in missing_optional_params:
-            warning_msg += '-> ' + localizeToPT(param) + '\n'
+            warning_msg += '. ' + localizeToPT(param) + '\n'
         send_msg(idChat, warning_msg)
 
     # altera status e guarda (se faltam params pergunta logo um deles)
@@ -569,10 +573,11 @@ def new_category_params(idChat, chatData, entry, msg_params):
             querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
             content = get_content(chatData["cat"], [], querystrings)
 
-            if isinstance(content, list) and len(content) < 2:
+            if (isinstance(content, list) and len(content) < 2) or content == {}:
                 chatData["paramsMissingOptional"] = {}
-                
-            process_content(idChat, chatData, content)
+                chatData["paramsStatus"] = "done"
+            else:
+                process_content(idChat, chatData, content)
         ask_param(idChat, chatData)
     else:
         chatData["paramsStatus"] = "done"

@@ -2,7 +2,7 @@ Abrantes
 Águeda
 Aguiar da Beira
 Alandroal
-Albergaria-a-Velha
+Albergaria a Velha
 Albufeira
 Alcácer do Sal
 Alcanena
@@ -76,7 +76,7 @@ Chamusca
 Chaves
 Cinfães
 Coimbra
-Condeixa-a-Nova
+Condeixa a Nova
 Constância
 Coruche
 Corvo
@@ -112,7 +112,7 @@ Grândola
 Guarda
 Guimarães
 Horta
-Idanha-a-Nova
+Idanha a Nova
 Ílhavo
 Lagoa
 Lagos
@@ -155,8 +155,8 @@ Monchique
 Mondim de Basto
 Monforte
 Montalegre
-Montemor-o-Novo
-Montemor-o-Velho
+Montemor o Novo
+Montemor o Velho
 Montijo
 Mora
 Mortágua
@@ -213,7 +213,7 @@ Póvoa de Lanhoso
 Póvoa de Varzim
 Povoação
 Praia da Vitória
-Proença-a-Nova
+Proença a Nova
 Redondo
 Reguengos de Monsaraz
 Resende
