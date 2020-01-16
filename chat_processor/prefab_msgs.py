@@ -18,8 +18,8 @@ prefab_msgs = {
     "request": [
         "Faça uma nova questão. O que pretende saber?",
         "Pode-nos dizer algo sobre: {} \n(Responda 'não' caso não saiba)",
-        "Se pretender ver o resto das opções escreva 'ver mais' ou /mais",
-        "\nSe pretender obter já os resultados escreva 'mostrar resultados' ou /mostrar"
+        "Se pretender ver mais opções escreva <b>'ver mais'</b> ou clique em /mais",
+        "\nSe pretender obter já os resultados escreva <b>'mostrar resultados'</b> ou clique em /mostrar"
     ],
     "misc": [
         "{} (pedimos desculpa pelo inglês)"

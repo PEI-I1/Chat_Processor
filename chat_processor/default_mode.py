@@ -450,6 +450,7 @@ def ntp_answer(idChat, msg):
     :param: id chat
     :param: user message
     '''
+    msg = clean_msg(msg)
     answer = get_solver(idChat, msg)
     if answer:
         send_msg(idChat, answer['msg'])

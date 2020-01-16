@@ -129,10 +129,13 @@ def get_response(idChat, idUser, msg, name, location):
     :param: user location
     '''
     if re.match(r'^/reset(\s)*$', msg):
+        chatData = fetchChatMetadata(idChat)
         globals.redis_db.delete("content" + str(idChat))
         globals.redis_db.delete("vermais" + str(idChat))
         globals.redis_db.delete(str(idChat) + str(idUser) + "_rules_mode");
         globals.redis_db.delete(idChat)
+        if chatData["status"] == "modo problemas":
+            ntp_answer(idChat, msg)
         print("[get_response] Client data removed")
         send_msg(idChat, prefab_msgs["success"][0])
     else:
