@@ -604,7 +604,7 @@ def save_param(idChat, msg, chatData, tp, msg_params):
 
     m = clean_msg(msg)
     if tp == "Optional":
-        if re.match(r'\bmostrar?\s+resultados?\b', m):
+        if re.match(r'\bmostrar?\s+resultados?\b', m) or re.match(r'^/mostrar$', m):
             chatData['paramsMissingOptional'] = {}
         elif first_type == "PHONES_BOOLEAN":
             if re.match(r'\bs(im)?|y\b', m):

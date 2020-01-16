@@ -9,7 +9,7 @@ prefab_msgs = {
         "Não foi possível obter as linhas de apoio...",
         "Pedimos desculpa, mas sem preencher nenhum dos campos não podemos efetuar a sua pesquisa.",
         "Desculpe mas não foi possível identificar o que pretende.",
-        "Pode tentar o modo de regras ao escrever 'modo de regras'.",
+        "Pode tentar o modo de regras ao escrever <b>'modo de regras'</b> ou /interativo",
         "Ou pode se quiser ligar para uma das seguintes linhas de apoio:",
         "Desculpe mas não foi possível identificar o que pretende. Tente de novo!",
         "Desculpe, mas não existe nenhum cinema perto.",
@@ -18,8 +18,8 @@ prefab_msgs = {
     "request": [
         "Faça uma nova questão. O que pretende saber?",
         "Pode-nos dizer algo sobre: {} \n(Responda 'não' caso não saiba)",
-        "Se pretender ver o resto das opções escreva 'ver mais'.",
-        "\nSe pretender obter já os resultados escreva 'mostrar resultados'."
+        "Se pretender ver o resto das opções escreva 'ver mais' ou /mais",
+        "\nSe pretender obter já os resultados escreva 'mostrar resultados' ou /mostrar"
     ],
     "misc": [
         "{} (pedimos desculpa pelo inglês)"
