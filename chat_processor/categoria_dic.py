@@ -26,9 +26,9 @@ cat = [
                   (r'extra', 1.0), (r'pagamentos? a prestac(ao|oes)', 2.0), (r'prestac(ao|oes)', 1.0), (r'pontos?', 1.0),
                   (r'preco', 1.0), (r'preco\s+maximo', 1.0), (r'preco\s+minimo', 1.0), (r'preco\s+entre', 2.0)],
         'paramsRequired': {},
-        'paramsOptional': {'top':'PHONES_BOOLEAN', 'new':'PHONES_BOOLEAN', 'promo':'PHONES_BOOLEAN',
-                           'ofer':'PHONES_BOOLEAN', 'prest':'PHONES_BOOLEAN', 'points':'PHONES_BOOLEAN', 'brand':'ORG|PRODUCT',
-                           'min':'MONEY|CARDINAL', 'max':'MONEY|CARDINAL'},
+        'paramsOptional': {'min':'MONEY|CARDINAL', 'max':'MONEY|CARDINAL', 'brand':'ORG|PRODUCT',
+                           'top':'PHONES_BOOLEAN', 'new':'PHONES_BOOLEAN', 'promo':'PHONES_BOOLEAN',
+                           'ofer':'PHONES_BOOLEAN', 'prest':'PHONES_BOOLEAN', 'points':'PHONES_BOOLEAN'},
         'locationParam': {},
         'canRequestWithoutParams': True,
         'needAtLeastOneOptionalParam': False
