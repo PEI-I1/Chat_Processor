@@ -430,6 +430,20 @@ def detect_params(msg):
     params = list({json.dumps(p):p for p in params}.values())
     return params
 
+def process_linhas_apoio(linhas_apoio, assunto):
+    regex = r'\btelevisao\b'
+
+    if assunto == 'voz':
+        regex += r'|\btele\w+'
+    elif assunto == 'internet':
+        regex += r'|\binternet\b'
+
+    las = []
+    for la in linhas_apoio:
+        if re.search(regex, clean_msg(la['categoria'])):
+            las.append(la)
+    return las
+
 def ntp_answer(idChat, msg):
     '''Get solution and parse it
     :param: id chat
@@ -445,18 +459,7 @@ def ntp_answer(idChat, msg):
             linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
             if linhas_apoio:
                 if 'assunto' in answer:
-                    regex = r'\btelevisao\b'
-                    if answer['assunto'] == 'voz':
-                        regex += r'|\btele\w+'
-                    elif answer['assunto'] == 'internet':
-                        regex += r'|\binternet\b'
-
-                    las = []
-                    for la in linhas_apoio:
-                        if re.search(regex, clean_msg(la['categoria'])):
-                            las.append(la)
-                    linhas_apoio = las
-
+                    linhas_apoio = process_linhas_apoio(linhas_apoio, answer['assunto'])
                 pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
             else:
                 send_msg(idChat, "Não foi possível obter as linhas de apoio...")
