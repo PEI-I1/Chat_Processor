@@ -38,11 +38,11 @@ def phones(idChat, content, cat):
             s += ' (custava ' + p['preco_original'] + ' €)\n'
         else:
             s += '\n'
-        if 'processador' in p:
+        if 'processador' in p and p['processador']:
              s += bold("Processador: ") + p["processador"] + "\n"
-        if 'memoria' in p:
+        if 'memoria' in p and p['memoria']:
              s += bold("Memória: ") + p["memoria"] + "\n"
-        if 'camara' in p:
+        if 'camara' in p and p['camara']:
             s += bold("Câmara: ") + "\n         " + p["camara"] + "\n"
         if 'oferta' in p:
             s += bold("Oferta: ") + p["oferta"] + "\n"
@@ -55,7 +55,7 @@ def phones(idChat, content, cat):
         if 'prestacoes' in p:
             s += bold("Comprar às prestações: ") + p["prestacoes"] + "\n"
         s += bold("Link para comprar: ") + p["link"]
-        if 'image_link' in p:
+        if 'image_link' in p and p['image_link']:
             msg = json.dumps({
                 'photo': p['image_link'],
                 'caption': s

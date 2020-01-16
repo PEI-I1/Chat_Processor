@@ -569,7 +569,7 @@ def new_category_params(idChat, chatData, entry, msg_params):
             querystrings = merge_dicts(chatData["paramsRequired"], querystrings_aux)
             content = get_content(chatData["cat"], [], querystrings)
 
-            if len(content) < 2:
+            if isinstance(content, list) and len(content) < 2:
                 chatData["paramsMissingOptional"] = {}
                 
             process_content(idChat, chatData, content)
@@ -709,6 +709,8 @@ def change_category(idChat, idUser, msg, name, chatData):
     if re.match(r'\bs(im)?|y\b', muda_categoria):
         chatData["cat"] = chatData["cat_change"]
         chatData["paramsStatus"] = "new"
+        chatData["paramsRequired"] = {}
+        chatData["paramsOptional"] = {}
     # se o user nao quiser mudar, trata-se a ultima mensagem (antes de perguntar se queria mudar de pedido)
     else:
         msg = chatData["cat_change_last_msg"]
