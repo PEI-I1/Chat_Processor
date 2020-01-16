@@ -668,11 +668,11 @@ def process_params(idChat, idUser, msg, name, chatData, msg_params):
         globals.redis_db.delete(idChat)
     elif len(location_params) > 0 and chatData["locationParam"] == None and chatData["status"] != "gps_loc" and chatData["status"] != "search_loc":
         chatData['msg_params'] = msg_params
-        get_location(idChat, idUser, msg, name, chatData, msg_params, entry, "gps_loc", "Qual a sua localização?", True)
+        get_location(idChat, idUser, msg, name, chatData, msg_params, entry, "gps_loc", "Qual a localização?", True)
     elif chatData["status"] == "gps_loc":
-        get_location(idChat, idUser, msg, name, chatData, msg_params, entry, "search_loc", "Em que cidade se encontra?", False)
+        get_location(idChat, idUser, msg, name, chatData, msg_params, entry, "search_loc", "Qual a cidade?", False)
     elif chatData["status"] == "search_loc":
-        get_location(idChat, idUser, msg, name, chatData, msg_params, entry, "", "Não foi possível perceber onde se encontra!", False)
+        get_location(idChat, idUser, msg, name, chatData, msg_params, entry, "", "Não encontrei esse sítio.", False)
     else:
         # new problem. save obtained params
         if chatData["paramsStatus"] == "new":
@@ -739,7 +739,7 @@ def ask_change_category(idChat, msg, chatData, cat):
     globals.redis_db.set(idChat, json.dumps(chatData))
     entry1 = get_entry(chatData["cat"])
     entry2 = get_entry(cat)
-    send_msg(idChat, "Pretende mudar de categoria de '" + entry1["prettyPrint"] + "' para '" + entry2["prettyPrint"] + "'? Responda por favor 'sim' ou 'não'")
+    send_msg(idChat, "Queres mudar de assunto? Passar de '" + entry1["prettyPrint"] + "' para '" + entry2["prettyPrint"] + "'? Diz-me <b>'sim'</b> ou <b>'não'</b>.")
 
 def cannot_understand(idChat):
     '''Send messages so user can know that was not possible to understand what he/she wants.
