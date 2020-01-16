@@ -94,6 +94,32 @@ def process_content(idChat, msg, content):
     else:
         send_msg(idChat, prefab_msgs["request"][0])
 
+def fetchChatMetadata(idChat):
+    ''' Fetch or initialize chat metadata for a user
+    :param: telegram chat identifier
+    '''
+    chatDataAux = globals.redis_db.get(idChat)
+    chatData = json.loads(chatDataAux) if chatDataAux else None
+
+    if not chatData:
+        chatData = {
+            "status": "",
+            "tries": 0,
+            "cat": "",
+            "cat_change": "",
+            "cat_change_last_msg": "",
+            "paramsStatus": "new",
+            "locationParam": None,
+            "paramsRequired": {},
+            "paramsOptional":{},
+            "paramsMissingRequired": {},
+            "paramsMissingOptional": {},
+            "msg_params": {}
+        }
+
+    return chatData
+
+
 def get_response(idChat, idUser, msg, name, location):
     ''' For a given user message answer him
     :param: id chat
@@ -116,24 +142,7 @@ def get_response(idChat, idUser, msg, name, location):
         if content:
             process_content(idChat, msg, content)
         else:
-            chatDataAux = globals.redis_db.get(idChat)
-            chatData = json.loads(chatDataAux) if chatDataAux else None
-
-            if not chatData:
-                chatData = {
-                    "status": "",
-                    "tries": 0,
-                    "cat": "",
-                    "cat_change": "",
-                    "cat_change_last_msg": "",
-                    "paramsStatus": "new",
-                    "locationParam": None,
-                    "paramsRequired": {},
-                    "paramsOptional":{},
-                    "paramsMissingRequired": {},
-                    "paramsMissingOptional": {},
-                    "msg_params": {}
-                }
+            chatData = fetchChatMetadata(idChat)
 
             if location:
                 chatData["status"] = ""
@@ -145,7 +154,7 @@ def get_response(idChat, idUser, msg, name, location):
                 ntp_answer(idChat, msg)
             else:
                 m = clean_msg(msg)
-                if re.match(r'\bmodo (de )?regras\b', m):
+                if re.match(r'\bmodo (de )?regras\b', m) or re.match(r'^/interativo$', msg):
                     chatData["status"] = "modo regras"
                     globals.redis_db.set(idChat, json.dumps(chatData))
                     forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))

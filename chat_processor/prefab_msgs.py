@@ -1,6 +1,6 @@
 prefab_msgs = {
     "success": [
-        "Conversa reiniciada",
+        "Conversa reiniciada \nPara mais informações sobre mim utiliza o comando /help.\n",
     ],
     "failed": [
         "Desculpe a escolha que inseriu não é uma das hipóteses. Volte a tentar.",
