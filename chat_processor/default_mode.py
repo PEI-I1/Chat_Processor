@@ -445,6 +445,19 @@ def ntp_answer(idChat, msg):
             globals.redis_db.delete(idChat)
             linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
             if linhas_apoio:
+                if 'assunto' in answer:
+                    regex = r'\btelevisao\b'
+                    if answer['assunto'] == 'voz':
+                        regex += r'|\btele\w+'
+                    elif answer['assunto'] == 'internet':
+                        regex += r'|\binternet\b'
+
+                    las = []
+                    for la in linhas_apoio:
+                        if re.search(regex, clean_msg(la['categoria'])):
+                            las.append(la)
+                    linhas_apoio = las
+
                 pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
             else:
                 send_msg(idChat, prefab_msgs["failed"][3])
