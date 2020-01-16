@@ -118,7 +118,7 @@ cat = [
         'request': '/scrapper/movies/search',
         'service': 'CINEMA_SCRAPER',
         'prettyPrint': 'Procurar por um filme',
-        'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'procurar?\s+filmes?', 1.0), (r'consultar?\s+filmes?', 1.0), (r'pesquisar?\s+filmes?'), (r'filmes?\.(com|de|do|sobre)', 2.0),
+        'words': [(r'filme', 1.0), (r'pelicula', 1.0), (r'video', 1.0), (r'procurar?\s+filmes?', 1.0), (r'consultar?\s+filmes?', 1.0), (r'pesquisar?\s+filmes?', 1.0), (r'filmes?\.(com|de|do|sobre)', 2.0),
                   (r'filmes?.+protagoni', 1.5), (r'filmes?.+participa', 1.5)],
         'paramsRequired': {},
         'paramsOptional': {'genre':'MOVIE_GENRE', 'cast':'PERSON', 'producer':'PERSON', 'synopsis':'SYNOPSIS', 'age':'CARDINAL|DATE'},
