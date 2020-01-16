@@ -111,7 +111,8 @@ def packages(idChat, content, cat):
 
     for p in content:
         s = bold("Nome: ") + p["nome"] + "\n"
-        s += bold("Tipo: ") + p["Tipo"] + "\n"
+        if "Tipo" in p:
+            s += bold("Tipo: ") + p["Tipo"] + "\n"
         if "servico" in p:
             s += bold("Serviço: ") + p["servico"] + "\n"
         if "canais" in p and p["canais"]:
