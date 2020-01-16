@@ -111,7 +111,7 @@ def save_float(idChat, idUser, code, number):
     :param: user id
     :param: code to identify the float
     :param: float'''
-    globals.redis_db.set(str(idChat) + str(idUser) + code, number.encode('utf-8'))
+    globals.redis_db.set(str(idChat) + str(idUser) + code, number)
 
 
 def load_float(idChat, idUser, code):
@@ -1693,44 +1693,34 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         return data
 
     elif menu == 224:
-        try:
-            valorMin = regexPrice(msg)
-            save_float(idChat, idUser, '_min_value_', valorMin)
-            save_redis(idChat, idUser, 225)
-            data = {}
-            data['msg'] = str('''Indique o valor máximo que procura.''')
-            return data
-        except:
-            data = {}
-            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
-            return data
+        valorMin = regexPrice(msg)
+        save_float(idChat, idUser, '_min_value_', valorMin)
+        save_redis(idChat, idUser, 225)
+        data = {}
+        data['msg'] = str('''Indique o valor máximo que procura.''')
+        return data
 
     elif menu == 225:
-        try:
-            valorMax = regexPrice(msg)
-            save_float(idChat, idUser, '_max_value_', valorMax)
-            save_redis(idChat, idUser, 222)
-            reply_markup={
-                'inline_keyboard': [
-                    [{'text': 'especificar marca','callback_data': '1'}],
-                    [{'text': 'modelos recentes','callback_data': '2'}],
-                    [{'text': 'promoções','callback_data': '3'}],
-                    [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                    [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                    [{'text': 'pagamento a prestações','callback_data': '6'}],
-                    [{'text': 'pagamento com pontos','callback_data': '7'}],
-                    [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                    [{'text': 'sair','callback_data': '9'}]
-                ]
-            }
-            data = {}
-            data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
-            data['menu'] = json.dumps(reply_markup)
-            return data
-        except:
-            data = {}
-            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
-            return data
+        valorMax = regexPrice(msg)
+        save_float(idChat, idUser, '_max_value_', valorMax)
+        save_redis(idChat, idUser, 222)
+        reply_markup={
+            'inline_keyboard': [
+                [{'text': 'especificar marca','callback_data': '1'}],
+                [{'text': 'modelos recentes','callback_data': '2'}],
+                [{'text': 'promoções','callback_data': '3'}],
+                [{'text': 'telemóveis com ofertas','callback_data': '4'}],
+                [{'text': 'definir intervalo de preços','callback_data': '5'}],
+                [{'text': 'pagamento a prestações','callback_data': '6'}],
+                [{'text': 'pagamento com pontos','callback_data': '7'}],
+                [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
+                [{'text': 'sair','callback_data': '9'}]
+            ]
+        }
+        data = {}
+        data['msg'] = 'Clique nas opções a que pretende restringir a pesquisa.'
+        data['menu'] = json.dumps(reply_markup)
+        return data
 
     elif menu == 23:
         if opcao == 1:
@@ -1855,7 +1845,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 241:
         if opcao == 1:
             save_redis(idChat, idUser, 242)
-            save_redis(idChat, idUser, 262)
             reply_markup={
                 'inline_keyboard': [
                     [{'text': 'pacotes com televisão','callback_data': '1'}],
@@ -2270,26 +2259,16 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
 
     elif menu == 265:
-        try:
-            valorMin = regexPrice(msg)
-            save_float(idChat, idUser, '_min_value', valorMin)
-            save_redis(idChat, idUser, 266)
-            data = {}
-            data['msg'] = str('''Indique o valor máximo que procura.''')
-            return data
-        except:
-            data = {}
-            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
-            return data
+        valorMin = regexPrice(msg)
+        save_float(idChat, idUser, '_min_value', valorMin)
+        save_redis(idChat, idUser, 266)
+        data = {}
+        data['msg'] = str('''Indique o valor máximo que procura.''')
+        return data
 
     elif menu == 266:
-        try:
-            valorMax = regexPrice(msg)
-            save_float(idChat, idUser, '_max_value', valorMax)
-            final_packages(idChat, idUser)
-            remove_redis(idChat, idUser, chatData)
-            return None
-        except:
-            data = {}
-            data['msg'] = str('''Por favor, volte a tentar inserindo o valor com dígitos e .''')
-            return data
+        valorMax = regexPrice(msg)
+        save_float(idChat, idUser, '_max_value', valorMax)
+        final_packages(idChat, idUser)
+        remove_redis(idChat, idUser, chatData)
+        return None

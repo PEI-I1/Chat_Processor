@@ -111,7 +111,8 @@ def packages(idChat, content, cat):
 
     for p in content:
         s = bold("Nome: ") + p["nome"] + "\n"
-        s += bold("Tipo: ") + p["Tipo"] + "\n"
+        if "Tipo" in p:
+            s += bold("Tipo: ") + p["Tipo"] + "\n"
         if "servico" in p:
             s += bold("Serviço: ") + p["servico"] + "\n"
         if "canais" in p and p["canais"]:
@@ -352,8 +353,8 @@ def session_of_next_sessions(idChat, m):
     s += bold("Data: ") + m["Start date"] + "\n"
     s += bold("Hora de início: ") + m["Start time"] + "\n"
     s += bold("Lugares disponíveis: ") + m["Availability"] + "\n"
-    s += bold("Link de compra: ") + m["Ticket link"] + "\n"
     s += bold("Trailer: ") + m["Trailer"] + "\n"
+    s += bold("Link de compra: ") + m["Ticket link"] + "\n"
     send_msg(idChat, s)
 
 def next_sessions(idChat, content, cat):

@@ -1,25 +1,25 @@
 prefab_msgs = {
     "success": [
-        "Conversa reiniciada \nPara mais informações sobre mim utiliza o comando /help.\n",
+        "Conversa reiniciada.\nPara mais informações sobre mim utiliza o comando /help.\n",
     ],
     "failed": [
-        "Desculpe a escolha que inseriu não é uma das hipóteses. Volte a tentar.",
-        "Não existe informação sobre o que pretende...",
-        "Não foi possível obter uma resposta...",
-        "Não foi possível obter as linhas de apoio...",
-        "Pedimos desculpa, mas sem preencher nenhum dos campos não podemos efetuar a sua pesquisa.",
-        "Desculpe mas não foi possível identificar o que pretende.",
-        "Pode tentar o modo de regras ao escrever <b>'modo de regras'</b> ou /interativo",
-        "Ou pode se quiser ligar para uma das seguintes linhas de apoio:",
-        "Desculpe mas não foi possível identificar o que pretende. Tente de novo!",
-        "Desculpe, mas não existe nenhum cinema perto.",
-        "Não existe lista para ver..."
+        "Desculpa, a escolha que inseriste não é válida. Tenta novamente.",
+        "Não consegui encontrar o que pediste.",
+        "Não consegui encontrar uma resposta.",
+        "Não consegui encontrar as linhas de apoio que pediste.",
+        "Desculpa, sem a informação que pedi não é possível encontrar o que pediste.",
+        "Desculpa, mas não percebi o que me pediste.",
+        "Podes entrar no <b>modo interativo</b> ao escrever <b>'modo interativo'</b> ou com /interativo.",
+        "Se preferires, podes ligar para uma das seguintes linhas de apoio:",
+        "Desculpa, mas não percebi o que me pediste. Tenta de novo.",
+        "Desculpa, mas não encontrei nenhum cinema onde me pediste.",
+        "Ups, afinal não tenho mais nada para te mostrar."
     ],
     "request": [
-        "Faça uma nova questão. O que pretende saber?",
-        "Pode-nos dizer algo sobre: {} \n(Responda 'não' caso não saiba)",
-        "Se pretender ver o resto das opções escreva 'ver mais' ou /mais",
-        "\nSe pretender obter já os resultados escreva 'mostrar resultados' ou /mostrar"
+        "Entendido, então pergunta-me outra coisa. O que queres saber?",
+        "Podes dizer-me algo sobre: {}\n(Responde <b>'não'</b> caso não saibas).",
+        "Para veres mais opções escreve <b>'ver mais'</b> ou utiliza /mais.",
+        "\nSe quiseres ver já os resultados escreve <b>'mostrar resultados'</b> ou utiliza /mostrar."
     ],
     "misc": [
         "{} (pedimos desculpa pelo inglês)"

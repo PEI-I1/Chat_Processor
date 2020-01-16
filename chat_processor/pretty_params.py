@@ -7,33 +7,33 @@ param_en_to_pt = {
 } 
 
 required_params = {
-    'movie': "Por favor, indique o filme que procura.",
-    'duration': "Por favor, indique a duração que pretende."
+    'movie': "Qual o filme que procuras?",
+    'duration': "Quanto tempo (<b>em minutos</b>) tens para ver o filme?"
 }
 
 optional_params = {
     # FS_scrapper params
-    'top': "Deseja filtrar apenas os telemóveis mais procurados? Diga 'Sim' ou 'Não'.",
-    'new': "Deseja filtrar apenas os telemóveis mais recentes? Diga 'Sim' ou 'Não'.",
-    'promo': "Deseja filtrar apenas os telemóveis com promoção? Diga 'Sim' ou 'Não'.",
-    'ofer': "Deseja filtrar apenas os telemóveis que trazem ofertas? Diga 'Sim' ou 'Não'.",
-    'prest': "Deseja filtrar apenas os telemóveis que se podem pagar com prestações? Diga 'Sim' ou 'Não'.",
-    'points': "Deseja filtrar apenas os telemóveis que se podem pagar com pontos? Diga 'Sim' ou 'Não'.",
-    'brand': "Deseja filtrar por marca? Se sim indique qual, caso contrário responda 'não'",
-    'min': "Por favor, introduza um valor mínimo para filtrar por preço. Caso não queira, responda 'não'.",
-    'max': "Por favor, introduza um valor máximo para filtrar por preço. Caso não queira, responda 'não'.",
-    'assunto': "Por favor indique qual linha de apoio que quer. Caso não saiba, responda 'não' para ver todas as opções.",
-    'nome': "Por favor indique qual o nome do tarifário que deseja. Caso não saiba, responda 'não' para ver todas as opções.",
-    'type': "Caso queira filtrar pelo tipo de pacote indique se quer 'Pacotes Fibra' ou 'Pacotes Satélite'. Caso não queira, responda 'não'.",
-    'name': "Deseja filtrar pelo nome do pacote? Se sim indique qual, caso contrário responda 'não'.",
-    'service': "Deseja filtrar por tipo de serviço do pacote? Se sim indique qual, caso contrário responda 'não'.",
+    'top': "Queres ver os telemóveis mais procurados? <b>'sim'</b> ou <b>'não'</b>.",
+    'new': "Queres ver os telemóveis mais recentes? <b>'sim'</b> ou <b>'não'</b>.",
+    'promo': "Queres ver os telemóveis em promoção? <b>'sim'</b> ou <b>'não'</b>.",
+    'ofer': "Queres ver os telemóveis com ofertas? <b>'sim'</b> ou <b>'não'</b>.",
+    'prest': "Queres ver os telemóveis que podes pagar em prestações? <b>'sim'</b> ou <b>'não'</b>.",
+    'points': "Queres ver os telemóveis que podes comprar com pontos? <b>'sim'</b> ou <b>'não'</b>.",
+    'brand': "Preferes alguma marca? Se sim diz-me qual, senão basta dizeres <b>'não'</b>.",
+    'min': "Qual o preço mínimo para filtrar a pesquisa. Caso não queiras, diz <b>'não'</b>.",
+    'max': "Até quanto estás disposto a pagar. Se não tiveres um limite máximo, diz <b>'não'</b>.",
+    'assunto': "Qual a linha de apoio que queres? Se quiseres ver todas as linhas, responde <b>'não'</b>.",
+    'nome': "Diz-me o nome do tarifário que procuras. Caso não saibas, responde <b>'não'</b> para veres todas as opções.",
+    'type': "Que tipo de pacote preferes? <b>'fibra'</b> ou <b>'satélite'</b>. Caso não prefiras nenhum responde <b>'não'</b>.",
+    'name': "Diz-me o nome do pacote que procuras. Caso não queiras filtrar responde <b>'não'</b>.",
+    'service': "Qual o serviço do pacote que procuras? Caso não queiras filtrar responde <b>'não'</b>.",
     # Cinemas params
-    'genre': "Deseja filtrar pelo género? Se sim indique qual, caso contrário responda 'não'.",
-    'cast': "Deseja filtrar pelo elenco? Se sim indique os atores procura, caso contrário responda 'não'.",
-    'producer': "Deseja filtrar pelo produtor? Se sim indique qual, caso contrário responda 'não'.",
-    'synopsis': "Deseja filtrar pela sinopse? Se sim diga parte da sinopse, caso contrário responda 'não'.",
-    'age': "Deseja filtrar pela restrição de idade? Se sim indique qual, caso contrário responda 'não'.",
-    'date': "Deseja filtrar por data? Se sim indique qual, caso contrário responda 'não'.",
-    'start_time': "Deseja filtrar por hora de inicio? Se sim indique qual, caso contrário responda 'não'.",
-    'end_time': "Deseja filtrar por hora de fim? Se sim indique qual, caso contrário responda 'não'."
+    'genre': "Tens preferência por género? Se sim diz-me qual, caso contrário responde <b>'não'</b>.",
+    'cast': "Queres filtrar por elenco? Se sim diz-nos um ator que gostes, caso contrário responde <b>'não'</b>.",
+    'producer': "Procuras algum realizador em específico? Se sim diz-me qual, caso contrário responde <b>'não'</b>.",
+    'synopsis': "Queres filtrar pela sinopse do filme? Se sim diz-me algum termo da sinopse, caso contrário responde <b>'não'</b>.",
+    'age': "É necessário filtrar pela restrição de idade do filme? Se sim indica a idade, caso contrário responde <b>'não'</b>.",
+    'date': "Em que dia queres ver o filme? Se for para hoje responde <b>'não'</b>.",
+    'start_time': "A partir de que horas podes ver o filme? Caso não tenhas preferência basta dizeres <b>'não'</b>.",
+    'end_time': "Até que horas podes ver o filme? Caso não tenhas preferência basta dizeres <b>'não'</b>."
 }
