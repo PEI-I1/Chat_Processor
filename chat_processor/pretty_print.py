@@ -1,5 +1,7 @@
 from utils import send_msg, send_photo, clean_msg
+from prefab_msgs import prefab_msgs
 import json, re, globals
+
 
 def bold(text):
     '''For a given text make a html bold of it
@@ -156,7 +158,7 @@ def cinemas(idChat, content, cat):
         s += " - " + "\n - ".join(content["cinemas"])
         send_msg(idChat, s)
     else:
-        send_msg(idChat, "Desculpe, mas não existe nenhum cinema perto.")
+        send_msg(idChat, prefab_msgs["failed"][9])
 
 def movies_search(idChat, content, cat):
     '''Pretty print of a search for movies
@@ -439,7 +441,7 @@ def pretty_print(idChat, cat, content, allInfo):
     elif isinstance(content, list) and not allInfo:
         func = switcher.get(cat, send_msg)
         func(idChat, content[0:5], cat)
-        send_msg(idChat, "Se pretender ver o resto das opções escreva 'ver mais'.")
+        send_msg(idChat, prefab_msgs["request"][2])
     else:
         func = switcher.get(cat, send_msg)
         func(idChat, content, cat)
@@ -459,4 +461,4 @@ def ver_mais(idChat):
         else:
             globals.redis_db.delete("vermais" + str(idChat))
     else:
-        send_msg(idChat, "Não existe lista para ver...")
+        send_msg(idChat, prefab_msgs["failed"][10])

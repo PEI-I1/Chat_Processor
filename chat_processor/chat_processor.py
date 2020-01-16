@@ -5,6 +5,7 @@ from default_mode import get_response_default, ntp_answer
 from pretty_print import pretty_print, ver_mais, title
 from utils import send_msg, clean_msg, send_menu
 from ner_by_regex import init_ner_regex
+from prefab_msgs import prefab_msgs
 import globals, json, nltk, re
 
 def init():
@@ -64,7 +65,7 @@ def process_content_num(idChat, content, num):
         n += 1
     if num >= n:
         globals.redis_db.set("content" + str(idChat), json.dumps(content))
-        send_msg(idChat, "Desculpe a escolha que inseriu não é uma das hipóteses. Volte a tentar.")
+        send_msg(idChat, prefab_msgs["failed"][0])
 
 def process_content(idChat, msg, content):
     '''Process content for cases when we want to filter the content
@@ -91,7 +92,7 @@ def process_content(idChat, msg, content):
             if not found:
                 process_content_num(idChat, content, n+1)
     else:
-        send_msg(idChat, "Faça uma nova questão. O que pretende saber?")
+        send_msg(idChat, prefab_msgs["request"][0])
 
 def get_response(idChat, idUser, msg, name, location):
     ''' For a given user message answer him
@@ -107,7 +108,7 @@ def get_response(idChat, idUser, msg, name, location):
         globals.redis_db.delete(str(idChat) + str(idUser) + "_rules_mode");
         globals.redis_db.delete(idChat)
         print("[get_response] Client data removed")
-        send_msg(idChat, "Conversa reiniciada")
+        send_msg(idChat, prefab_msgs["success"][0])
     else:
         contentAux = globals.redis_db.get("content" + str(idChat))
         content = json.loads(contentAux) if contentAux else None
