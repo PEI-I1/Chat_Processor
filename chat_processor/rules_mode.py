@@ -1845,7 +1845,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
     elif menu == 241:
         if opcao == 1:
             save_redis(idChat, idUser, 242)
-            save_redis(idChat, idUser, 262)
             reply_markup={
                 'inline_keyboard': [
                     [{'text': 'pacotes com televisão','callback_data': '1'}],
