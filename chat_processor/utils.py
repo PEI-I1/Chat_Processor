@@ -24,7 +24,8 @@ def clean_msg(msg):
     #remover acentos
     msg = unidecode.unidecode(msg)
 
-    # remove trailing spaces
+    # remove spaces
+    msg = re.sub(r'^\s+', '', msg)
     msg = re.sub(r'\s+$', '', msg)
 
     return msg
