@@ -94,13 +94,14 @@ def stores(idChat, content, cat):
     '''
     send_msg(idChat, "As lojas NOS que correspondem à procura são:")
 
-    for l in content:
-        s = bold("Nome: ") + l["nome"] + "\n"
-        s += bold("Morada: ") + l["morada"] + "\n"
-        h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
-        h = list(filter(None, h))
-        s += bold("Horário: ") + "\n               ".join(h)
-        send_msg(idChat, s)
+    if content:
+        for l in content:
+            s = bold("Nome: ") + l["nome"] + "\n"
+            s += bold("Morada: ") + l["morada"] + "\n"
+            h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
+            h = list(filter(None, h))
+            s += bold("Horário: ") + "\n               ".join(h)
+            send_msg(idChat, s)
 
 def packages(idChat, content, cat):
     '''Pretty print of packages
@@ -411,6 +412,7 @@ def sessions_by_date(idChat, content, cat):
 
     print_with_ask_cinema(idChat, content, cat, aux, session_of_sessions_by_date)
 
+
 switcher = {
     '/fs_scrapper/linhas_apoio': linhas_apoio,
     '/fs_scrapper/phones': phones,
@@ -427,6 +429,7 @@ switcher = {
     '/scrapper/sessions/by_movie': sessions_by_movie,
     '/scrapper/sessions/by_date': sessions_by_date
 }
+
 
 def pretty_print(idChat, cat, content, allInfo):
     '''Pretty print of a content, sending pretty messages to user

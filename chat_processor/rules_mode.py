@@ -1365,10 +1365,14 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: #procurar cinemas com lat e long
-            remove_redis(idChat, idUser, chatData)
+            get_loc(idChat)
+            #remove_redis(idChat, idUser, chatData)
             aux = {}
+            print("LOCATION!!!!!!!!!!!!!!!!!!")
+            print(chatData['locationParam'])
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
+            remove_redis(idChat, idUser, chatData)
             requerido = get_content('/scrapper/cinemas/search', [], aux)
             pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
             return None
@@ -1672,7 +1676,6 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 223:
         save_string(idChat, idUser, '_phones_brand_', msg)
-        print(msg)
         save_redis(idChat, idUser, 222)
         reply_markup={
             'inline_keyboard': [
@@ -1730,6 +1733,7 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             return data
         elif opcao == 2:
             save_redis(idChat, idUser, 232)
+            chatData['previous_state'] = 'modo regras'
             get_loc(idChat)
             data = {}
             data['msg'] = str('''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
@@ -1828,9 +1832,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         return None
 
     elif menu == 232:
+        print("ESTOU NO 232")
+        print(chatData)
+        remove_redis(idChat, idUser, chatData)
         if 'locationParam' in chatData:
-            remove_redis(idChat, idUser, chatData)
             aux = {}
+            print("LOOOOOOOOCATIONNNNNNNNNNN")
+            print(chatData['locationParam'])
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
             requerido = get_content('/fs_scrapper/stores', [], aux)
