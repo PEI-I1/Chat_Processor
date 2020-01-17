@@ -1365,14 +1365,11 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: #procurar cinemas com lat e long
+            remove_redis(idChat, idUser, chatData)
             get_loc(idChat)
-            #remove_redis(idChat, idUser, chatData)
             aux = {}
-            print("LOCATION!!!!!!!!!!!!!!!!!!")
-            print(chatData['locationParam'])
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
-            remove_redis(idChat, idUser, chatData)
             requerido = get_content('/scrapper/cinemas/search', [], aux)
             pretty_print(idChat, '/scrapper/cinemas/search', requerido, True)
             return None
@@ -1832,13 +1829,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         return None
 
     elif menu == 232:
-        print("ESTOU NO 232")
-        print(chatData)
         remove_redis(idChat, idUser, chatData)
         if 'locationParam' in chatData:
             aux = {}
-            print("LOOOOOOOOCATIONNNNNNNNNNN")
-            print(chatData['locationParam'])
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
             requerido = get_content('/fs_scrapper/stores', [], aux)
