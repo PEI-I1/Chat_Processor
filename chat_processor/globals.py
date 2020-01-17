@@ -1,6 +1,7 @@
 from config import REDIS_HOST, REDIS_PORT
 import deeppavlov
 import redis
+from ner_by_regex import movies_genres, days, times
 
 def init():
     '''Init global variables.
@@ -11,9 +12,13 @@ def init():
     global ner_model
     ner_model = deeppavlov.build_model(deeppavlov.configs.ner.ner_ontonotes_bert_mult, download=True)
 
-    #model blacklist
-    global blacklist
-    blacklist = [r'\bPesquisar?\b']
+    #blacklist commands
+    global blacklist_commands
+    blacklist_commands = [r'Nenhuma?']
+
+    #blacklist words detected by deeppavlov
+    global blacklist_deeppavlov
+    blacklist_deeppavlov = movies_genres + days + times
 
     #Connect to redis
     global redis_db

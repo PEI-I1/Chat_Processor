@@ -75,7 +75,7 @@ def proc_ents(inp):
     while i < len(words):
         if ents[i] != "O":
             if ents[i][0] == 'B':
-                if w != "":
+                if w != "" and not is_blacklisted(w, "deeppavlov"):
                     ret.append({'entity': w, 'type': t})
                 w = words[i]
                 t = ents[i][2:]
@@ -83,7 +83,7 @@ def proc_ents(inp):
                 w += " " + words[i]
         i+=1
 
-    if w != "":
+    if w != "" and not is_blacklisted(w, "deeppavlov"):
         ret.append({'entity': w, 'type': t})
 
     return ret
@@ -287,16 +287,24 @@ def compare_params(found, params, chatData, fst_key, sec_key):
                 found[indS][fst_key] = valueE
                 found[indE][sec_key] = valueS
 
-def is_blacklisted(st):
+def is_blacklisted(st, mode):
     '''Check if string is not blacklisted
     :param: string to check
+    :param: witch blacklist to use
     '''
-    blacklisted = False
-    l = len(globals.blacklist)
+    if mode == "commands":
+        blacklist = globals.blacklist_commands
+    elif mode == "deeppavlov":
+        blacklist = globals.blacklist_deeppavlov
+    else:
+        blacklist = []
+
+    l = len(blacklist)
     i = 0
+    blacklisted = False
     
     while i < l and not blacklisted:
-        if re.match(globals.blacklist[i], st):
+        if re.match(r'^' + blacklist[i] + r'$', st):
             blacklisted = True
         i += 1
 
@@ -310,7 +318,7 @@ def transform_param(key, msg_param, params, chatData):
     found = []
 
     #check if is not in blacklist
-    if not is_blacklisted(msg_param["entity"]):
+    if not is_blacklisted(msg_param["entity"], "commands"):
         if "TIME" in msg_param["type"]:
             found = parse_time(key, msg_param["entity"])
             if key == 'end_time':
