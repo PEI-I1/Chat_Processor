@@ -439,15 +439,19 @@ def pretty_print(idChat, cat, content, allInfo):
     '''
     ret = None
 
-    if isinstance(content, str):
-        send_msg(idChat, content)
-    elif isinstance(content, list) and not allInfo:
-        func = switcher.get(cat, send_msg)
-        func(idChat, content[0:5], cat)
-        send_msg(idChat, prefab_msgs["request"][2])
+    if content:
+        if isinstance(content, str):
+            send_msg(idChat, content)
+        elif isinstance(content, list) and not allInfo:
+            func = switcher.get(cat, send_msg)
+            func(idChat, content[0:5], cat)
+            send_msg(idChat, prefab_msgs["request"][2])
+        else:
+            func = switcher.get(cat, send_msg)
+            func(idChat, content, cat)
     else:
-        func = switcher.get(cat, send_msg)
-        func(idChat, content, cat)
+        send_msg(idChat, 'Não foi possível dar resposta ao seu pedido.')
+
 
 def ver_mais(idChat):
     '''When lists are too long only shows first 5 elements
