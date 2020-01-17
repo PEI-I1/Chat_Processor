@@ -301,10 +301,11 @@ def is_blacklisted(st, mode):
 
     l = len(blacklist)
     i = 0
+    cst = clean_msg(st)
     blacklisted = False
     
     while i < l and not blacklisted:
-        if re.match(r'^' + blacklist[i] + r'$', st):
+        if re.match(r'^' + clean_msg(blacklist[i]) + r'$', cst):
             blacklisted = True
         i += 1
 
