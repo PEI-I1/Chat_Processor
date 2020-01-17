@@ -19,9 +19,9 @@ def linhas_apoio(idChat, content, cat):
     for l in content:
         s = bold(l["categoria"]) + "\n"
         s += bold("Contacto: ") + l["numero"] + "\n"
-        s += l["horario"] + "\n"
-        if 'preco' in l:
-            s += bold("Custo da chamada: ") + l["preco"] + "\n"
+        #s += l["horario"] + "\n"
+        #if 'preco' in l:
+        #    s += bold("Custo da chamada: ") + l["preco"] + "\n"
         send_msg(idChat, s)
 
 def phones(idChat, content, cat):
