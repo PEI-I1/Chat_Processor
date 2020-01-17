@@ -94,14 +94,13 @@ def stores(idChat, content, cat):
     '''
     send_msg(idChat, "As lojas NOS que correspondem à procura são:")
 
-    if content:
-        for l in content:
-            s = bold("Nome: ") + l["nome"] + "\n"
-            s += bold("Morada: ") + l["morada"] + "\n"
-            h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
-            h = list(filter(None, h))
-            s += bold("Horário: ") + "\n               ".join(h)
-            send_msg(idChat, s)
+    for l in content:
+        s = bold("Nome: ") + l["nome"] + "\n"
+        s += bold("Morada: ") + l["morada"] + "\n"
+        h = re.split("(.*?\d{2}h\d{2} - \d{2}h\d{2})", l["horario"])
+        h = list(filter(None, h))
+        s += bold("Horário: ") + "\n               ".join(h)
+        send_msg(idChat, s)
 
 def packages(idChat, content, cat):
     '''Pretty print of packages
