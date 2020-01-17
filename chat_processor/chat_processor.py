@@ -153,7 +153,7 @@ def get_response(idChat, idUser, msg, name, location):
                 else:
                     chatData["status"] = ""
                 chatData["locationParam"] = location
-                forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
+
             if chatData["status"] == "modo regras":
                 forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
             elif chatData["status"] == "modo problemas":
