@@ -4,7 +4,7 @@ from utils import *
 import globals, nltk, json, copy
 import regex as re
 from datetime import date, timedelta
-from pretty_print import pretty_print
+from pretty_print import pretty_print, ntp_answer
 from ner_by_regex import detect_entities_regex
 from pretty_params import optional_params as pp_opt, required_params as pp_req, param_en_to_pt
 from text_to_number import parse_number
@@ -442,47 +442,6 @@ def detect_params(msg):
     params = list({json.dumps(p):p for p in params}.values())
     return params
 
-def process_linhas_apoio(linhas_apoio, assunto):
-    '''Process support lines according to assunto of ntp problem
-    :param: list of support lines
-    :param: assunto
-    '''
-    regex = r'\btelevisao\b'
-
-    if assunto == 'voz':
-        regex += r'|\btele\w+'
-    elif assunto == 'internet':
-        regex += r'|\binternet\b'
-
-    las = []
-    for la in linhas_apoio:
-        if re.search(regex, clean_msg(la['categoria'])):
-            las.append(la)
-    return las
-
-def ntp_answer(idChat, msg):
-    '''Get solution and parse it
-    :param: id chat
-    :param: user message
-    '''
-    msg = clean_msg(msg)
-    answer = get_solver(idChat, msg)
-    if answer:
-        send_msg(idChat, answer['msg'])
-        if answer['chat_id'] == -1:
-            globals.redis_db.delete(idChat)
-        elif answer['chat_id'] == -2:
-            globals.redis_db.delete(idChat)
-            linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
-            if linhas_apoio:
-                if 'assunto' in answer:
-                    linhas_apoio = process_linhas_apoio(linhas_apoio, answer['assunto'])
-                pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
-            else:
-                send_msg(idChat, prefab_msgs["failed"][3])
-    else:
-        send_msg(idChat, prefab_msgs["failed"][2])
-
 def modo_problemas(idChat, msg, chatData):
     '''Send to problem solver
     :param: id chat
@@ -491,7 +450,7 @@ def modo_problemas(idChat, msg, chatData):
     '''
     chatData["status"] = "modo problemas"
     globals.redis_db.set(idChat, json.dumps(chatData))
-    ntp_answer(idChat, msg)
+    ntp_answer(idChat, msg, False)
 
 def get_location(idChat, idUser, msg, name, chatData, msg_params, entry, status, msg_ts, req_loc):
     '''Ask and interpret message in order to get user location

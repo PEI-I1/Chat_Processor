@@ -1,4 +1,4 @@
-from utils import send_msg, send_photo, clean_msg
+from utils import send_msg, send_photo, clean_msg, get_solver, get_content, fetchChatMetadata
 from prefab_msgs import prefab_msgs
 import json, re, globals
 
@@ -469,3 +469,63 @@ def ver_mais(idChat):
             globals.redis_db.delete("vermais" + str(idChat))
     else:
         send_msg(idChat, prefab_msgs["failed"][10])
+
+def process_linhas_apoio(linhas_apoio, assunto):
+    '''Process support lines according to assunto of ntp problem
+    :param: list of support lines
+    :param: assunto
+    '''
+    regex = r'\btelevisao\b'
+
+    if assunto == 'voz':
+        regex += r'|\btele\w+'
+    elif assunto == 'internet':
+        regex += r'|\binternet\b'
+
+    las = []
+    for la in linhas_apoio:
+        if re.search(regex, clean_msg(la['categoria'])):
+            las.append(la)
+    return las
+
+def ntp_answer(idChat, msg, silent):
+    '''Get solution and parse it
+    :param: id chat
+    :param: user message
+    :param: silent mode?
+    '''
+    msg = clean_msg(msg)
+    answer = get_solver(idChat, msg)
+    if not silent:
+        if answer:
+            send_msg(idChat, answer['msg'])
+            if answer['chat_id'] == -1:
+                globals.redis_db.delete(idChat)
+            elif answer['chat_id'] == -2:
+                globals.redis_db.delete(idChat)
+                linhas_apoio = get_content("/fs_scrapper/linhas_apoio", [], {})
+                if linhas_apoio:
+                    if 'assunto' in answer:
+                        linhas_apoio = process_linhas_apoio(linhas_apoio, answer['assunto'])
+                    pretty_print(idChat, "/fs_scrapper/linhas_apoio", linhas_apoio, True)
+                else:
+                    send_msg(idChat, prefab_msgs["failed"][3])
+        else:
+            send_msg(idChat, prefab_msgs["failed"][2])
+
+def reset(idChat, idUser, silent):
+    '''Reset chat state
+    :param: chat id
+    :param: user id
+    :param: silent mode?
+    '''
+    chatData = fetchChatMetadata(idChat)
+    globals.redis_db.delete("content" + str(idChat))
+    globals.redis_db.delete("vermais" + str(idChat))
+    globals.redis_db.delete(str(idChat) + str(idUser) + "_rules_mode");
+    globals.redis_db.delete(idChat)
+    if chatData["status"] == "modo problemas":
+        ntp_answer(idChat, "/reset", silent)
+    print("[get_response] Client data removed")
+    if not silent:
+        send_msg(idChat, prefab_msgs["success"][0])

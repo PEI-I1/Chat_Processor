@@ -64,6 +64,7 @@ POST /getResponse
 | `idUser` | `string` | **Required**. User id. |
 | `msg` | `string` | **Required**. User message. |
 | `name` | `string` | **Required**. User name. |
+| `timestamp` | `int` | **Required**. Message date in Unix time. |
 | `location` | `None` or `{"lat": float, "lon": float}` | **Required**. User location. |
 
 Example:
@@ -73,6 +74,7 @@ Example:
     "idUser":"111",
     "msg":"Quero ver um filme.",
     "name":"António Maria",
+    "timestamp": 1579519622,
     "location": None
 }
 ```
@@ -84,6 +86,7 @@ Example sending location:
     "idUser":"111",
     "msg":"Quero ver um filme.",
     "name":"António Maria",
+    "timestamp": 1579519622,
     "location": {
         "lat": 32.543042,
         "lon": -10.424717

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 from rules_mode import get_response_rules
-from default_mode import get_response_default, ntp_answer
-from pretty_print import pretty_print, ver_mais, title
-from utils import send_msg, clean_msg, send_menu
+from default_mode import get_response_default
+from pretty_print import pretty_print, ver_mais, title, ntp_answer, reset
+from utils import send_msg, clean_msg, send_menu, fetchChatMetadata
 from ner_by_regex import init_ner_regex
 from prefab_msgs import prefab_msgs
+from periodic_message import save_chat_timestamp
 import globals, json, nltk, re
 
 def init():
@@ -94,50 +95,24 @@ def process_content(idChat, msg, content):
     else:
         send_msg(idChat, prefab_msgs["request"][0])
 
-def fetchChatMetadata(idChat):
-    ''' Fetch or initialize chat metadata for a user
-    :param: telegram chat identifier
-    '''
-    chatDataAux = globals.redis_db.get(idChat)
-    chatData = json.loads(chatDataAux) if chatDataAux else None
-
-    if not chatData:
-        chatData = {
-            "status": "",
-            "tries": 0,
-            "cat": "",
-            "cat_change": "",
-            "cat_change_last_msg": "",
-            "paramsStatus": "new",
-            "locationParam": None,
-            "paramsRequired": {},
-            "paramsOptional":{},
-            "paramsMissingRequired": {},
-            "paramsMissingOptional": {},
-            "msg_params": {}
-        }
-
-    return chatData
-
-
-def get_response(idChat, idUser, msg, name, location):
+def get_response(idChat, idUser, msg, name, timestamp, location):
     ''' For a given user message answer him
     :param: id chat
     :param: id user
     :param: user message
     :param: user name
+    :param: message timestamp
     :param: user location
     '''
-    if re.match(r'^/reset(\s)*$', msg):
-        chatData = fetchChatMetadata(idChat)
-        globals.redis_db.delete("content" + str(idChat))
-        globals.redis_db.delete("vermais" + str(idChat))
-        globals.redis_db.delete(str(idChat) + str(idUser) + "_rules_mode");
-        globals.redis_db.delete(idChat)
-        if chatData["status"] == "modo problemas":
-            ntp_answer(idChat, msg)
-        print("[get_response] Client data removed")
-        send_msg(idChat, prefab_msgs["success"][0])
+    #save for periodic message
+    save_chat_timestamp(idChat, idUser, timestamp)
+
+    if re.match(r'^/start\s*$', msg):
+        send_msg(idChat, prefab_msgs["about"][0])
+    elif re.match(r'^/help\s*$', msg):
+        send_msg(idChat, prefab_msgs["about"][1])
+    elif re.match(r'^/reset(\s)*$', msg):
+        reset(idChat, idUser, False)
     else:
         contentAux = globals.redis_db.get("content" + str(idChat))
         content = json.loads(contentAux) if contentAux else None
@@ -158,7 +133,7 @@ def get_response(idChat, idUser, msg, name, location):
                 forward_to(idChat, chatData, get_response_rules(idChat, idUser, msg, name, chatData))
             elif chatData["status"] == "modo problemas":
                 globals.redis_db.set(idChat, json.dumps(chatData))
-                ntp_answer(idChat, msg)
+                ntp_answer(idChat, msg, False)
             else:
                 m = clean_msg(msg)
                 if re.match(r'\bmodo (de )?regras\b', m) or re.match(r'^/interativo$', msg):

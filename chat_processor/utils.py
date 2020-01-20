@@ -30,6 +30,31 @@ def clean_msg(msg):
 
     return msg
 
+def fetchChatMetadata(idChat):
+    ''' Fetch or initialize chat metadata for a user
+    :param: telegram chat identifier
+    '''
+    chatDataAux = globals.redis_db.get(idChat)
+    chatData = json.loads(chatDataAux) if chatDataAux else None
+
+    if not chatData:
+        chatData = {
+            "status": "",
+            "tries": 0,
+            "cat": "",
+            "cat_change": "",
+            "cat_change_last_msg": "",
+            "paramsStatus": "new",
+            "locationParam": None,
+            "paramsRequired": {},
+            "paramsOptional":{},
+            "paramsMissingRequired": {},
+            "paramsMissingOptional": {},
+            "msg_params": {}
+        }
+
+    return chatData
+
 def get_entry(request):
     '''For a given category/functionality returns its entry
     in categories/functionalities dictionary (categoria_dict)
@@ -92,6 +117,24 @@ def send_msg(idChat, msg):
     URL = urls["API_ENDPOINT"] + "/send_message/" + urllib.parse.quote(str(idChat), safe='')
 
     print("[LOG] send msg to: "+URL)
+    try:
+        res = requests.post(URL, data=msg.encode("utf-8"))
+        res.raise_for_status()
+        res = res.text
+    except:
+        res = None
+
+    return res
+
+def send_silent_msg(idChat, msg):
+    '''Makes a request to API Endpoint in order do send a silent message to user
+    :param: id chat
+    :param: message to send to user
+    :return: API Endpoint response or None
+    '''
+    URL = urls["API_ENDPOINT"] + "/send_silent_message/" + urllib.parse.quote(str(idChat), safe='')
+
+    print("[LOG] send silent msg to: "+URL)
     try:
         res = requests.post(URL, data=msg.encode("utf-8"))
         res.raise_for_status()

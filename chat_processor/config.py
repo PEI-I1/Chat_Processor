@@ -7,6 +7,8 @@ RS = os.getenv('RS', 'http://127.0.0.1:5004')
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
 PARAM_THRESHOLD = 2
+INACTIVE_TIME = 5 #minutes
+NOTIFICATION_TASK_INTERVAL = 1 #minutes
 
 urls = {
     'API_ENDPOINT': API_ENDPOINT,

@@ -1,8 +1,7 @@
 import globals #redis_db
 from utils import get_content, get_loc
 from regex_rules_mode import regexPrice
-from pretty_print import pretty_print
-from default_mode import ntp_answer
+from pretty_print import pretty_print, ntp_answer
 import json
 
 
@@ -613,7 +612,7 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
         elif opcao == 6:
             chatData["status"] == "modo problemas"
             globals.redis_db.set(idChat, json.dumps(chatData))
-            ntp_answer(idChat, msg)
+            ntp_answer(idChat, msg, False)
 
         elif opcao == 7:
             remove_redis(idChat, idUser, chatData)
