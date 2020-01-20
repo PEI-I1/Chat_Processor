@@ -13,7 +13,8 @@ prefab_msgs = {
         "Se preferires, podes ligar para uma das seguintes linhas de apoio:",
         "Desculpa, mas não percebi o que me pediste. Tenta de novo.",
         "Desculpa, mas não encontrei nenhum cinema onde me pediste.",
-        "Ups, afinal não tenho mais nada para te mostrar."
+        "Ups, afinal não tenho mais nada para te mostrar.",
+        "Não foi possível dar resposta ao seu pedido."
     ],
     "request": [
         "Entendido, então pergunta-me outra coisa. O que queres saber?",

@@ -450,7 +450,7 @@ def pretty_print(idChat, cat, content, allInfo):
             func = switcher.get(cat, send_msg)
             func(idChat, content, cat)
     else:
-        send_msg(idChat, 'Não foi possível dar resposta ao seu pedido.')
+        send_msg(idChat, prefab_msgs["failed"][11])
 
 
 def ver_mais(idChat):

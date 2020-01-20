@@ -150,7 +150,7 @@ def parse_date(key, string):
     :param: string with date to parse
     '''
     params = parse_date_time(string)
-    mounths = {
+    months = {
         'janeiro': '01',
         'fevereiro': '02',
         'marco': '03',
@@ -165,7 +165,7 @@ def parse_date(key, string):
         'dezembro': '12'
     }
 
-    st = '(' + '|'.join(mounths.keys()) + ')'
+    st = '(' + '|'.join(months.keys()) + ')'
 
     if not len(params):
         string = parse_number(string)
@@ -184,7 +184,9 @@ def parse_date(key, string):
             string = re.sub(r'\s*([0-9]+)\s*anos?\s*', r'\1', string)
             params.append({'age': string})
         elif key != 'age':
-            string = re.sub(r''+st, lambda x: mounths[x[0]], clean_msg(string))
+            string = re.sub(r''+st, lambda x: months[x[0]], clean_msg(string))
+            string = re.sub(r'^[^0-9]+', r'', string)
+            string = re.sub(r'[^0-9]+$', r'', string)
             string = re.sub(r'[^0-9]+',r'-', string)
 
             string = re.sub(r'^([0-9])-', r'0\1-', string)
