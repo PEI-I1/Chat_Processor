@@ -691,6 +691,7 @@ def change_category(idChat, idUser, msg, name, chatData):
         chatData["paramsStatus"] = "new"
         chatData["paramsRequired"] = {}
         chatData["paramsOptional"] = {}
+        chatData["locationParam"] = None
     # se o user nao quiser mudar, trata-se a ultima mensagem (antes de perguntar se queria mudar de pedido)
     else:
         msg = chatData["cat_change_last_msg"]
