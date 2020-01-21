@@ -175,16 +175,22 @@ def detect_location(msg):
 
             i = 0
             while i < n and not found:
-                if re.search(r'\b' + " ".join(words[i:n+1]) + r'\b', msg):
+                word = " ".join(words[i:n+1])
+                if word != "sao" and re.search(r'\b' + word + r'\b', msg):
                     ents[m] = n-i
                     found = True
                 i += 1
 
             i = 0
             while i < n and not found:
-                if re.search(r'\b' + " ".join(words[0:i+1]) + r'\b', msg): 
+                word = " ".join(words[0:i+1])
+                if word != "sao" and re.search(r'\b' + word + r'\b', msg): 
                     ents[m] = i+1
-                if re.search(r'\b' + words[i] + r'\b', msg):
+                i += 1
+
+            i = 0
+            while i < n and not found:
+                if words[i] != "sao" and re.search(r'\b' + words[i] + r'\b', msg):
                     ents[m] = 1
                 i += 1
 
