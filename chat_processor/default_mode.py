@@ -191,8 +191,12 @@ def parse_date(key, string):
 
             string = re.sub(r'^([0-9])-', r'0\1-', string)
             string = re.sub(r'-([0-9])-', r'-0\1-', string)
+            string = re.sub(r'-([0-9])$', r'-0\1', string)
 
             ss = string.split('-')
+            if len(ss) == 2:
+                ss.append(str(date.today().year))
+
             ss = ss[::-1]
             string = '-'.join(ss)
             params.append({key: string})
