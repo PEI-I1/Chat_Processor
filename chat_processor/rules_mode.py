@@ -205,6 +205,7 @@ def final_movies_options(idChat, idUser, chatData):
 
     return None
 
+
 def final_movies_duration(idChat, idUser, chatData):
     '''Send request to Cinema Scrapper for sessions of a movie with the chosen options and forwardthe reply to user
     :param: chat id
@@ -243,6 +244,7 @@ def final_movies_duration(idChat, idUser, chatData):
 
     return None
 
+
 def final_movies_duration_loc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
     :param: chat id
@@ -256,39 +258,36 @@ def final_movies_duration_loc(idChat, idUser, chatData):
     start = load_string(idChat, idUser, '_start_time')
     end = load_string(idChat, idUser, '_end_time')
 
-    if search_term:
-        aux['search_term'] = search_term
-        remove_string(idChat, idUser, '_search_term')
-
     if 'locationParam' in chatData:
             aux['lat'] = float(chatData['locationParam']['lat'])
             aux['lon'] = float(chatData['locationParam']['lon'])
+
+            if duration:
+                aux['duration'] = duration
+                remove_string(idChat, idUser, '_movie_duration')
+
+            if date:
+                aux['date'] = date
+                remove_string(idChat, idUser, '_movie_date')
+
+            if start:
+                aux['start_time'] = start
+                remove_string(idChat, idUser, '_start_time')
+
+            if end:
+                aux['end_time'] = end
+                remove_string(idChat, idUser, '_end_time')
     else:
         remove_redis(idChat, idUser, chatData)
         data = {}
         data['msg'] = str("Saiu do modo de regras.")
         return data
 
-    if duration:
-        aux['duration'] = duration
-        remove_string(idChat, idUser, '_movie_duration')
-
-    if date:
-        aux['date'] = date
-        remove_string(idChat, idUser, '_movie_date')
-
-    if start:
-        aux['start_time'] = start
-        remove_string(idChat, idUser, '_start_time')
-
-    if end:
-        aux['end_time'] = end
-        remove_string(idChat, idUser, '_end_time')
-
     remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_duration', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_duration', pretendido, True)
     return None
+
 
 def final_moviesNxtSessions_loc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
@@ -296,11 +295,6 @@ def final_moviesNxtSessions_loc(idChat, idUser, chatData):
     :param: user id
     '''
     aux = {}
-    search_term = load_string(idChat, idUser, '_search_term')
-
-    if search_term:
-        aux['search_term'] = search_term
-        remove_string(idChat, idUser, '_search_term')
 
     if 'locationParam' in chatData:
             aux['lat'] = float(chatData['locationParam']['lat'])
@@ -317,6 +311,7 @@ def final_moviesNxtSessions_loc(idChat, idUser, chatData):
 
     return None
 
+
 def final_moviesNxtSessions_semloc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
     :param: chat id
@@ -330,7 +325,10 @@ def final_moviesNxtSessions_semloc(idChat, idUser, chatData):
         remove_string(idChat, idUser, '_search_term')
 
     remove_redis(idChat, idUser, chatData)
-    return get_content('/scrapper/sessions/next_sessions', [], aux)
+    pretendido = get_content('/scrapper/sessions/next_sessions', [], aux)
+    pretty_print(idChat, '/scrapper/sessions/next_sessions', pretendido, True)
+    return None
+
 
 def final_movies_sessoesDate_loc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for session of a movie with the chosen options and forward the reply to user
@@ -372,8 +370,6 @@ def final_movies_sessoesDate_loc(idChat, idUser, chatData):
     remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_date', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_date', pretendido, True)
-    print("MOVIES SESSOES LOC")
-    print(pretendido)
 
     return None
 
@@ -409,8 +405,6 @@ def final_movies_sessoesDate(idChat, idUser, chatData):
     remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_date', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_date', pretendido, True)
-    print("MOVIES SESSOES")
-    print(pretendido)
 
     return None
 
@@ -433,8 +427,6 @@ def final_movies_bymovie_loc(idChat, idUser, chatData):
         remove_string(idChat, idUser, '_search_term')
 
     if chatData['locationParam'] is not None:
-        print("LOCALIZAÇÃO")
-        print(chatData['locationParam'])
         aux['lat'] = float(chatData['locationParam']['lat'])
         aux['lon'] = float(chatData['locationParam']['lon'])
 
@@ -457,8 +449,6 @@ def final_movies_bymovie_loc(idChat, idUser, chatData):
     remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_movie', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_movie', pretendido, True)
-    print("MOVIES BY MOVIE LOC")
-    print(pretendido)
     return None
 
 
@@ -513,7 +503,6 @@ def final_packages(idChat, idUser):
 
     if tipo:
         aux['type'] = tipo
-        aux['type'] = tipo
         remove_string(idChat, idUser, '_package_type')
 
     if servico:
@@ -555,7 +544,6 @@ def final_phones(idChat, idUser):
         remove_float(idChat, idUser, '_max_value_')
     if brand:
         aux['brand'] = brand
-        print(brand)
         remove_string(idChat, idUser, '_phones_brand_')
     if promo:
         aux['promo'] = True
@@ -662,7 +650,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
                 'inline_keyboard': [
             [{'text': 'Procurar cinemas','callback_data': '1'}],
             [{'text': 'Filmes em sessão ','callback_data': '2'}],
-            [{'text': 'Filmes específicos','callback_data': '3'}],
+            [{'text': 'Filmes por critério','callback_data': '3'}],
             [{'text': 'Próximas estreias','callback_data': '4'}],
             [{'text': 'Informação de um filme','callback_data': '5'}],
             [{'text': 'Sessões com certa duração','callback_data': '6'}],
@@ -710,8 +698,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 14)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'Genero','callback_data': '1'}],
-                    [{'text': 'Cast','callback_data': '2'}],
+                    [{'text': 'Género','callback_data': '1'}],
+                    [{'text': 'Elenco','callback_data': '2'}],
                     [{'text': 'Produtor','callback_data': '3'}],
                     [{'text': 'Sinopse','callback_data': '4'}],
                     [{'text': 'Faixa etária','callback_data': '5'}],
@@ -739,13 +727,16 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 7:
-            save_redis(idChat, idUser, 17)
+            save_redis(idChat, idUser, 108)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
+                    [{'text': 'Termo de procura','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
-            data['msg'] = 'Pretende especificar algum parametro?'
+            data = {}
+            data['msg'] = 'Pretende especificar mais algum parametro?'
             data['menu'] = json.dumps(reply_markup)
             return data
 
@@ -820,9 +811,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return None
 
     elif menu == 191:
+        data = {}
         if opcao == 1:
             save_redis(idChat, idUser, 199)
-            data = {}
             data['msg'] = str('''Escreva termo de pesquisa para um cinema''')
             return data
 
@@ -833,33 +824,27 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
                     [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
                 ]
             }
-            data = {}
             data['msg'] = 'Pretende especificar mais algum parametro?'
             data['menu'] = json.dumps(reply_markup)
             return data
 
         if opcao == 3: # procurar sessoes por filme
             save_redis(idChat, idUser, 197)
-            data = {}
             data['msg'] = str('''Indique a data (ano-mês-dia)''')
             return data
 
         if opcao == 4: # procurar sessoes por filme
             save_redis(idChat, idUser, 196)
-            data = {}
             data['msg'] = str('''Especifique limite para início das sessões''')
             return data
 
         if opcao == 5: # procurar sessoes por filme
             save_redis(idChat, idUser, 195)
-            data = {}
             data['msg'] = str('''Especifique limite para fim das sessões''')
             return data
 
     elif menu == 199:
         save_string(idChat, idUser, '_search_term', msg)
-        print("Search terM")
-        print(msg)
         save_redis(idChat, idUser, 19)
         reply_markup={
             'inline_keyboard': [
@@ -924,14 +909,19 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 18:
         save_string(idChat, idUser, '_movie_name', msg)
-        save_redis(idChat, idUser, 180)
-        reply_markup={
+        save_redis(idChat, idUser, 181)
+        reply_markup = {
             'inline_keyboard': [
-                [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
+                [{'text': 'Termo de pesquisa', 'callback_data': '1'}],
+                [{'text': 'Usar localização', 'callback_data': '2'}],
+                [{'text': 'Data (ano-mês-dia)', 'callback_data': '3'}],
+                [{'text': 'Hora inicio das sessões', 'callback_data': '4'}],
+                [{'text': 'Hora fim das sessões', 'callback_data': '5'}],
+                [{'text': 'Sair', 'callback_data': '6'}],
             ]
         }
         data = {}
-        data['msg'] = 'Pretende especificar mais algum parametro?'
+        data['msg'] = 'Escolha uma das opções para especificar'
         data['menu'] = json.dumps(reply_markup)
         return data
 
@@ -1015,7 +1005,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
     elif menu == 189:
-        save_string(idChat, idUser, '_search_term', 'all')
+        save_string(idChat, idUser, '_search_term', msg)
         save_redis(idChat, idUser, 180)
         reply_markup={
             'inline_keyboard': [
@@ -1111,16 +1101,14 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             data['msg'] = str('''Especifique termo de procura por cinema''')
             return data
         elif opcao == 2:
+            chatData['previous_state'] = 'modo regras'
+            get_loc(idChat)
             save_redis(idChat, idUser, 110)
-            reply_markup={
-                'inline_keyboard': [
-                    [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
-                ]
-            }
             data = {}
-            data['msg'] = 'Pretende especificar mais algum parametro?'
-            data['menu'] = json.dumps(reply_markup)
+            data['msg'] = str(
+                '''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
             return data
+
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
             data = {}
@@ -1191,14 +1179,19 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 16:
         save_string(idChat, idUser, '_movie_duration', msg)
-        save_redis(idChat, idUser, 107)
+        save_redis(idChat, idUser, 158)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
-            ]
+                    [{'text': 'Termo de pesquisa','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Data (ano-mês-dia)','callback_data': '3'}],
+                    [{'text': 'Hora inicio das sessões','callback_data': '4'}],
+                    [{'text': 'Hora fim das sessões','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}],
+                ]
         }
         data = {}
-        data['msg'] = 'Pretende especificar mais algum parametro?'
+        data['msg'] = 'Escolha uma das opções para especificar'
         data['menu'] = json.dumps(reply_markup)
         return data
 
@@ -1488,8 +1481,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 14)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'Genero','callback_data': '1'}],
-                    [{'text': 'Cast','callback_data': '2'}],
+                    [{'text': 'Género','callback_data': '1'}],
+                    [{'text': 'Elenco','callback_data': '2'}],
                     [{'text': 'Produtor','callback_data': '3'}],
                     [{'text': 'Sinopse','callback_data': '4'}],
                     [{'text': 'Faixa etária','callback_data': '5'}],
@@ -1503,7 +1496,6 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 2: # fazer a pesquisa
             final_movies_options(idChat, idUser, chatData)
-            #remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 134:
