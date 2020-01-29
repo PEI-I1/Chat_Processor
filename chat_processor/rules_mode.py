@@ -61,7 +61,6 @@ def remove_redis(idChat, idUser, chatData):
     load_redis(idChat, idUser)
 
 
-
 def save_redis(idChat, idUser, menu):
     '''Save the number of the menu that was sent to the user
     :param: chat id
@@ -168,7 +167,7 @@ def remove_string(idChat, idUser, code):
     globals.redis_db.delete(str(idChat) + str(idUser) + code)
 
 
-def final_movies_options(idChat, idUser):
+def final_movies_options(idChat, idUser, chatData):
     '''Send request to Cinema Scrapper for movies with the chosen options and forward the reply to user
     :param: chat id
     :param: user id
@@ -200,12 +199,13 @@ def final_movies_options(idChat, idUser):
         aux['age'] = age
         remove_string(idChat, idUser, '_movie_age')
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/movies/search', [], aux)
     pretty_print(idChat, '/scrapper/movies/search', pretendido, True)
 
     return None
 
-def final_movies_duration(idChat, idUser):
+def final_movies_duration(idChat, idUser, chatData):
     '''Send request to Cinema Scrapper for sessions of a movie with the chosen options and forwardthe reply to user
     :param: chat id
     :param: user id
@@ -237,6 +237,7 @@ def final_movies_duration(idChat, idUser):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_duration', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_duration', pretendido, True)
 
@@ -284,12 +285,12 @@ def final_movies_duration_loc(idChat, idUser, chatData):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_duration', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_duration', pretendido, True)
-
     return None
 
-def final_movies_loc(idChat, idUser, chatData):
+def final_moviesNxtSessions_loc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
     :param: chat id
     :param: user id
@@ -310,12 +311,13 @@ def final_movies_loc(idChat, idUser, chatData):
         data['msg'] = str("Saiu do modo de regras.")
         return data
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/next_sessions', [], aux)
     pretty_print(idChat, '/scrapper/sessions/next_sessions', pretendido, True)
 
     return None
 
-def final_movies_semloc(idChat, idUser):
+def final_moviesNxtSessions_semloc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for sessions of a movie with the chosen options and forward the reply to user
     :param: chat id
     :param: user id
@@ -327,9 +329,10 @@ def final_movies_semloc(idChat, idUser):
         aux['search_term'] = search_term
         remove_string(idChat, idUser, '_search_term')
 
+    remove_redis(idChat, idUser, chatData)
     return get_content('/scrapper/sessions/next_sessions', [], aux)
 
-def final_movies_sessoes_loc(idChat, idUser, chatData):
+def final_movies_sessoesDate_loc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for session of a movie with the chosen options and forward the reply to user
     :param: chat id
     :param: user id
@@ -354,7 +357,6 @@ def final_movies_sessoes_loc(idChat, idUser, chatData):
         data['msg'] = str("Saiu do modo de regras.")
         return data
 
-
     if date:
         aux['date'] = date
         remove_string(idChat, idUser, '_date')
@@ -367,12 +369,16 @@ def final_movies_sessoes_loc(idChat, idUser, chatData):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_date', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_date', pretendido, True)
+    print("MOVIES SESSOES LOC")
+    print(pretendido)
 
     return None
 
-def final_movies_sessoes(idChat, idUser):
+
+def final_movies_sessoesDate(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for session of a movie with the chosen options and forward the reply to user
     :param: chat id
     :param: user id
@@ -400,10 +406,14 @@ def final_movies_sessoes(idChat, idUser):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_date', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_date', pretendido, True)
+    print("MOVIES SESSOES")
+    print(pretendido)
 
     return None
+
 
 def final_movies_bymovie_loc(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for session of a movie with the chosen options and forward the reply to user
@@ -422,18 +432,14 @@ def final_movies_bymovie_loc(idChat, idUser, chatData):
         aux['search_term'] = search_term
         remove_string(idChat, idUser, '_search_term')
 
-    if 'locationParam' in chatData:
-            aux['lat'] = float(chatData['locationParam']['lat'])
-            aux['lon'] = float(chatData['locationParam']['lon'])
-    else:
-        remove_redis(idChat, idUser, chatData)
-        data = {}
-        data['msg'] = str("Saiu do modo de regras.")
-        return data
-
+    if chatData['locationParam'] is not None:
+        print("LOCALIZAÇÃO")
+        print(chatData['locationParam'])
+        aux['lat'] = float(chatData['locationParam']['lat'])
+        aux['lon'] = float(chatData['locationParam']['lon'])
 
     if movie:
-        aux['movie'] = search_term
+        aux['movie'] = movie
         remove_string(idChat, idUser, '_movie_name')
 
     if date:
@@ -448,12 +454,15 @@ def final_movies_bymovie_loc(idChat, idUser, chatData):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_movie', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_movie', pretendido, True)
-
+    print("MOVIES BY MOVIE LOC")
+    print(pretendido)
     return None
 
-def final_movies_bymovie(idChat, idUser):
+
+def final_movies_bymovie(idChat, idUser, chatData):
     '''Send request to Cinemas Scrapper for session of a movie with the chosen options and forward the reply to user
     :param: chat id
     :param: user id
@@ -471,7 +480,7 @@ def final_movies_bymovie(idChat, idUser):
         remove_string(idChat, idUser, '_search_term')
 
     if movie:
-        aux['movie'] = search_term
+        aux['movie'] = movie
         remove_string(idChat, idUser, '_movie_name')
 
     if date:
@@ -486,9 +495,9 @@ def final_movies_bymovie(idChat, idUser):
         aux['end_time'] = end
         remove_string(idChat, idUser, '_end_time')
 
+    remove_redis(idChat, idUser, chatData)
     pretendido = get_content('/scrapper/sessions/by_movie', [], aux)
     pretty_print(idChat, '/scrapper/sessions/by_movie', pretendido, True)
-
     return None
 
 
@@ -497,7 +506,7 @@ def final_packages(idChat, idUser):
     :param: chat id
     :param: user id
     '''
-    aux =  {}
+    aux = {}
     tipo = load_string(idChat, idUser, '_package_type')
     servico = load_string(idChat, idUser, '_package_service')
     preco = load_string(idChat, idUser, '_package_price')
@@ -584,13 +593,13 @@ def get_response_rules(idChat, idUser, msg, name, chatData):
         save_redis(idChat, idUser, 1)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'cinemas ou sessões','callback_data': '1'}],
-                [{'text': 'tarifários ou pacotes','callback_data': '2'}],
-                [{'text': 'compra de telemóveis','callback_data': '3'}],
-                [{'text': 'lojas da NOS','callback_data': '4'}],
-                [{'text': 'linhas de apoio','callback_data': '5'}],
-                [{'text': 'problemas técnicos','callback_data': '6'}],
-                [{'text': 'sair','callback_data': '7'}]
+                [{'text': 'Cinemas ou sessões','callback_data': '1'}],
+                [{'text': 'Tarifários ou pacotes','callback_data': '2'}],
+                [{'text': 'Compra de telemóveis','callback_data': '3'}],
+                [{'text': 'Lojas da NOS','callback_data': '4'}],
+                [{'text': 'Linhas de apoio','callback_data': '5'}],
+                [{'text': 'Problemas técnicos','callback_data': '6'}],
+                [{'text': 'Sair','callback_data': '7'}]
             ]
         }
         data = {}
@@ -651,35 +660,35 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 11)
         reply_markup={
                 'inline_keyboard': [
-            [{'text': 'procurar cinemas','callback_data': '1'}],
-            [{'text': 'filmes em sessão ','callback_data': '2'}],
-            [{'text': 'filmes específicos','callback_data': '3'}],
-            [{'text': 'próximas estreias','callback_data': '4'}],
-            [{'text': 'informação de um filme','callback_data': '5'}],
-            [{'text': 'sessões com certa duração','callback_data': '6'}],
-            [{'text': 'proximas sessões','callback_data': '7'}],
-            [{'text': 'sessões de um filme','callback_data': '8'}],
-            [{'text': 'sessões por data','callback_data': '9'}],
-            [{'text': 'sair','callback_data': '10'}]
-        ]
-    }
+            [{'text': 'Procurar cinemas','callback_data': '1'}],
+            [{'text': 'Filmes em sessão ','callback_data': '2'}],
+            [{'text': 'Filmes específicos','callback_data': '3'}],
+            [{'text': 'Próximas estreias','callback_data': '4'}],
+            [{'text': 'Informação de um filme','callback_data': '5'}],
+            [{'text': 'Sessões com certa duração','callback_data': '6'}],
+            [{'text': 'Proximas sessões','callback_data': '7'}],
+            [{'text': 'Sessões de um filme','callback_data': '8'}],
+            [{'text': 'Sessões por data','callback_data': '9'}],
+            [{'text': 'Sair','callback_data': '10'}]
+                ]
+        }
+
         data = {}
         data['msg'] = 'Escolha uma das seguintes opções.'
         data['menu'] = json.dumps(reply_markup)
         return data
 
-
     elif menu == 11:
+        data = {}
         if opcao == 1:
             save_redis(idChat, idUser, 12)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'cinema em específico ','callback_data': '1'}],
-                    [{'text': 'perto de localização','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Cinema em específico ','callback_data': '1'}],
+                    [{'text': 'Perto de localização','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
-            data = {}
             data['msg'] = 'Escolha uma das seguintes opções.'
             data['menu'] = json.dumps(reply_markup)
             return data
@@ -688,12 +697,11 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 13)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'cinema em específico ','callback_data': '1'}],
-                    [{'text': 'perto de localização','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Cinema em específico ','callback_data': '1'}],
+                    [{'text': 'Perto de localização','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
-            data = {}
             data['msg'] = 'Escolha uma das seguintes opções.'
             data['menu'] = json.dumps(reply_markup)
             return data
@@ -702,15 +710,14 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 14)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'genero','callback_data': '1'}],
-                    [{'text': 'cast','callback_data': '2'}],
-                    [{'text': 'produtor','callback_data': '3'}],
-                    [{'text': 'sinopse','callback_data': '4'}],
-                    [{'text': 'faixa etária','callback_data': '5'}],
-                    [{'text': 'sair','callback_data': '6'}]
+                    [{'text': 'Genero','callback_data': '1'}],
+                    [{'text': 'Cast','callback_data': '2'}],
+                    [{'text': 'Produtor','callback_data': '3'}],
+                    [{'text': 'Sinopse','callback_data': '4'}],
+                    [{'text': 'Faixa etária','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}]
                 ]
             }
-            data = {}
             data['msg'] = 'Escolha o que pretende especificar.'
             data['menu'] = json.dumps(reply_markup)
             return data
@@ -723,13 +730,11 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
         elif opcao == 5:
             save_redis(idChat, idUser, 15)
-            data = {}
             data['msg'] = str('''Especifique o filme que pretende obter infomações sobre.''')
             return data
 
         elif opcao == 6:
             save_redis(idChat, idUser, 16)
-            data = {}
             data['msg'] = str('''Especifique a duração do filme que pretende, em minutos.''')
             return data
 
@@ -740,14 +745,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
                     [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
                 ]
             }
-            data = {}
             data['msg'] = 'Pretende especificar algum parametro?'
             data['menu'] = json.dumps(reply_markup)
             return data
 
         elif opcao == 8:
             save_redis(idChat, idUser, 18)
-            data = {}
             data['msg'] = str('''Especifique o nome do filme.''')
             return data
 
@@ -758,14 +761,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
                     [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
                 ]
             }
-            data = {}
             data['msg'] = 'Pretende especificar algum parametro?'
             data['menu'] = json.dumps(reply_markup)
             return data
 
         elif opcao == 10:
             remove_redis(idChat, idUser, chatData)
-            data = {}
             data['msg'] = str('''Saiu do modo de regras.''')
             return data
 
@@ -774,12 +775,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 191)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'termo de pesquisa','callback_data': '1'}],
-                    [{'text': 'usar localização','callback_data': '2'}],
-                    [{'text': 'data (ano-mês-dia)','callback_data': '3'}],
-                    [{'text': 'hora inicio das sessões','callback_data': '4'}],
-                    [{'text': 'hora fim das sessões','callback_data': '5'}],
-                    [{'text': 'sair','callback_data': '6'}]
+                    [{'text': 'Termo de pesquisa','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Data (ano-mês-dia)','callback_data': '3'}],
+                    [{'text': 'Hora inicio das sessões','callback_data': '4'}],
+                    [{'text': 'Hora fim das sessões','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}]
                 ]
             }
             data = {}
@@ -788,8 +789,10 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         if opcao == 2: # procurar sessoes por filme
-            final_movies_sessoes(idChat, idUser)
-            remove_redis(idChat, idUser, chatData)
+            if chatData['locationParam'] is None:
+                final_movies_bymovie(idChat, idUser, chatData)
+            else:
+                final_movies_bymovie_loc(idChat, idUser, chatData)
             return None
 
     elif menu == 190:
@@ -797,12 +800,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 191)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'termo de pesquisa','callback_data': '1'}],
-                    [{'text': 'usar localização','callback_data': '2'}],
-                    [{'text': 'data (ano-mês-dia)','callback_data': '3'}],
-                    [{'text': 'hora inicio das sessões','callback_data': '4'}],
-                    [{'text': 'hora fim das sessões','callback_data': '5'}],
-                    [{'text': 'sair','callback_data': '6'}]
+                    [{'text': 'Termo de pesquisa','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Data (ano-mês-dia)','callback_data': '3'}],
+                    [{'text': 'Hora inicio das sessões','callback_data': '4'}],
+                    [{'text': 'Hora fim das sessões','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}]
                 ]
             }
             data = {}
@@ -811,7 +814,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         if opcao == 2: # procurar sessoes por filme
-            final_movies_sessoes_loc(idChat, idUser, chatData)
+            final_movies_bymovie_loc(idChat, idUser, chatData)
+            #final_movies_sessoes_loc(idChat, idUser, chatData)
             remove_redis(idChat, idUser, chatData)
             return None
 
@@ -854,6 +858,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
 
     elif menu == 199:
         save_string(idChat, idUser, '_search_term', msg)
+        print("Search terM")
+        print(msg)
         save_redis(idChat, idUser, 19)
         reply_markup={
             'inline_keyboard': [
@@ -934,12 +940,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 181)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'termo de pesquisa','callback_data': '1'}],
-                    [{'text': 'usar localização','callback_data': '2'}],
-                    [{'text': 'data (ano-mês-dia)','callback_data': '3'}],
-                    [{'text': 'hora inicio das sessões','callback_data': '4'}],
-                    [{'text': 'hora fim das sessões','callback_data': '5'}],
-                    [{'text': 'sair','callback_data': '6'}],
+                    [{'text': 'Termo de pesquisa','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Data (ano-mês-dia)','callback_data': '3'}],
+                    [{'text': 'Hora inicio das sessões','callback_data': '4'}],
+                    [{'text': 'Hora fim das sessões','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}],
                 ]
             }
             data = {}
@@ -948,8 +954,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # procurar sessoes por filme
-            final_movies_sessoes(idChat, idUser)
-            remove_redis(idChat, idUser, chatData)
+            final_movies_bymovie(idChat, idUser, chatData)
             return None
 
         elif opcao == 3:
@@ -978,10 +983,11 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # procurar sessoes por filme
-            #save lat e lon
             chatData['previous_state'] = 'modo regras'
             get_loc(idChat)
             save_redis(idChat, idUser, 130)
+            data = {}
+            data['msg'] = str('''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
             return data
 
         elif opcao == 3: # procurar sessoes por filme
@@ -1009,7 +1015,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
     elif menu == 189:
-        save_string(idChat, idUser, '_package_price', 'all')
+        save_string(idChat, idUser, '_search_term', 'all')
         save_redis(idChat, idUser, 180)
         reply_markup={
             'inline_keyboard': [
@@ -1083,9 +1089,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 108)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'termo de procura','callback_data': '1'}],
-                    [{'text': 'usar localização','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Termo de procura','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -1094,8 +1100,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa sem localização
-            final_movies_semloc(idChat, idUser)
-            remove_redis(idChat, idUser, chatData)
+            final_moviesNxtSessions_semloc(idChat, idUser, chatData)
+            #remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 108:
@@ -1151,9 +1157,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 139)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'termo de procura','callback_data': '1'}],
-                    [{'text': 'usar localização','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Termo de procura','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -1162,14 +1168,14 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa com localização
-            final_movies_loc(idChat, idUser, chatData)
-            remove_redis(idChat, idUser, chatData)
+            final_moviesNxtSessions_loc(idChat, idUser, chatData)
+            #remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 139:
+        data = {}
         if opcao == 1:
             save_redis(idChat, idUser, 168)
-            data = {}
             data['msg'] = str('''Especifique termo de procura por cinema''')
             return data
         elif opcao == 1:
@@ -1179,7 +1185,6 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
                     [{'text': 'sim','callback_data': '1'},{'text': 'não','callback_data': '2'}]
                 ]
             }
-            data = {}
             data['msg'] = 'Pretende especificar mais algum parametro?'
             data['menu'] = json.dumps(reply_markup)
             return data
@@ -1202,12 +1207,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 158)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'termo de pesquisa','callback_data': '1'}],
-                    [{'text': 'usar localização','callback_data': '2'}],
-                    [{'text': 'data (ano-mês-dia)','callback_data': '3'}],
-                    [{'text': 'hora inicio das sessões','callback_data': '4'}],
-                    [{'text': 'hora fim das sessões','callback_data': '5'}],
-                    [{'text': 'sair','callback_data': '6'}],
+                    [{'text': 'Termo de pesquisa','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Data (ano-mês-dia)','callback_data': '3'}],
+                    [{'text': 'Hora inicio das sessões','callback_data': '4'}],
+                    [{'text': 'Hora fim das sessões','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}],
                 ]
             }
             data = {}
@@ -1216,8 +1221,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: #fazer pesquisa de duração de filme
-            final_movies_duration(idChat, idUser)
-            remove_redis(idChat, idUser, chatData)
+            final_movies_duration(idChat, idUser, chatData)
+            #remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 132:
@@ -1244,6 +1249,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             chatData['previous_state'] = 'modo regras'
             get_loc(idChat)
             save_redis(idChat, idUser, 132)
+            data = {}
+            data['msg'] = str('''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
             return data
 
         elif opcao == 3: # procurar sessoes por filme
@@ -1271,7 +1278,7 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
     elif menu == 149:
-        save_string(idChat, idUser, '_package_price', 'all')
+        save_string(idChat, idUser, '_search_term', msg)
         save_redis(idChat, idUser, 180)
         reply_markup={
             'inline_keyboard': [
@@ -1300,6 +1307,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
         chatData['previous_state'] = 'modo regras'
         get_loc(idChat)
         save_redis(idChat, idUser, 133)
+        data = {}
+        data['msg'] = str('''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
         return data
 
     elif menu == 147:
@@ -1346,12 +1355,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 158)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'termo de pesquisa','callback_data': '1'}],
-                    [{'text': 'usar localização','callback_data': '2'}],
-                    [{'text': 'data (ano-mês-dia)','callback_data': '3'}],
-                    [{'text': 'hora inicio das sessões','callback_data': '4'}],
-                    [{'text': 'hora fim das sessões','callback_data': '5'}],
-                    [{'text': 'sair','callback_data': '6'}],
+                    [{'text': 'Termo de pesquisa','callback_data': '1'}],
+                    [{'text': 'Usar localização','callback_data': '2'}],
+                    [{'text': 'Data (ano-mês-dia)','callback_data': '3'}],
+                    [{'text': 'Hora inicio das sessões','callback_data': '4'}],
+                    [{'text': 'Hora fim das sessões','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}],
                 ]
             }
             data = {}
@@ -1461,7 +1470,6 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
         data['menu'] = json.dumps(reply_markup)
         return data
 
-
     elif menu == 175:
         save_string(idChat, idUser, '_movie_age', msg)
         save_redis(idChat, idUser, 106)
@@ -1480,12 +1488,12 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 14)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'genero','callback_data': '1'}],
-                    [{'text': 'cast','callback_data': '2'}],
-                    [{'text': 'produtor','callback_data': '3'}],
-                    [{'text': 'sinopse','callback_data': '4'}],
-                    [{'text': 'faixa etária','callback_data': '5'}],
-                    [{'text': 'sair','callback_data': '6'}]
+                    [{'text': 'Genero','callback_data': '1'}],
+                    [{'text': 'Cast','callback_data': '2'}],
+                    [{'text': 'Produtor','callback_data': '3'}],
+                    [{'text': 'Sinopse','callback_data': '4'}],
+                    [{'text': 'Faixa etária','callback_data': '5'}],
+                    [{'text': 'Sair','callback_data': '6'}]
                 ]
             }
             data = {}
@@ -1494,8 +1502,8 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             return data
 
         elif opcao == 2: # fazer a pesquisa
-            final_movies_options(idChat, idUser)
-            remove_redis(idChat, idUser, chatData)
+            final_movies_options(idChat, idUser, chatData)
+            #remove_redis(idChat, idUser, chatData)
             return None
 
     elif menu == 134:
@@ -1513,9 +1521,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
                 data['msg'] = str("Saiu do modo de regras.")
                 return data
     elif menu == 13:
+        data = {}
         if opcao == 1: #procurar cinemas com query
             save_redis(idChat, idUser, 102)
-            data = {}
             data['msg'] = str('''Insira uma expressão para procurar o cinema''')
             return data
 
@@ -1523,12 +1531,11 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             chatData['previous_state'] = 'modo regras'
             get_loc(idChat)
             save_redis(idChat, idUser, 134)
+            data['msg'] = str('''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
             return data
-
 
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            data = {}
             data['msg'] = str('''Saiu do modo de regras.''')
             return data
 
@@ -1547,9 +1554,9 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             data['msg'] = str("Saiu do modo de regras.")
             return data
     elif menu == 12:
+        data = {}
         if opcao == 1: #procurar cinemas com query
             save_redis(idChat, idUser, 101)
-            data = {}
             data['msg'] = str('''Insira uma expressão para procurar o cinema''')
             return data
 
@@ -1557,11 +1564,11 @@ def cinema_rules(idChat, idUser, menu, msg, chatData):
             chatData['previous_state'] = 'modo regras'
             get_loc(idChat)
             save_redis(idChat, idUser, 135)
+            data['msg'] = str('''Para prosseguir precisamos do seu consentimento, por favor prima o botão se concordar.''')
             return data
 
         elif opcao == 3:
             remove_redis(idChat, idUser, chatData)
-            data = {}
             data['msg'] = str('''Saiu do modo de regras.''')
             return data
 
@@ -1598,9 +1605,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 21)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'tarifários WTF','callback_data': '1'}],
-                [{'text': 'pacotes','callback_data': '2'}],
-                [{'text': 'sair','callback_data': '3'}]
+                [{'text': 'Tarifários WTF','callback_data': '1'}],
+                [{'text': 'Pacotes','callback_data': '2'}],
+                [{'text': 'Sair','callback_data': '3'}]
             ]
         }
         data = {}
@@ -1612,10 +1619,10 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 22)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'modelo de telemóvel','callback_data': '1'}],
-                [{'text': 'pesquisa sobre telemóveis','callback_data': '2'}],
-                [{'text': 'top telemóveis mais vistos','callback_data': '3'}],
-                [{'text': 'sair','callback_data': '4'}]
+                [{'text': 'Modelo de telemóvel','callback_data': '1'}],
+                [{'text': 'Pesquisa sobre telemóveis','callback_data': '2'}],
+                [{'text': 'Top telemóveis mais vistos','callback_data': '3'}],
+                [{'text': 'Sair','callback_data': '4'}]
             ]
         }
         data = {}
@@ -1627,9 +1634,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 23)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'indicar zona prentendida','callback_data': '1'}],
-                [{'text': 'lojas perto de si','callback_data': '2'}],
-                [{'text': 'sair','callback_data': '3'}]
+                [{'text': 'Indicar zona prentendida','callback_data': '1'}],
+                [{'text': 'Lojas perto de si','callback_data': '2'}],
+                [{'text': 'Sair','callback_data': '3'}]
             ]
         }
         data = {}
@@ -1641,9 +1648,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 24)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'especificar assunto','callback_data': '1'}],
-                [{'text': 'todas as linhas de apoio','callback_data': '2'}],
-                [{'text': 'sair','callback_data': '3'}]
+                [{'text': 'Especificar assunto','callback_data': '1'}],
+                [{'text': 'Todas as linhas de apoio','callback_data': '2'}],
+                [{'text': 'Sair','callback_data': '3'}]
             ]
         }
         data = {}
@@ -1656,9 +1663,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 25)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'todos os tarifários WTF','callback_data': '1'}],
-                    [{'text': 'tarifários por nome','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Todos os tarifários WTF','callback_data': '1'}],
+                    [{'text': 'Tarifários por nome','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -1669,9 +1676,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 26)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'indicar nome de pacote','callback_data': '1'}],
-                    [{'text': 'pesquisa sobre pacotes','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Indicar nome de pacote','callback_data': '1'}],
+                    [{'text': 'Pesquisa sobre pacotes','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -1694,15 +1701,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 222)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'especificar marca','callback_data': '1'}],
-                    [{'text': 'modelos recentes','callback_data': '2'}],
-                    [{'text': 'promoções','callback_data': '3'}],
-                    [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                    [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                    [{'text': 'pagamento a prestações','callback_data': '6'}],
-                    [{'text': 'pagamento com pontos','callback_data': '7'}],
-                    [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                    [{'text': 'sair','callback_data': '9'}]
+                    [{'text': 'Especificar marca','callback_data': '1'}],
+                    [{'text': 'Modelos recentes','callback_data': '2'}],
+                    [{'text': 'Promoções','callback_data': '3'}],
+                    [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                    [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                    [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                    [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                    [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                    [{'text': 'Sair','callback_data': '9'}]
                 ]
             }
             data = {}
@@ -1740,15 +1747,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_string(idChat, idUser, '_new_phones_', 'defined')
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'especificar marca','callback_data': '1'}],
-                    [{'text': 'modelos recentes','callback_data': '2'}],
-                    [{'text': 'promoções','callback_data': '3'}],
-                    [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                    [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                    [{'text': 'pagamento a prestações','callback_data': '6'}],
-                    [{'text': 'pagamento com pontos','callback_data': '7'}],
-                    [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                    [{'text': 'sair','callback_data': '9'}]
+                    [{'text': 'Especificar marca','callback_data': '1'}],
+                    [{'text': 'Modelos recentes','callback_data': '2'}],
+                    [{'text': 'Promoções','callback_data': '3'}],
+                    [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                    [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                    [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                    [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                    [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                    [{'text': 'Sair','callback_data': '9'}]
                 ]
             }
             data = {}
@@ -1759,15 +1766,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_string(idChat, idUser, '_phones_Promo_', 'defined')
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'especificar marca','callback_data': '1'}],
-                    [{'text': 'modelos recentes','callback_data': '2'}],
-                    [{'text': 'promoções','callback_data': '3'}],
-                    [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                    [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                    [{'text': 'pagamento a prestações','callback_data': '6'}],
-                    [{'text': 'pagamento com pontos','callback_data': '7'}],
-                    [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                    [{'text': 'sair','callback_data': '9'}]
+                    [{'text': 'Especificar marca','callback_data': '1'}],
+                    [{'text': 'Modelos recentes','callback_data': '2'}],
+                    [{'text': 'Promoções','callback_data': '3'}],
+                    [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                    [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                    [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                    [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                    [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                    [{'text': 'Sair','callback_data': '9'}]
                 ]
             }
             data = {}
@@ -1778,15 +1785,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_string(idChat, idUser, '_phones_ofer', 'defined')
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'especificar marca','callback_data': '1'}],
-                    [{'text': 'modelos recentes','callback_data': '2'}],
-                    [{'text': 'promoções','callback_data': '3'}],
-                    [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                    [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                    [{'text': 'pagamento a prestações','callback_data': '6'}],
-                    [{'text': 'pagamento com pontos','callback_data': '7'}],
-                    [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                    [{'text': 'sair','callback_data': '9'}]
+                    [{'text': 'Especificar marca','callback_data': '1'}],
+                    [{'text': 'Modelos recentes','callback_data': '2'}],
+                    [{'text': 'Promoções','callback_data': '3'}],
+                    [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                    [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                    [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                    [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                    [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                    [{'text': 'Sair','callback_data': '9'}]
                 ]
             }
             data = {}
@@ -1803,15 +1810,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_string(idChat, idUser, '_prest_', 'defined')
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'especificar marca','callback_data': '1'}],
-                    [{'text': 'modelos recentes','callback_data': '2'}],
-                    [{'text': 'promoções','callback_data': '3'}],
-                    [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                    [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                    [{'text': 'pagamento a prestações','callback_data': '6'}],
-                    [{'text': 'pagamento com pontos','callback_data': '7'}],
-                    [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                    [{'text': 'sair','callback_data': '9'}]
+                    [{'text': 'Especificar marca','callback_data': '1'}],
+                    [{'text': 'Modelos recentes','callback_data': '2'}],
+                    [{'text': 'Promoções','callback_data': '3'}],
+                    [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                    [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                    [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                    [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                    [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                    [{'text': 'Sair','callback_data': '9'}]
                 ]
             }
             data = {}
@@ -1822,15 +1829,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_string(idChat, idUser, '_points_', 'defined')
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'especificar marca','callback_data': '1'}],
-                    [{'text': 'modelos recentes','callback_data': '2'}],
-                    [{'text': 'promoções','callback_data': '3'}],
-                    [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                    [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                    [{'text': 'pagamento a prestações','callback_data': '6'}],
-                    [{'text': 'pagamento com pontos','callback_data': '7'}],
-                    [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                    [{'text': 'sair','callback_data': '9'}]
+                    [{'text': 'Especificar marca','callback_data': '1'}],
+                    [{'text': 'Modelos recentes','callback_data': '2'}],
+                    [{'text': 'Promoções','callback_data': '3'}],
+                    [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                    [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                    [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                    [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                    [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                    [{'text': 'Sair','callback_data': '9'}]
                 ]
             }
             data = {}
@@ -1861,15 +1868,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 222)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'especificar marca','callback_data': '1'}],
-                [{'text': 'modelos recentes','callback_data': '2'}],
-                [{'text': 'promoções','callback_data': '3'}],
-                [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                [{'text': 'pagamento a prestações','callback_data': '6'}],
-                [{'text': 'pagamento com pontos','callback_data': '7'}],
-                [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                [{'text': 'sair','callback_data': '9'}]
+                [{'text': 'Especificar marca','callback_data': '1'}],
+                [{'text': 'Modelos recentes','callback_data': '2'}],
+                [{'text': 'Promoções','callback_data': '3'}],
+                [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                [{'text': 'Sair','callback_data': '9'}]
             ]
         }
         data = {}
@@ -1891,15 +1898,15 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
         save_redis(idChat, idUser, 222)
         reply_markup={
             'inline_keyboard': [
-                [{'text': 'especificar marca','callback_data': '1'}],
-                [{'text': 'modelos recentes','callback_data': '2'}],
-                [{'text': 'promoções','callback_data': '3'}],
-                [{'text': 'telemóveis com ofertas','callback_data': '4'}],
-                [{'text': 'definir intervalo de preços','callback_data': '5'}],
-                [{'text': 'pagamento a prestações','callback_data': '6'}],
-                [{'text': 'pagamento com pontos','callback_data': '7'}],
-                [{'text': 'apresentar resultados da pesquisa','callback_data': '8'}],
-                [{'text': 'sair','callback_data': '9'}]
+                [{'text': 'Especificar marca','callback_data': '1'}],
+                [{'text': 'Modelos recentes','callback_data': '2'}],
+                [{'text': 'Promoções','callback_data': '3'}],
+                [{'text': 'Telemóveis com ofertas','callback_data': '4'}],
+                [{'text': 'Definir intervalo de preços','callback_data': '5'}],
+                [{'text': 'Pagamento a prestações','callback_data': '6'}],
+                [{'text': 'Pagamento com pontos','callback_data': '7'}],
+                [{'text': 'Apresentar resultados da pesquisa','callback_data': '8'}],
+                [{'text': 'Sair','callback_data': '9'}]
             ]
         }
         data = {}
@@ -1931,13 +1938,13 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 241)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'serviços NOS','callback_data': '1'}],
-                    [{'text': 'entidades','callback_data': '2'}],
-                    [{'text': 'equipamentos NOS','callback_data': '3'}],
-                    [{'text': 'denúncia fraude/pirataria','callback_data': '4'}],
-                    [{'text': 'faturas contencioso','callback_data': '5'}],
-                    [{'text': 'informações','callback_data': '6'}],
-                    [{'text': 'sair','callback_data': '7'}]
+                    [{'text': 'Serviços NOS','callback_data': '1'}],
+                    [{'text': 'Entidades','callback_data': '2'}],
+                    [{'text': 'Equipamentos NOS','callback_data': '3'}],
+                    [{'text': 'Denúncia fraude/pirataria','callback_data': '4'}],
+                    [{'text': 'Faturas contencioso','callback_data': '5'}],
+                    [{'text': 'Informações','callback_data': '6'}],
+                    [{'text': 'Sair','callback_data': '7'}]
                 ]
             }
             data = {}
@@ -1989,10 +1996,10 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 262)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'pacotes fibra','callback_data': '1'}],
-                    [{'text': 'pacotes satélite','callback_data': '2'}],
-                    [{'text': 'todos os tipos de pacotes','callback_data': '3'}],
-                    [{'text': 'sair','callback_data': '4'}]
+                    [{'text': 'Pacotes fibra','callback_data': '1'}],
+                    [{'text': 'Pacotes satélite','callback_data': '2'}],
+                    [{'text': 'Todos os tipos de pacotes','callback_data': '3'}],
+                    [{'text': 'Sair','callback_data': '4'}]
                 ]
             }
             data = {}
@@ -2033,14 +2040,14 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 242)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'pacotes com televisão','callback_data': '1'}],
-                    [{'text': 'telemóvel','callback_data': '2'}],
+                    [{'text': 'Pacotes com televisão','callback_data': '1'}],
+                    [{'text': 'Telemóvel','callback_data': '2'}],
                     [{'text': 'Internet fixa','callback_data': '3'}],
                     [{'text': 'Internet móvel','callback_data': '4'}],
-                    [{'text': 'telefone','callback_data': '5'}],
-                    [{'text': 'ativação de pacotes Internet','callback_data': '6'}],
-                    [{'text': 'apoio informático','callback_data': '7'}],
-                    [{'text': 'sair','callback_data': '8'}]
+                    [{'text': 'Telefone','callback_data': '5'}],
+                    [{'text': 'Ativação de pacotes Internet','callback_data': '6'}],
+                    [{'text': 'Apoio informático','callback_data': '7'}],
+                    [{'text': 'Sair','callback_data': '8'}]
                 ]
             }
             data = {}
@@ -2051,11 +2058,11 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 243)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'empresas','callback_data': '1'}],
-                    [{'text': 'corporate','callback_data': '2'}],
-                    [{'text': 'profissionais e empresas','callback_data': '3'}],
-                    [{'text': 'particulares','callback_data': '4'}],
-                    [{'text': 'sair','callback_data': '5'}]
+                    [{'text': 'Empresas','callback_data': '1'}],
+                    [{'text': 'Corporate','callback_data': '2'}],
+                    [{'text': 'Profissionais e empresas','callback_data': '3'}],
+                    [{'text': 'Particulares','callback_data': '4'}],
+                    [{'text': 'Sair','callback_data': '5'}]
                 ]
             }
             data = {}
@@ -2066,9 +2073,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 244)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'reparação de equipamentos','callback_data': '1'}],
-                    [{'text': 'devolução de equipamentos','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Reparação de equipamentos','callback_data': '1'}],
+                    [{'text': 'Devolução de equipamentos','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -2093,9 +2100,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 245)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'informações de portabilidade','callback_data': '1'}],
-                    [{'text': 'vídeo intérprete','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Informações de portabilidade','callback_data': '1'}],
+                    [{'text': 'Vídeo intérprete','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -2340,9 +2347,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 264)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'definir intervalo de preços','callback_data': '1'}],
-                    [{'text': 'qualquer preço','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Definir intervalo de preços','callback_data': '1'}],
+                    [{'text': 'Qualquer preço','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -2354,9 +2361,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 264)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'definir intervalo de preços','callback_data': '1'}],
-                    [{'text': 'qualquer preço','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Definir intervalo de preços','callback_data': '1'}],
+                    [{'text': 'Qualquer preço','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -2368,9 +2375,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 264)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'definir intervalo de preços','callback_data': '1'}],
-                    [{'text': 'qualquer preço','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Definir intervalo de preços','callback_data': '1'}],
+                    [{'text': 'Qualquer preço','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -2382,9 +2389,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 264)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'definir intervalo de preços','callback_data': '1'}],
-                    [{'text': 'qualquer preço','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Definir intervalo de preços','callback_data': '1'}],
+                    [{'text': 'Qualquer preço','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -2396,9 +2403,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 264)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'definir intervalo de preços','callback_data': '1'}],
-                    [{'text': 'qualquer preço','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Definir intervalo de preços','callback_data': '1'}],
+                    [{'text': 'Qualquer preço','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
@@ -2409,9 +2416,9 @@ def fs_rules(idChat, idUser, menu, msg, chatData):
             save_redis(idChat, idUser, 264)
             reply_markup={
                 'inline_keyboard': [
-                    [{'text': 'definir intervalo de preços','callback_data': '1'}],
-                    [{'text': 'qualquer preço','callback_data': '2'}],
-                    [{'text': 'sair','callback_data': '3'}]
+                    [{'text': 'Definir intervalo de preços','callback_data': '1'}],
+                    [{'text': 'Qualquer preço','callback_data': '2'}],
+                    [{'text': 'Sair','callback_data': '3'}]
                 ]
             }
             data = {}
