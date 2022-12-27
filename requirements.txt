@@ -8,5 +8,5 @@ deeppavlov==0.7.1
 flask==1.1.1
 redis==3.3.11
 unidecode==1.1.1
-setuptools==41.2.0
+setuptools==65.5.1
 apscheduler==3.6.3
